@@ -181,7 +181,14 @@
 {% javascript %}
   (() => {
     const success = document.querySelector('[data-contact-success]');
-    if (success && window.AAF) window.AAF.track('generate_lead', { lead_type: 'contact_form' });
+    if (success && window.AAF) {
+      let tracked = false;
+      try {
+        tracked = sessionStorage.getItem('aaf-contact-tracked') === location.pathname;
+        sessionStorage.setItem('aaf-contact-tracked', location.pathname);
+      } catch (error) {}
+      if (!tracked) window.AAF.track('generate_lead', { lead_type: 'contact_form' });
+    }
     const form = document.querySelector('[data-contact-form]');
     if (form) {
       form.addEventListener('submit', () => {

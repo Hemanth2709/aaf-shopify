@@ -118,12 +118,13 @@ body {
 .scheme-sand {
   --color-background: var(--color-sand);
   --color-border: rgb(34 32 30 / 0.16);
+  --color-muted: #554c43;
 }
 
 .scheme-charcoal,
 .scheme-walnut {
   --color-foreground: var(--color-ivory);
-  --color-muted: rgb(247 243 236 / 0.68);
+  --color-muted: rgb(247 243 236 / 0.8);
   --color-border: rgb(247 243 236 / 0.18);
   --color-button: var(--color-ivory);
   --color-button-text: var(--color-charcoal);

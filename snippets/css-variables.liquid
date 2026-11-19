@@ -6,6 +6,13 @@
   {% render 'css-variables' %}
 {% enddoc %}
 
+{%- unless settings.type_heading_font.system? -%}
+  {{ settings.type_heading_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+{%- endunless -%}
+{%- unless settings.type_primary_font.system? -%}
+  {{ settings.type_primary_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+{%- endunless -%}
+
 {% style %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', '500' | font_face: font_display: 'swap' }}

@@ -28,6 +28,12 @@ No tracking IDs are hardcoded. Accounts and IDs must come from the business.
 | `enquiry_submit` | Enquiry form submitted (before server response) | `furniture_category` |
 | `generate_lead` | Enquiry success screen (once per reference), contact form success | `lead_type`, `enquiry_reference`, `furniture_category`, `budget` |
 | `sign_up` | Newsletter success | `method` |
+| `search` | Predictive search query (header) | `search_term` |
+| `quick_view` | Quick view opened | `item_id` |
+| `add_to_wishlist` / `remove_from_wishlist` | Heart toggled | `item_id`, `item_name` |
+| `room_finder_complete` | Room finder result shown | `room`, `journey`, `space` |
+| `consultation_submit` | Consultation form submitted | |
+| `generate_lead` (`lead_type: consultation_request`) | Consultation success screen (once per session) | `lead_type` |
 
 Use `generate_lead` (not `enquiry_submit`) as the conversion: it only fires after Shopify accepted the form.
 

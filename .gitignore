@@ -25,3 +25,4 @@ skills-lock.json
 tools/preview-harness/node_modules/
 tools/preview-harness/out/
 tools/preview-harness/shots/
+tools/store-setup/last-run.json

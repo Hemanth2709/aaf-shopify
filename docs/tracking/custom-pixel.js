@@ -124,7 +124,7 @@ if (SEND_STANDARD_EVENTS) {
 analytics.subscribe('aaf_generate_lead', (event) => {
   const data = event.customData || {};
   gtagEvent('generate_lead', { lead_type: data.lead_type, enquiry_reference: data.enquiry_reference, furniture_category: data.furniture_category });
-  if (window.gtag && GOOGLE_ADS_ID && GOOGLE_ADS_LEAD_LABEL && data.lead_type === 'custom_furniture_enquiry') {
+  if (window.gtag && GOOGLE_ADS_ID && GOOGLE_ADS_LEAD_LABEL && (data.lead_type === 'custom_furniture_enquiry' || data.lead_type === 'consultation_request')) {
     window.gtag('event', 'conversion', { send_to: GOOGLE_ADS_ID + '/' + GOOGLE_ADS_LEAD_LABEL, transaction_id: data.enquiry_reference });
   }
   fbqEvent('Lead', { content_category: data.furniture_category || data.lead_type });
@@ -149,6 +149,21 @@ analytics.subscribe('aaf_enquiry_step', (event) => {
 analytics.subscribe('aaf_select_journey', (event) => {
   const data = event.customData || {};
   gtagEvent('select_journey', { journey: data.journey, location: data.location });
+});
+
+analytics.subscribe('aaf_search', (event) => {
+  gtagEvent('search', { search_term: (event.customData || {}).search_term });
+  fbqEvent('Search', { search_string: (event.customData || {}).search_term });
+});
+
+analytics.subscribe('aaf_add_to_wishlist', (event) => {
+  gtagEvent('add_to_wishlist', { items: [{ item_id: (event.customData || {}).item_id }] });
+  fbqEvent('AddToWishlist', {});
+});
+
+analytics.subscribe('aaf_room_finder_complete', (event) => {
+  const data = event.customData || {};
+  gtagEvent('room_finder_complete', { room: data.room, journey: data.journey });
 });
 
 analytics.subscribe('aaf_sign_up', () => {

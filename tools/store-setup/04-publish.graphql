@@ -1,0 +1,16 @@
+mutation PublishToOnlineStore($id: ID!, $input: [PublicationInput!]!) {
+  publishablePublish(id: $id, input: $input) {
+    publishable {
+      ... on Product {
+        id
+      }
+      ... on Collection {
+        id
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

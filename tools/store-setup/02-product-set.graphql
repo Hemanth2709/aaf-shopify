@@ -1,0 +1,23 @@
+mutation CreateSampleProduct($input: ProductSetInput!) {
+  productSet(input: $input, synchronous: true) {
+    product {
+      id
+      handle
+      title
+      status
+      variants(first: 10) {
+        nodes {
+          id
+          title
+          price
+          inventoryQuantity
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

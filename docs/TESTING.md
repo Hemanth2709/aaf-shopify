@@ -65,3 +65,23 @@ Date: 2026-11-19. Branch `claude/nifty-darwin-kio1sd`.
 | Real fonts in screenshots | The harness falls back to system serif/sans fonts |
 
 Screenshots in the harness use mock gradients labelled "MOCK IMAGE" and mock prices. They are not store data.
+
+## Completion phase (2026-11-19, evening)
+
+| Check | Result |
+|---|---|
+| Theme Check | 0 errors, 0 warnings |
+| Toolkit Liquid validator, 40 changed files | VALID |
+| Toolkit Admin GraphQL validator, 6 store-setup operations | VALID (deprecations fixed) |
+| `node --check` on 20 script blocks + setup runner + pixel | All parse |
+| New pages on the store (search, predictive search, collections list, blog, 404, password, measurement guide, consultation, wishlist) | 200, 0 Liquid errors |
+| Room finder on the store | Empty-step validation; Bedroom → Made for my space → Medium routes to `/pages/custom-enquiry?category=Beds&room=Bedroom, Medium`; `room_finder_complete` fired |
+| Predictive search on the store | "con" returns the Contact page; `aria-expanded` true |
+| Wishlist | Toggle add/remove persists in localStorage; empty state shows; heart `aria-pressed` updates |
+| Consultation form on the store | Blocks empty submit (3 invalid fields), min date = today, UTM captured, success screen, lead fires once |
+| Contact form lead | Fires once, not on reload |
+| axe-core WCAG 2.1 A/AA, 10 store pages | 0 violations (2 contrast failures found and fixed: muted text on sand 4.04:1 and charcoal 3.9:1) |
+| Lighthouse (dev proxy, mobile) | Accessibility 100, SEO 92, CLS 0, no render-blocking theme assets. Performance 69–71 through the uncompressed local proxy; heaviest assets are Shopify checkout/Shop Pay scripts. Not representative: measure with PageSpeed Insights on the live domain |
+| Overflow 390 / 820 px | 0 px on all tested pages |
+
+Not testable without store data: quick view content, recently viewed cards, product variants and stock states on a real product, cart line updates, checkout. Store-setup script is ready (tools/store-setup/run.mjs) and needs the owner to complete the CLI authorisation.

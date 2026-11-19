@@ -21,8 +21,9 @@ shopify theme push --store krduy0-u5.myshopify.com --unpublished
 | Brand and contact | Logo, favicon | Header, footer, Organization structured data |
 | Brand and contact | WhatsApp number (digits, country code, no `+`) | Every WhatsApp button. Blank hides them all |
 | Brand and contact | Phone, email, showroom address | Announcement bar, footer, contact page, consultation band |
-| Brand and contact | Consultation link | "Book a consultation" buttons (booking tool or a page) |
-| Brand and contact | Enquiry page link, for example `/pages/custom-enquiry` | Cart, collection empty state, footer, header fallback |
+| Brand and contact | Consultation link (default `/pages/consultation`) | "Book a consultation" buttons and the room finder |
+| Brand and contact | Measurement guide link (default `/pages/measurement-guide`) | Product pages and enquiry step 3 |
+| Brand and contact | Enquiry page link (default `/pages/custom-enquiry`) | Cart, collection empty state, footer, header fallback, product "Request a quote" |
 | Commerce | Cart type (drawer or page) | Add-to-cart behaviour |
 | Commerce | Ready-stock delivery, made-to-order lead time, warranty | Product page delivery box. **Business must confirm the wording** |
 | Commerce | Low-stock threshold | "Only N left" message (variants tracked by Shopify inventory) |
@@ -38,6 +39,9 @@ Create each page and choose its template in the "Theme template" box.
 | Custom furniture | `custom-furniture` | `page.custom-furniture` |
 | Custom enquiry | `custom-enquiry` | `page.custom-enquiry` |
 | Contact | `contact` | `page.contact` |
+| Book a consultation | `consultation` | `page.consultation` |
+| Measurement guide | `measurement-guide` | `page.measurement-guide` |
+| Wishlist | `wishlist` | `page.wishlist` (then Header → Wishlist page) |
 | FAQ | `faq` | `page.faq` |
 | About | `about` | `page.about` |
 | Craftsmanship | `craftsmanship` | `page.craftsmanship` |
@@ -52,12 +56,16 @@ For a collection used in ads, assign the `collection.campaign` template to that 
 
 ## 4. Navigation (Online Store > Navigation)
 
+If `tools/store-setup/run.mjs` was run, two new menus exist: **AAF main menu** (`aaf-main-menu`) and **AAF footer** (`aaf-footer`). Select them in Customize → Header → Menu and Footer → menu blocks. Your existing `main-menu` and `footer` menus are not changed.
+
 - `main-menu`: top-level items. Items with children render a mega menu. Children with their own children render as columns. Suggested: Ready stock (with category children), Custom furniture, Collections, Materials, About.
 - `footer`: customer care links (Shipping, Returns, FAQ, Contact).
 - Optional: a "popular searches" menu, then choose it in Header > Search suggestions.
 - Mega menu images: Header section > Add block "Mega menu promo", type the exact top-level menu title.
 
 ## 5. Product data
+
+Full guide and metafield specification: **docs/PRODUCT-ENTRY.md**.
 
 Products, prices, variants and inventory come from Shopify. The theme never invents them.
 
@@ -86,13 +94,22 @@ Variant swatches: set colour/fabric option swatches in the product option settin
 
 ## 6. Filters (Search & Discovery app)
 
-Install Shopify Search & Discovery, then add filters: Availability, Price, Product type, and product metafields `custom.fulfilment_type`, `custom.material`, `custom.finish`. Colour filters with swatches render as swatches.
+Install Shopify Search & Discovery, then add filters: Availability, Price, Product type, and product metafields `custom.fulfilment_type`, `custom.material`, `custom.finish`, `custom.room`. Colour filters with swatches render as swatches.
+
+When the `custom.fulfilment_type` filter exists, collection pages show **All pieces / Ready stock / Made to order** chips above the grid automatically.
+
+For "Pairs well with" on product pages, set complementary products in Search & Discovery → Recommendations.
+
+## 6b. Reviews
+
+Install a reviews app (Shopify Product Reviews, Judge.me, Yotpo, …). Add its widget as an **app block** inside the Product section (Customize → Product → Add block → Apps) or in the full-width **Reviews** (Apps) section under it. Star ratings on cards appear automatically when the app fills the standard `reviews.rating` metafield. Never add reviews by hand that customers did not write.
 
 ## 7. Custom enquiry delivery
 
 - The guided form posts to Shopify's native contact form. Each submission is emailed to the address in Settings > Notifications > Sender email (customer support email).
 - Every answer arrives as a labelled line: Category, Furniture type, Width/Depth/Height + Units, Material, Finish, Colour preference, Upholstery, Reference links, Budget, Timeline, City, contact details, Enquiry reference, Campaign (UTM / gclid), Page.
 - Submissions are not stored as records in the admin. If you need a lead list, forward the inbox to a CRM, or replace the form with an app (see below).
+- The consultation booking form (`page.consultation`) uses the same contact form, with the consultation type, preferred date and time, city and UTM source as labelled fields.
 - File upload: the native form cannot accept files. The form offers reference links, and the success screen opens WhatsApp with the enquiry reference so customers can send image files. For true uploads, install a form app (for example Shopify Forms or another form builder) and replace the `{% form 'contact' %}` in `sections/custom-enquiry.liquid`, or embed the app block on the page.
 - Spam protection: Shopify may show an hCaptcha challenge after submit. This is expected.
 

@@ -1,0 +1,24 @@
+query StoreSetupLookup {
+  locations(first: 5) {
+    nodes {
+      id
+      name
+      isActive
+    }
+  }
+  publications(first: 10) {
+    nodes {
+      id
+      catalog {
+        title
+      }
+    }
+  }
+  menus(first: 25) {
+    nodes {
+      id
+      handle
+      title
+    }
+  }
+}
