@@ -186,7 +186,9 @@
     if (form) {
       form.addEventListener('submit', () => {
         const button = form.querySelector('[data-contact-submit]');
-        if (button) button.classList.add('is-loading');
+        if (!button) return;
+        button.classList.add('is-loading');
+        window.setTimeout(() => button.classList.remove('is-loading'), 8000);
       });
     }
   })();

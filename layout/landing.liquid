@@ -6,24 +6,7 @@
     {% render 'css-variables' %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
 
-    <script>
-      window.AAFConfig = {
-        currency: {{ cart.currency.iso_code | json }},
-        pageType: {{ request.page_type | json }},
-        cartType: {{ settings.cart_type | json }},
-        dataLayer: {{ settings.enable_datalayer | json }},
-        motion: {{ settings.enable_animations | json }},
-        routes: {
-          root: {{ routes.root_url | json }},
-          cart: {{ routes.cart_url | json }},
-          cartAdd: {{ routes.cart_add_url | json }},
-          cartChange: {{ routes.cart_change_url | json }}
-        }
-      };
-      if (window.AAFConfig.motion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.classList.add('js-motion');
-      }
-    </script>
+    {% render 'analytics-init' %}
 
     {% render 'structured-data' %}
 

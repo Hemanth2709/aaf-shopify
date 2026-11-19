@@ -1,0 +1,47 @@
+{% doc %}
+  Defines window.AAFConfig and the window.AAF.track() analytics helper inline
+  in the head, so it exists before any bundled section script runs. Events go
+  to window.dataLayer (when enabled in theme settings), to Shopify customer
+  events via Shopify.analytics.publish('aaf_<name>'), and to a DOM event
+  'aaf:track'. Rendered in every layout.
+
+  @example
+  {% render 'analytics-init' %}
+{% enddoc %}
+
+<script>
+  window.AAFConfig = {
+    currency: {{ cart.currency.iso_code | json }},
+    pageType: {{ request.page_type | json }},
+    cartType: {{ settings.cart_type | json }},
+    dataLayer: {{ settings.enable_datalayer | json }},
+    motion: {{ settings.enable_animations | json }},
+    routes: {
+      root: {{ routes.root_url | json }},
+      cart: {{ routes.cart_url | json }},
+      cartAdd: {{ routes.cart_add_url | json }},
+      cartChange: {{ routes.cart_change_url | json }}
+    }
+  };
+  (function () {
+    var config = window.AAFConfig;
+    var AAF = (window.AAF = window.AAF || {});
+    AAF.track = function (name, params) {
+      var payload = Object.assign({ page_type: config.pageType }, params || {});
+      if (config.dataLayer) {
+        window.dataLayer = window.dataLayer || [];
+        if (payload.ecommerce) window.dataLayer.push({ ecommerce: null });
+        window.dataLayer.push(Object.assign({ event: name }, payload));
+      }
+      try {
+        if (window.Shopify && window.Shopify.analytics && typeof window.Shopify.analytics.publish === 'function') {
+          window.Shopify.analytics.publish('aaf_' + name, payload);
+        }
+      } catch (error) {}
+      document.dispatchEvent(new CustomEvent('aaf:track', { detail: { name: name, params: payload } }));
+    };
+    if (config.motion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('js-motion');
+    }
+  })();
+</script>

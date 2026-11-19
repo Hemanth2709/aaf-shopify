@@ -34,12 +34,30 @@ Date: 2026-11-19. Branch `claude/nifty-darwin-kio1sd`.
 - Draft restore: reloading mid-way returns to the same step with category, type and dimensions kept.
 - Events fired: `enquiry_start`, `enquiry_step`, `enquiry_submit`.
 
+## Live store preview (`shopify theme dev`, krduy0-u5, dev theme only, live theme untouched)
+
+| Check | Result |
+|---|---|
+| Home, /collections/all, /collections, /cart, /search, 404 | 200, no Liquid errors, no missing translations |
+| All 9 page templates and `collection.campaign` (previewed with `?view=` on the existing Contact page; no pages were created) | 200, no Liquid errors |
+| Desktop 1440 / mobile 390 screenshots, 8 pages | No horizontal overflow; Playfair Display + Work Sans load; header height stable (81 / 73 px) |
+| Browser console | No errors from theme code. Only Shopify platform messages (CORS on the local dev proxy, Shop Pay iframe CSP), identical on every page |
+| Guided enquiry on Shopify | All 9 steps, validation and review work; submit triggers Shopify's hCaptcha bot protection (expected) |
+| Enquiry success state (`contact_posted=true`) | Success panel with reference renders; `generate_lead` fires once with `enquiry_reference`, deduplicated on reload |
+| Contact form success | `generate_lead` with `lead_type: contact_form` |
+
+### Bugs found on the live store and fixed
+
+8. `structured-data.liquid`: Shopify's parser rejected `{search_term_string}` inside an output tag (theme check and LiquidJS accepted it). Every page returned 500 until fixed with a `capture` + `raw` block.
+9. Analytics events fired from section scripts before `AAF.track` existed, because Shopify bundles section scripts before snippet scripts. `generate_lead`, `view_item`, `view_item_list` and `sign_up` would have been silently lost. The tracker now lives in an inline head snippet (`analytics-init`).
+10. Closing the hCaptcha window left the Send button spinning. It now resets after 8 s with a hint (enquiry and contact form).
+11. Shopify's generic placeholder art (shoes, bags) replaced with furniture line drawings; the collection banner is now full width; the landing layout uses the correct header offset; no focus ring on script-focused panels.
+
 ## Not tested (blocked)
 
 | Item | Blocker |
 |---|---|
-| Rendering on Shopify (`shopify theme dev`) | Shopify CLI login not completed in this environment (device code expired twice). Needs the store owner to approve a login code |
-| Enquiry email delivery, success screen, `generate_lead` firing | Requires the live contact form on the store |
+| Enquiry email actually arriving in the store inbox | Shopify's hCaptcha correctly blocks automated submissions, so a person has to submit one test enquiry |
 | Real product page, variant switching via Section Rendering API, AJAX add to cart, cart drawer updates, filters | Requires the store, and the store has no products yet |
 | Checkout and purchase events | Requires products and a test payment method |
 | GA4 / Google Ads / Meta event verification | No account IDs supplied |

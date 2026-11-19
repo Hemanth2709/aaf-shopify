@@ -502,6 +502,7 @@
     <span data-key="edit">{{ 'enquiry.edit' | t }}</span>
     <span data-key="empty">{{ 'enquiry.review_empty' | t }}</span>
     <span data-key="sending">{{ 'enquiry.sending' | t }}</span>
+    <span data-key="verify">{{ 'enquiry.verify' | t }}</span>
     <span data-key="dimensions">{{ 'enquiry.fields.dimensions' | t }}</span>
     <span data-key="images">{{ 'enquiry.fields.images' | t }}</span>
     <span data-key="details">{{ 'enquiry.fields.details' | t }}</span>
@@ -1330,13 +1331,18 @@
       statusEl.style.color = 'inherit';
       statusEl.textContent = labels.sending;
       if (window.AAF) window.AAF.track('enquiry_submit', { lead_type: 'custom_furniture_enquiry', furniture_category: valueOf('contact[Category]') });
+      const reset = (message) => {
+        submitting = false;
+        submit.classList.remove('is-loading');
+        submit.removeAttribute('aria-busy');
+        statusEl.textContent = message || '';
+      };
       window.addEventListener('pageshow', (e) => {
-        if (e.persisted) {
-          submitting = false;
-          submit.classList.remove('is-loading');
-          statusEl.textContent = '';
-        }
+        if (e.persisted) reset('');
       });
+      window.setTimeout(() => {
+        if (document.visibilityState === 'visible') reset(labels.verify || '');
+      }, 8000);
     });
 
     const draft = restoreDraft();

@@ -38,6 +38,7 @@
 </script>
 
 {%- if request.page_type == 'index' -%}
+  {%- capture search_target -%}{{ request.origin }}{{ routes.search_url }}?q={% raw %}{search_term_string}{% endraw %}{%- endcapture -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -46,7 +47,7 @@
       "url": {{ request.origin | append: routes.root_url | json }},
       "potentialAction": {
         "@type": "SearchAction",
-        "target": {{ request.origin | append: routes.search_url | append: '?q={search_term_string}' | json }},
+        "target": {{ search_target | json }},
         "query-input": "required name=search_term_string"
       }
     }
