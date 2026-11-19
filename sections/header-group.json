@@ -4,15 +4,37 @@
   "sections": {
     "announcement": {
       "type": "announcement-bar",
-      "settings": {}
+      "blocks": {
+        "message_1": {
+          "type": "message",
+          "settings": {
+            "text": "Ready-stock pieces and made-to-order commissions",
+            "link": "/collections/all"
+          }
+        },
+        "message_2": {
+          "type": "message",
+          "settings": {
+            "text": "Design a piece around your room",
+            "link": "/pages/custom-furniture"
+          }
+        }
+      },
+      "block_order": ["message_1", "message_2"],
+      "settings": {
+        "color_scheme": "scheme-charcoal"
+      }
     },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu",
+        "transparent_on_home": true,
+        "cta_label": "Design your own",
+        "cta_link": "/pages/custom-furniture",
+        "mobile_primary_link": "/collections/all"
+      }
     }
   },
-  "order": [
-    "announcement",
-    "header"
-  ]
+  "order": ["announcement", "header"]
 }

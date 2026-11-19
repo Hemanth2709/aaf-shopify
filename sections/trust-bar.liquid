@@ -1,31 +1,96 @@
-<div class="trust section-spacing">
-  <ul class="trust__list">
-    {%- for block in section.blocks -%}
-      <li class="trust__item" {{ block.shopify_attributes }}>
-        <h3 class="heading heading--sm">{{ block.settings.title | escape }}</h3>
-        <p>{{ block.settings.text | escape }}</p>
-      </li>
-    {%- endfor -%}
-  </ul>
+{%- assign items = section.blocks | where: 'type', 'item' -%}
+
+<div class="assurance color-scheme {{ section.settings.color_scheme }} full-width {{ section.settings.spacing }}">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text,
+      align: 'center'
+    %}
+    <ul class="assurance__list assurance__list--{{ section.settings.style }}" role="list" style="--columns-desktop: {{ items.size | at_most: 4 | at_least: 1 }};">
+      {%- for block in items -%}
+        <li class="assurance__item" {{ block.shopify_attributes }} data-reveal style="--reveal-delay: {{ forloop.index0 | times: 0.06 }}s">
+          <span class="assurance__icon">{% render 'icon', name: block.settings.icon %}</span>
+          <div>
+            <h3 class="assurance__title">{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="assurance__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.link != blank and block.settings.link_label != blank -%}
+              <a class="assurance__link" href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
 </div>
 
 {% stylesheet %}
-  .trust__list {
+  .assurance__list {
     display: grid;
     gap: var(--space-md);
     margin: 0;
-    padding: var(--space-md) 0;
-    border-block: 1px solid var(--color-border);
-    list-style: none;
-    text-align: center;
+    padding: 0;
   }
-  .trust__item p {
+  .assurance__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .assurance__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-heading-accent);
+  }
+  .assurance__icon .icon {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .assurance__title {
+    font-family: var(--font-primary--family);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  .assurance__text {
+    margin-top: 0.3rem;
     font-size: var(--text-sm);
     color: var(--color-muted);
+    line-height: 1.55;
+  }
+  .assurance__link {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: var(--text-sm);
+  }
+  .assurance__list--bar {
+    padding-block: var(--space-md);
+    border-block: 1px solid var(--color-border);
   }
   @media (min-width: 750px) {
-    .trust__list {
-      grid-template-columns: repeat(3, 1fr);
+    .assurance__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-lg) var(--space-md);
+    }
+  }
+  @media (min-width: 990px) {
+    .assurance__list {
+      grid-template-columns: repeat(var(--columns-desktop), minmax(0, 1fr));
+    }
+    .assurance__list--cards .assurance__item {
+      grid-template-columns: 1fr;
+      padding: var(--space-lg) var(--space-md);
+      border: 1px solid var(--color-border);
     }
   }
 {% endstylesheet %}
@@ -33,52 +98,114 @@
 {% schema %}
 {
   "name": "t:general.trust_bar",
+  "class": "section-assurance",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "t:labels.style",
+      "options": [
+        { "value": "bar", "label": "t:options.assurance_style.bar" },
+        { "value": "cards", "label": "t:options.assurance_style.cards" },
+        { "value": "plain", "label": "t:options.assurance_style.plain" }
+      ],
+      "default": "cards"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "t:labels.spacing",
+      "options": [
+        { "value": "section-spacing", "label": "t:options.spacing.normal" },
+        { "value": "section-spacing--tight", "label": "t:options.spacing.tight" }
+      ],
+      "default": "section-spacing"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:labels.heading"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text"
+    }
+  ],
   "blocks": [
     {
       "type": "item",
       "name": "t:general.trust_item",
       "settings": [
         {
+          "type": "select",
+          "id": "icon",
+          "label": "t:labels.icon",
+          "options": [
+            { "value": "truck", "label": "t:options.icon.truck" },
+            { "value": "shield", "label": "t:options.icon.shield" },
+            { "value": "tool", "label": "t:options.icon.tool" },
+            { "value": "ruler", "label": "t:options.icon.ruler" },
+            { "value": "leaf", "label": "t:options.icon.leaf" },
+            { "value": "award", "label": "t:options.icon.award" },
+            { "value": "returns", "label": "t:options.icon.returns" },
+            { "value": "home", "label": "t:options.icon.home" },
+            { "value": "calendar", "label": "t:options.icon.calendar" },
+            { "value": "chat", "label": "t:options.icon.chat" },
+            { "value": "clock", "label": "t:options.icon.clock" },
+            { "value": "sofa", "label": "t:options.icon.sofa" }
+          ],
+          "default": "truck"
+        },
+        {
           "type": "text",
           "id": "title",
           "label": "t:labels.title",
-          "default": "Title"
+          "default": "Delivery and installation"
         },
         {
           "type": "text",
           "id": "text",
-          "label": "t:labels.text",
-          "default": "Short supporting line"
+          "label": "t:labels.text"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "t:labels.button_label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:labels.link"
         }
       ]
     }
   ],
-  "max_blocks": 4,
   "presets": [
     {
       "name": "t:general.trust_bar",
       "blocks": [
-        {
-          "type": "item",
-          "settings": {
-            "title": "Made by hand",
-            "text": "Built in our workshop"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "title": "White-glove delivery",
-            "text": "Delivered and installed"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "title": "Easy returns",
-            "text": "On ready-to-ship pieces"
-          }
-        }
+        { "type": "item" },
+        { "type": "item", "settings": { "icon": "shield", "title": "Quality checked" } },
+        { "type": "item", "settings": { "icon": "tool", "title": "Made in our workshop" } },
+        { "type": "item", "settings": { "icon": "chat", "title": "Design support" } }
       ]
     }
   ]

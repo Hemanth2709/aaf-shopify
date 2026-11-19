@@ -1,23 +1,78 @@
-<article class="page section-spacing">
-  <h1 class="heading heading--lg page__title">{{ page.title | escape }}</h1>
-  <div class="rte page__content">{{ page.content }}</div>
+<article class="page-content color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width page-content__inner page-content--{{ section.settings.width }}">
+    <header class="page-content__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 class="heading heading--xl page-content__title">{{ page.title | escape }}</h1>
+    </header>
+    <div class="rte page-content__body">{{ page.content }}</div>
+  </div>
 </article>
 
 {% stylesheet %}
-  .page {
-    display: block;
+  .page-content__inner {
+    display: grid;
+    gap: var(--space-lg);
   }
-  .page__title {
-    margin-bottom: var(--space-lg);
+  .page-content__header {
+    display: grid;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
   }
-  .page__content {
-    max-width: 48rem;
+  .page-content__title {
+    font-size: var(--heading-lg);
+  }
+  .page-content__body {
+    max-width: 46rem;
+    font-size: var(--text-md);
+  }
+  .page-content--narrow .page-content__body {
+    max-width: 40rem;
+  }
+  @media (min-width: 990px) {
+    .page-content--split {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-2xl);
+    }
+    .page-content--split .page-content__header {
+      border-bottom: 0;
+      align-content: start;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.page",
-  "settings": []
+  "class": "section-page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:labels.layout",
+      "options": [
+        { "value": "narrow", "label": "t:options.page_layout.narrow" },
+        { "value": "split", "label": "t:options.page_layout.split" }
+      ],
+      "default": "split"
+    }
+  ]
 }
 {% endschema %}

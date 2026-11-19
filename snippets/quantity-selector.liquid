@@ -1,72 +1,66 @@
 {% doc %}
-  Renders a quantity input with decrease and increase buttons. Button clicks
-  are handled by delegated listeners in sections/product.liquid.
+  Renders a quantity input with decrease and increase buttons. The buttons
+  are handled by a delegated listener in this snippet, so it works anywhere
+  (product form, cart page). Fires a change event on the input so forms can
+  react (the cart page auto-submits).
 
   @param {string} id - Id for the number input
   @param {number} [value] - Initial quantity, defaults to 1
   @param {string} [name] - Input name, defaults to quantity
   @param {number} [min] - Minimum value, defaults to 1
+  @param {number} [max] - Optional maximum value
+  @param {string} [label] - Accessible label, defaults to "Quantity"
 
   @example
   {% render 'quantity-selector', id: 'quantity-123' %}
-  {% render 'quantity-selector', id: 'line-1', name: 'updates[]', min: 0 %}
+  {% render 'quantity-selector', id: 'line-1', name: 'updates[]', min: 0, value: item.quantity %}
 {% enddoc %}
 
-{%- assign input_name = name | default: 'quantity' -%}
-{%- assign input_min = min | default: 1 -%}
+{%- liquid
+  assign input_name = name | default: 'quantity'
+  assign input_min = min | default: 1
+  assign input_value = value | default: 1
+  assign label_text = label
+  if label_text == blank
+    assign label_text = 'products.quantity.label' | t
+  endif
+-%}
 
-<div class="quantity">
-  <button type="button" class="quantity__button" data-quantity-change="-1">
+<div class="qty" data-qty>
+  <button type="button" class="qty__button" data-qty-step="-1">
     {% render 'icon', name: 'minus' %}
     <span class="visually-hidden">{{ 'products.quantity.decrease' | t }}</span>
   </button>
-  <label class="visually-hidden" for="{{ id }}">{{ 'products.quantity.label' | t }}</label>
+  <label class="visually-hidden" for="{{ id }}">{{ label_text | escape }}</label>
   <input
     id="{{ id }}"
-    class="quantity__input"
+    class="qty__input"
     type="number"
     name="{{ input_name }}"
+    value="{{ input_value }}"
     min="{{ input_min }}"
-    data-quantity-min="{{ input_min }}"
+    {% if max %}
+      max="{{ max }}"
+    {% endif %}
+    step="1"
     inputmode="numeric"
-    value="{{ value | default: 1 }}"
   >
-  <button type="button" class="quantity__button" data-quantity-change="1">
+  <button type="button" class="qty__button" data-qty-step="1">
     {% render 'icon', name: 'plus' %}
     <span class="visually-hidden">{{ 'products.quantity.increase' | t }}</span>
   </button>
 </div>
 
-{% stylesheet %}
-  .quantity {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-border);
-  }
-  .quantity__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    cursor: pointer;
-  }
-  .quantity__button:hover {
-    color: var(--color-accent);
-  }
-  .quantity__input {
-    width: 3rem;
-    padding: 0;
-    border: 0;
-    text-align: center;
-    appearance: textfield;
-  }
-  .quantity__input::-webkit-inner-spin-button,
-  .quantity__input::-webkit-outer-spin-button {
-    appearance: none;
-  }
-{% endstylesheet %}
+{% javascript %}
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-qty-step]');
+    if (!button) return;
+    const input = button.closest('[data-qty]').querySelector('input');
+    const min = Number(input.min || 0);
+    const max = input.max ? Number(input.max) : Infinity;
+    const next = Math.min(max, Math.max(min, (Number(input.value) || 0) + Number(button.dataset.qtyStep)));
+    if (next === Number(input.value)) return;
+    input.value = next;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+{% endjavascript %}

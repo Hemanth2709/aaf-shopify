@@ -1,0 +1,14 @@
+{
+  "name": "aaf-preview-harness",
+  "private": true,
+  "description": "Offline render of theme sections with LiquidJS, Shopify filter shims and mock data, for layout QA without a store connection.",
+  "scripts": {
+    "render": "node render.js",
+    "shots": "node shot.js home collection product enquiry cart custom-furniture landing-custom contact",
+    "flow": "node flow.js",
+    "overflow": "node overflow.js home collection product enquiry cart"
+  },
+  "dependencies": {
+    "liquidjs": "^10.0.0"
+  }
+}

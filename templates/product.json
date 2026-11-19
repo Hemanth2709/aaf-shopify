@@ -2,15 +2,64 @@
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "blocks": {
+        "delivery": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Delivery and returns",
+            "content": "<p>Placeholder: add delivery areas, delivery timelines, installation and return terms, or select a page with this content.</p>"
+          }
+        }
+      },
+      "block_order": ["delivery"],
+      "settings": {
+        "show_vendor": false,
+        "show_dynamic_checkout": true,
+        "show_customise": true
+      }
+    },
+    "complementary": {
+      "type": "product-recommendations",
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "intent": "complementary",
+        "eyebrow": "Complete the room",
+        "heading": "Pairs well <em>with</em>",
+        "limit": 4
+      }
     },
     "recommendations": {
       "type": "product-recommendations",
-      "settings": {}
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "intent": "related",
+        "eyebrow": "You may also like",
+        "heading": "Pieces that <em>belong together</em>",
+        "limit": 4
+      }
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": { "type": "item", "settings": { "icon": "truck", "title": "Delivery and installation" } },
+        "a2": { "type": "item", "settings": { "icon": "shield", "title": "Quality assurance" } },
+        "a3": { "type": "item", "settings": { "icon": "chat", "title": "Design support" } },
+        "a4": { "type": "item", "settings": { "icon": "ruler", "title": "Made-to-measure available" } }
+      },
+      "block_order": ["a1", "a2", "a3", "a4"],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "bar",
+        "spacing": "section-spacing--tight"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {
+        "heading": "Need help <em>choosing</em>?",
+        "text": "Send us your room size or a photo of the space and we will help you pick the right size, finish and fabric."
+      }
     }
   },
-  "order": [
-    "main",
-    "recommendations"
-  ]
+  "order": ["main", "complementary", "recommendations", "assurance", "consultation"]
 }

@@ -1,0 +1,156 @@
+{%- assign logo = section.settings.logo | default: settings.logo -%}
+
+<header class="landing-header" data-site-header>
+  <div class="landing-header__inner page-width">
+    <a class="landing-header__logo" href="{{ routes.root_url }}">
+      {%- if logo != blank -%}
+        {%- assign logo_height = section.settings.logo_width | divided_by: logo.aspect_ratio | round -%}
+        {{ logo | image_url: width: 500 | image_tag: widths: '150, 300, 500', sizes: '180px', width: section.settings.logo_width, height: logo_height, alt: shop.name, loading: 'eager' }}
+      {%- else -%}
+        <span class="site-header__wordmark">{{ shop.name | escape }}</span>
+      {%- endif -%}
+    </a>
+    {%- if section.settings.tagline != blank -%}
+      <p class="landing-header__tagline">{{ section.settings.tagline | escape }}</p>
+    {%- endif -%}
+    <div class="landing-header__actions">
+      {%- if settings.contact_phone != blank -%}
+        <a class="landing-header__phone" href="tel:{{ settings.contact_phone | remove: ' ' }}" data-track="contact" data-track-params='{"method":"phone","location":"landing_header"}'>
+          {% render 'icon', name: 'phone' %}
+          <span>{{ settings.contact_phone | escape }}</span>
+        </a>
+      {%- endif -%}
+      {%- if settings.whatsapp_number != blank -%}
+        <a class="button button--whatsapp landing-header__wa" href="{% render 'whatsapp-url' %}" target="_blank" rel="noopener" data-track="contact" data-track-params='{"method":"whatsapp","location":"landing_header"}'>
+          {% render 'icon', name: 'whatsapp' %}
+          <span>{{ 'whatsapp.short' | t }}</span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.show_cart -%}
+        <a class="icon-button site-header__cart" href="{{ routes.cart_url }}" data-cart-open>
+          {% render 'icon', name: 'cart' %}
+          <span class="site-header__count" data-cart-count aria-hidden="true" {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+          <span class="visually-hidden" data-cart-count-label data-template="{{ 'header.cart_count' | t: count: '[count]' | escape }}">{{ 'header.cart_count' | t: count: cart.item_count }}</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+{% stylesheet %}
+  .shopify-section:has(> .landing-header) {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .landing-header {
+    grid-column: 1 / -1;
+    background-color: var(--color-ivory);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .landing-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 4rem;
+  }
+  .landing-header__logo {
+    text-decoration: none;
+  }
+  .landing-header__logo img {
+    max-width: 150px;
+    height: auto;
+  }
+  .landing-header .site-header__wordmark {
+    font-size: 1.1rem;
+  }
+  .landing-header__tagline {
+    display: none;
+    font-size: var(--text-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .landing-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  .landing-header__phone {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .landing-header__wa {
+    min-height: 2.6rem;
+    padding: 0.55rem 1rem;
+  }
+  .landing-header .site-header__count {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.2rem;
+    min-width: 1.1rem;
+    padding-inline: 0.25rem;
+    border-radius: 1rem;
+    background-color: var(--color-accent);
+    color: var(--color-ivory);
+    font-size: 0.65rem;
+    line-height: 1.1rem;
+    text-align: center;
+  }
+  .landing-header .site-header__count[hidden] {
+    display: none;
+  }
+  @media (min-width: 750px) {
+    .landing-header__phone {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 990px) {
+    .landing-header__tagline {
+      display: block;
+      padding-left: var(--space-sm);
+      border-left: 1px solid var(--color-border);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.landing_header",
+  "class": "section-landing-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:labels.logo",
+      "info": "t:info.logo_fallback"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "label": "t:labels.logo_width",
+      "default": 130
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "t:labels.tagline",
+      "default": "Ready stock and made-to-order furniture"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "t:labels.show_cart",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

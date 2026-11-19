@@ -1,20 +1,44 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {}
+      "blocks": {
+        "promo": {
+          "type": "promo",
+          "settings": {
+            "position": 5,
+            "color_scheme": "scheme-sand",
+            "eyebrow": "Made to order",
+            "heading": "Not quite the right size? <em>We can make it.</em>",
+            "text": "Send us your dimensions and material choices for a personal quotation.",
+            "button_label": "Start a custom design",
+            "link": "/pages/custom-enquiry"
+          }
+        }
+      },
+      "block_order": ["promo"],
+      "settings": {
+        "per_page": 24,
+        "columns_desktop": 3,
+        "columns_mobile": "2",
+        "enable_filtering": true,
+        "enable_sorting": true
+      }
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": { "type": "item", "settings": { "icon": "truck", "title": "Delivery and installation" } },
+        "a2": { "type": "item", "settings": { "icon": "shield", "title": "Quality assurance" } },
+        "a3": { "type": "item", "settings": { "icon": "chat", "title": "Design support" } }
+      },
+      "block_order": ["a1", "a2", "a3"],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "style": "bar",
+        "spacing": "section-spacing--tight"
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main", "assurance"]
 }

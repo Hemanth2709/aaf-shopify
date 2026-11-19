@@ -1,0 +1,153 @@
+{% doc %}
+  Global behaviour shared by every page: scroll reveal, the cart API used by
+  product forms and the cart drawer, and the analytics helper
+  window.AAF.track(), which forwards events to window.dataLayer (when enabled
+  in theme settings) and to Shopify customer events via
+  Shopify.analytics.publish. Configuration is read from window.AAFConfig,
+  which layout/theme.liquid prints.
+
+  @example
+  {% render 'theme-scripts' %}
+{% enddoc %}
+
+{% javascript %}
+  (() => {
+    const config = window.AAFConfig || { routes: {} };
+    const AAF = (window.AAF = window.AAF || {});
+
+    AAF.track = (name, params = {}) => {
+      const payload = Object.assign({ page_type: config.pageType }, params);
+      if (config.dataLayer) {
+        window.dataLayer = window.dataLayer || [];
+        if (payload.ecommerce) window.dataLayer.push({ ecommerce: null });
+        window.dataLayer.push(Object.assign({ event: name }, payload));
+      }
+      try {
+        if (window.Shopify && window.Shopify.analytics && typeof window.Shopify.analytics.publish === 'function') {
+          window.Shopify.analytics.publish('aaf_' + name, payload);
+        }
+      } catch (error) {}
+      document.dispatchEvent(new CustomEvent('aaf:track', { detail: { name, params: payload } }));
+    };
+
+    document.addEventListener('click', (event) => {
+      const el = event.target.closest('[data-track]');
+      if (!el) return;
+      let params = {};
+      try {
+        params = JSON.parse(el.dataset.trackParams || '{}');
+      } catch (error) {}
+      AAF.track(el.dataset.track, params);
+    });
+
+    const reveal = () => {
+      const root = document.documentElement;
+      if (!root.classList.contains('js-motion')) return;
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'));
+        return;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          });
+        },
+        { rootMargin: '0px 0px -6% 0px' }
+      );
+      const observe = (scope) => scope.querySelectorAll('[data-reveal]:not(.is-revealed)').forEach((el) => observer.observe(el));
+      observe(document);
+      document.addEventListener('shopify:section:load', (event) => observe(event.target));
+    };
+    reveal();
+
+    const drawerSectionId = 'cart-drawer';
+
+    AAF.cart = {
+      hasDrawer() {
+        return config.cartType === 'drawer' && !!document.getElementById('cart-drawer');
+      },
+      async request(url, body, isJson) {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: Object.assign(
+            { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            isJson ? { 'Content-Type': 'application/json' } : {}
+          ),
+          body,
+        });
+        const data = await response.json();
+        if (!response.ok || data.status) {
+          const error = new Error(data.description || data.message || 'Cart error');
+          error.data = data;
+          throw error;
+        }
+        return data;
+      },
+      async add(formData) {
+        if (this.hasDrawer()) {
+          formData.append('sections', drawerSectionId);
+          formData.append('sections_url', window.location.pathname);
+        }
+        const data = await this.request(config.routes.cartAdd + '.js', formData, false);
+        if (data.sections) this.render(data.sections);
+        return data;
+      },
+      async change(line, quantity) {
+        const body = { line, quantity };
+        if (this.hasDrawer()) {
+          body.sections = [drawerSectionId];
+          body.sections_url = window.location.pathname;
+        }
+        const data = await this.request(config.routes.cartChange + '.js', JSON.stringify(body), true);
+        if (data.sections) this.render(data.sections);
+        return data;
+      },
+      render(sections) {
+        const html = sections && sections[drawerSectionId];
+        if (!html) return;
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const next = doc.querySelector('[data-cart-drawer-content]');
+        const current = document.querySelector('[data-cart-drawer-content]');
+        if (next && current) current.replaceWith(next);
+        const count = next ? next.dataset.cartCount : null;
+        if (count !== null && count !== undefined) this.updateCount(Number(count));
+      },
+      updateCount(count) {
+        document.querySelectorAll('[data-cart-count]').forEach((el) => {
+          el.textContent = count;
+          el.hidden = count === 0;
+        });
+        document.querySelectorAll('[data-cart-count-label]').forEach((el) => {
+          el.textContent = (el.dataset.template || '').replace('[count]', count);
+        });
+      },
+      open(trigger) {
+        const drawer = document.getElementById('cart-drawer');
+        if (!drawer) {
+          window.location.href = config.routes.cart;
+          return;
+        }
+        if (!drawer.open) drawer.showModal();
+        AAF.cart.lastTrigger = trigger || document.activeElement;
+        const totalEl = drawer.querySelector('[data-cart-drawer-content]');
+        AAF.track('view_cart', {
+          ecommerce: {
+            currency: config.currency,
+            value: totalEl ? Number(totalEl.dataset.cartTotal || 0) / 100 : 0,
+          },
+        });
+      },
+    };
+
+    document.addEventListener('click', (event) => {
+      const opener = event.target.closest('[data-cart-open]');
+      if (opener && AAF.cart.hasDrawer()) {
+        event.preventDefault();
+        AAF.cart.open(opener);
+      }
+    });
+  })();
+{% endjavascript %}

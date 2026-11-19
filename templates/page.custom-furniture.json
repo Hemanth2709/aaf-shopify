@@ -2,61 +2,329 @@
   "sections": {
     "hero": {
       "type": "hero",
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "eyebrow": "Bespoke furniture",
-        "heading": "Designed with you, made for your home",
-        "text": "Commission a one-of-a-kind piece in the timber, upholstery and dimensions you choose.",
-        "primary_label": "Start your enquiry",
-        "secondary_label": "",
-        "height": 70
+        "heading": "Designed with you, <em>made for your home</em>",
+        "text": "Commission a piece in the size, timber, fabric and finish you choose. Tell us about your room and we will design around it.",
+        "primary_label": "Start your design",
+        "primary_link": "/pages/custom-enquiry",
+        "secondary_label": "Talk to a designer",
+        "secondary_link": "/pages/contact",
+        "height": "large",
+        "content_position": "bottom",
+        "overlay_opacity": 30
       }
     },
     "categories": {
       "type": "custom-categories",
-      "settings": {}
-    },
-    "process": {
-      "type": "process-steps",
       "blocks": {
-        "one": {
-          "type": "step",
+        "c1": {
+          "type": "category",
           "settings": {
-            "title": "Share your brief",
-            "text": "Tell us what you need, the space it is for and any references."
+            "title": "Sofas"
           }
         },
-        "two": {
-          "type": "step",
+        "c2": {
+          "type": "category",
           "settings": {
-            "title": "Receive a quotation",
-            "text": "We reply with a proposal, timeline and price."
+            "title": "Dining tables"
           }
         },
-        "three": {
-          "type": "step",
+        "c3": {
+          "type": "category",
           "settings": {
-            "title": "We craft it",
-            "text": "Your piece is built by hand in our workshop."
+            "title": "Beds"
           }
         },
-        "four": {
-          "type": "step",
+        "c4": {
+          "type": "category",
           "settings": {
-            "title": "Delivery",
-            "text": "White-glove delivery and installation."
+            "title": "Wardrobes and storage"
           }
         }
       },
       "block_order": [
-        "one",
-        "two",
-        "three",
-        "four"
+        "c1",
+        "c2",
+        "c3",
+        "c4"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "What we make",
+        "heading": "Choose a piece <em>to begin</em>",
+        "enquiry_url": "/pages/custom-enquiry"
+      }
+    },
+    "process": {
+      "type": "process-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Share your brief",
+            "text": "Choose a category, add dimensions, materials and reference images."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Design and quotation",
+            "text": "We review your brief and send a design direction and itemised quotation."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Made in our workshop",
+            "text": "Once approved, your piece is made to your specification."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Delivered to your home",
+            "text": "Placeholder: confirm delivery and installation process."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "eyebrow": "How it works",
+        "heading": "From brief to <em>your home</em>",
+        "button_label": "Start your design",
+        "button_link": "/pages/custom-enquiry"
+      }
+    },
+    "fit": {
+      "type": "image-with-text",
+      "blocks": {
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Made to your measurements",
+            "text": "Width, depth and height set around your room, not a catalogue."
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Your material library",
+            "text": "Timbers, fabrics, leathers and finishes, sampled before you commit."
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "title": "One point of contact",
+            "text": "A designer who follows your piece from brief to delivery."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "layout": "image-right",
+        "eyebrow": "Room-fit design",
+        "heading": "A piece that <em>fits exactly</em>",
+        "text": "<p>Bring your floor plan, a photo of the space or a sketch. We will help you get the proportions right.</p>",
+        "button_label": "Start your design",
+        "button_link": "/pages/custom-enquiry",
+        "placeholder_label": "Room-fit detail, 1800 x 2250"
+      }
     },
     "materials": {
       "type": "material-showcase",
+      "blocks": {
+        "m1": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Walnut",
+            "color": "#5a3e2b"
+          }
+        },
+        "m2": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Oak",
+            "color": "#b8946a"
+          }
+        },
+        "m3": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Teak",
+            "color": "#8a5a32"
+          }
+        },
+        "m4": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Ash",
+            "color": "#d3bf9b"
+          }
+        },
+        "m5": {
+          "type": "material",
+          "settings": {
+            "category": "Stone",
+            "name": "Marble",
+            "color": "#e7e2da"
+          }
+        },
+        "m6": {
+          "type": "material",
+          "settings": {
+            "category": "Metal",
+            "name": "Brushed brass",
+            "color": "#b08d57"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5",
+        "m6"
+      ],
+      "settings": {
+        "color_scheme": "scheme-sand",
+        "eyebrow": "Materials",
+        "heading": "Choose your <em>materials</em>",
+        "button_label": "Start your design",
+        "button_link": "/pages/custom-enquiry"
+      }
+    },
+    "compare": {
+      "type": "journey-split",
+      "blocks": {
+        "ready": {
+          "type": "panel",
+          "settings": {
+            "journey": "ready_stock",
+            "label": "Need it sooner?",
+            "title": "Shop <em>ready stock</em>",
+            "text": "Finished pieces available to order now, with live stock and pricing.",
+            "points": "In stock now\nPrices shown online\nSecure checkout",
+            "button_label": "Shop ready stock",
+            "link": "/collections/all"
+          }
+        },
+        "custom": {
+          "type": "panel",
+          "settings": {
+            "journey": "custom",
+            "label": "Made to order",
+            "title": "Design <em>your own</em>",
+            "text": "Your size, your materials, your finish. Quoted personally.",
+            "points": "Custom dimensions\nMaterial and fabric choice\nPersonal quotation",
+            "button_label": "Start your design",
+            "link": "/pages/custom-enquiry"
+          }
+        }
+      },
+      "block_order": [
+        "ready",
+        "custom"
+      ],
+      "settings": {
+        "eyebrow": "Two ways to furnish",
+        "heading": "Ready now, or <em>made for you</em>"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "heading": "Commissioned <em>by our clients</em>"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does a custom piece take?",
+            "answer": "<p>Placeholder: confirm typical lead times by category. We confirm the exact timeline with your quotation.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I send my own design or a photo?",
+            "answer": "<p>Yes. Add links in the enquiry form, or send images on WhatsApp after submitting, quoting your enquiry reference.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you visit to measure?",
+            "answer": "<p>Placeholder: confirm whether home measurement visits are offered, and in which cities.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How is pricing calculated?",
+            "answer": "<p>Pricing depends on size, materials, finish and upholstery. You receive an itemised quotation before anything is made.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Is there a deposit?",
+            "answer": "<p>Placeholder: confirm deposit and payment terms for made-to-order work.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
       "settings": {}
     }
   },
@@ -64,6 +332,11 @@
     "hero",
     "categories",
     "process",
-    "materials"
+    "fit",
+    "materials",
+    "compare",
+    "testimonials",
+    "faq",
+    "consultation"
   ]
 }

@@ -51,7 +51,23 @@
     "faq_item": "Question",
     "contact_form": "Contact form",
     "trust_bar": "Trust bar",
-    "trust_item": "Item"
+    "trust_item": "Item",
+    "category_grid": "Category grid",
+    "category": "Category",
+    "consultation_cta": "Consultation CTA",
+    "journey": "Journey",
+    "point": "Point",
+    "journey_split": "Journey split",
+    "material": "Material",
+    "message": "Message",
+    "cart_drawer": "Cart drawer",
+    "menu": "Menu",
+    "contact": "Contact",
+    "mega_promo": "Mega menu promo",
+    "grid_promo": "Grid promo",
+    "highlight": "Highlight",
+    "collapsible": "Collapsible",
+    "landing_header": "Landing header"
   },
   "labels": {
     "accent": "Accent",
@@ -113,7 +129,67 @@
     "enquiry_url": "Enquiry page link",
     "title": "Title",
     "question": "Question",
-    "answer": "Answer"
+    "answer": "Answer",
+    "color_scheme": "Color scheme",
+    "mobile_layout": "Mobile layout",
+    "image_ratio": "Image ratio",
+    "show_count": "Show count",
+    "title_override": "Title override",
+    "image_override": "Image override",
+    "link_override": "Link override",
+    "whatsapp_message": "WhatsApp message",
+    "mobile_image": "Mobile image",
+    "video": "Video",
+    "content_position": "Content position",
+    "detail_image": "Detail image",
+    "placeholder_label": "Placeholder label",
+    "journey": "Journey",
+    "points": "Points",
+    "material_source": "Material source",
+    "material_category": "Material category",
+    "swatch_image": "Swatch image",
+    "swatch_colour": "Swatch colour",
+    "style": "Style",
+    "spacing": "Spacing",
+    "icon": "Icon",
+    "interval": "Interval",
+    "ready_stock_link": "Ready-stock link",
+    "logo_light": "Logo light",
+    "statement": "Statement",
+    "transparent_on_home": "Transparent on home",
+    "journey_links": "Journey links",
+    "cta_label": "CTA label",
+    "cta_link": "CTA link",
+    "mobile_primary_link": "Mobile primary link",
+    "search_menu": "Search menu",
+    "menu_item": "Menu item",
+    "testimonial_detail": "Testimonial detail",
+    "rating": "Rating",
+    "show_cart_note": "Show cart note",
+    "show_additional_buttons": "Show additional buttons",
+    "show_banner_image": "Show banner image",
+    "columns_mobile": "Columns mobile",
+    "position_after": "Position after",
+    "intent": "Intent",
+    "product": "Product",
+    "show_customise": "Show customise",
+    "customise_link": "Customise link",
+    "page_content": "Page content",
+    "faq_structured_data": "FAQ structured data",
+    "anchor": "Anchor",
+    "show_cart": "Show cart",
+    "note": "Note",
+    "heading_tag": "Heading tag",
+    "default_unit": "Default unit",
+    "finishes": "Finishes",
+    "colours": "Colours",
+    "upholstery_options": "Upholstery options",
+    "budgets": "Budgets",
+    "timelines": "Timelines",
+    "images_message": "Images message",
+    "success_text": "Success text",
+    "privacy_note": "Privacy note",
+    "types": "Types"
   },
   "options": {
     "alignment": {
@@ -141,6 +217,101 @@
     "image_position": {
       "left": "Image left",
       "right": "Image right"
+    },
+    "scheme": {
+      "ivory": "Ivory",
+      "cream": "Cream",
+      "sand": "Sand",
+      "charcoal": "Charcoal",
+      "walnut": "Walnut"
+    },
+    "mobile_layout": {
+      "grid": "Grid",
+      "scroll": "Scroll"
+    },
+    "ratio": {
+      "portrait": "Portrait",
+      "square": "Square",
+      "tall": "Tall",
+      "landscape": "Landscape"
+    },
+    "height": {
+      "full": "Full",
+      "large": "Large",
+      "medium": "Medium"
+    },
+    "position": {
+      "bottom_left": "Bottom left",
+      "center": "Center"
+    },
+    "journey": {
+      "ready_stock": "Ready stock",
+      "custom": "Custom"
+    },
+    "source": {
+      "blocks": "Blocks",
+      "metaobjects": "Metaobjects"
+    },
+    "assurance_style": {
+      "bar": "Bar",
+      "cards": "Cards",
+      "plain": "Plain"
+    },
+    "spacing": {
+      "normal": "Normal",
+      "tight": "Tight"
+    },
+    "icon": {
+      "truck": "Truck",
+      "shield": "Shield",
+      "tool": "Tool",
+      "ruler": "Ruler",
+      "leaf": "Leaf",
+      "award": "Award",
+      "returns": "Returns",
+      "home": "Home",
+      "calendar": "Calendar",
+      "chat": "Chat",
+      "clock": "Clock",
+      "sofa": "Sofa",
+      "check": "Check"
+    },
+    "intent": {
+      "related": "Related",
+      "complementary": "Complementary"
+    },
+    "page_layout": {
+      "narrow": "Narrow",
+      "split": "Split"
+    },
+    "heading_tag": {
+      "h1": "H1",
+      "h2": "H2"
+    },
+    "unit": {
+      "cm": "Cm",
+      "in": "In"
     }
+  },
+  "info": {
+    "consult_link": "Defaults to the consultation link in theme settings.",
+    "defaults_to_collection": "Defaults to the selected collection.",
+    "hero_image": "Recommended 3200 x 1800 px landscape. Add a separate portrait image for mobile.",
+    "italic_heading": "Use italic for a highlighted word or phrase.",
+    "one_per_line": "One item per line.",
+    "material_source": "Metaobjects use the 'material' definition (title, swatch, description).",
+    "logo_fallback": "Falls back to the logo in theme settings > Brand and contact.",
+    "menu_item": "Exact title of the top-level menu item this promo appears under.",
+    "real_reviews_only": "Only publish genuine customer reviews.",
+    "filters": "Filters",
+    "intent": "Intent",
+    "recommendation_product": "Recommendation product",
+    "customise_link": "Customise link",
+    "page_content": "Page content",
+    "enquiry_url": "Page that uses the custom enquiry template, for example /pages/custom-enquiry.",
+    "category_match": "Category match",
+    "anchor": "Anchor",
+    "heading_tag": "Heading tag",
+    "budgets": "Budgets"
   }
 }

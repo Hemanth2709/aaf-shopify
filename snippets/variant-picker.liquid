@@ -1,6 +1,8 @@
 {% doc %}
-  Renders radio inputs for each product option. Selection changes are handled
-  by the product-info custom element in sections/product.liquid.
+  Renders radio inputs for each product option. Options whose values have
+  swatches (Shopify category metafields or option swatches) render as colour
+  or image swatches; all others render as text pills. Selection changes are
+  handled by the product page script in sections/product.liquid.
 
   @param {product} product - The product whose options are rendered
   @param {string} section_id - Unique id used to namespace input ids
@@ -10,15 +12,24 @@
 {% enddoc %}
 
 {%- unless product.has_only_default_variant -%}
-  <div class="variant-picker">
+  <div class="variant-picker" data-variant-picker>
     {%- for option in product.options_with_values -%}
+      {%- assign first_value = option.values | first -%}
+      {%- assign is_swatch = false -%}
+      {%- if first_value.swatch -%}
+        {%- assign is_swatch = true -%}
+      {%- endif -%}
       <fieldset class="variant-picker__option">
-        <legend class="eyebrow">{{ option.name | escape }}</legend>
-        <div class="variant-picker__values">
+        <legend class="variant-picker__legend">
+          <span class="eyebrow">{{ option.name | escape }}</span>
+          <span class="variant-picker__selected">{{ option.selected_value | escape }}</span>
+        </legend>
+        <div class="variant-picker__values{% if is_swatch %} variant-picker__values--swatch{% endif %}">
           {%- for value in option.values -%}
+            {%- assign input_id = section_id | append: '-' | append: option.position | append: '-' | append: forloop.index0 -%}
             <input
               type="radio"
-              id="{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}"
+              id="{{ input_id }}"
               name="{{ section_id }}-{{ option.position }}"
               value="{{ value | escape }}"
               data-option-value-id="{{ value.id }}"
@@ -29,7 +40,23 @@
                 class="is-unavailable"
               {% endunless %}
             >
-            <label for="{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}">{{ value | escape }}</label>
+            <label for="{{ input_id }}" title="{{ value | escape }}">
+              {%- if is_swatch -%}
+                {%- if value.swatch.image -%}
+                  <span class="variant-swatch" style="background-image: url({{ value.swatch.image | image_url: width: 120 }});"></span>
+                {%- elsif value.swatch.color -%}
+                  <span class="variant-swatch" style="background-color: {{ value.swatch.color }};"></span>
+                {%- else -%}
+                  <span class="variant-swatch"></span>
+                {%- endif -%}
+                <span class="visually-hidden">{{ value | escape }}</span>
+              {%- else -%}
+                {{- value | escape -}}
+              {%- endif -%}
+              {%- unless value.available -%}
+                <span class="visually-hidden">{{ 'products.availability.unavailable' | t }}</span>
+              {%- endunless -%}
+            </label>
           {%- endfor -%}
         </div>
       </fieldset>
@@ -46,12 +73,22 @@
     margin: 0;
     padding: 0;
     border: 0;
+    min-width: 0;
+  }
+  .variant-picker__legend {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0;
+    margin-bottom: 0.75rem;
+  }
+  .variant-picker__selected {
+    font-size: var(--text-sm);
   }
   .variant-picker__values {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
+    gap: 0.5rem;
   }
   .variant-picker__values input {
     position: absolute;
@@ -59,11 +96,17 @@
     pointer-events: none;
   }
   .variant-picker__values label {
-    min-width: 3rem;
-    padding: 0.6rem 1.1rem;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.25rem;
+    min-height: 2.9rem;
+    margin: 0;
+    padding: 0.55rem 1.1rem;
     border: 1px solid var(--color-border);
     font-size: var(--text-sm);
-    text-align: center;
+    font-weight: 400;
     cursor: pointer;
     transition:
       border-color var(--motion-duration) var(--ease),
@@ -73,9 +116,9 @@
     border-color: var(--color-foreground);
   }
   .variant-picker__values input:checked + label {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
-    color: var(--color-accent-contrast);
+    border-color: var(--color-charcoal);
+    background-color: var(--color-charcoal);
+    color: var(--color-ivory);
   }
   .variant-picker__values input:focus-visible + label {
     outline: 2px solid var(--color-accent);
@@ -83,6 +126,25 @@
   }
   .variant-picker__values input.is-unavailable + label {
     color: var(--color-muted);
-    text-decoration: line-through;
+    background-image: linear-gradient(to bottom right, transparent calc(50% - 0.5px), var(--color-border) 50%, transparent calc(50% + 0.5px));
+  }
+  .variant-picker__values--swatch label {
+    min-width: 0;
+    min-height: 0;
+    padding: 3px;
+    border-radius: 50%;
+  }
+  .variant-picker__values--swatch input:checked + label {
+    background-color: transparent;
+    border-color: var(--color-charcoal);
+  }
+  .variant-swatch {
+    display: block;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: var(--color-sand);
+    background-size: cover;
+    background-position: center;
   }
 {% endstylesheet %}

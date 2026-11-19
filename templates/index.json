@@ -2,115 +2,227 @@
   "sections": {
     "hero": {
       "type": "hero",
-      "settings": {}
+      "blocks": {
+        "journey_ready": {
+          "type": "journey",
+          "settings": {
+            "title": "Ready stock",
+            "text": "In stock, priced and ready to deliver",
+            "link": "/collections/all"
+          }
+        },
+        "journey_custom": {
+          "type": "journey",
+          "settings": {
+            "title": "Made to order",
+            "text": "Designed to your room, materials and size",
+            "link": "/pages/custom-furniture"
+          }
+        },
+        "journey_consult": {
+          "type": "journey",
+          "settings": {
+            "title": "Design consultation",
+            "text": "Plan your space with our team",
+            "link": "/pages/contact"
+          }
+        }
+      },
+      "block_order": ["journey_ready", "journey_custom", "journey_consult"],
+      "settings": {
+        "eyebrow": "Furniture, considered",
+        "heading": "Rooms that feel <em>made for you</em>",
+        "text": "Shop ready-stock pieces for your home now, or design a piece around your room, your materials and your measurements.",
+        "primary_label": "Explore ready stock",
+        "primary_link": "/collections/all",
+        "secondary_label": "Design your furniture",
+        "secondary_link": "/pages/custom-furniture",
+        "height": "full",
+        "content_position": "bottom",
+        "overlay_opacity": 25
+      }
     },
-    "collections": {
+    "categories": {
+      "type": "category-grid",
+      "blocks": {
+        "c1": { "type": "category", "settings": { "title": "Sofas and seating" } },
+        "c2": { "type": "category", "settings": { "title": "Dining" } },
+        "c3": { "type": "category", "settings": { "title": "Bedroom" } },
+        "c4": { "type": "category", "settings": { "title": "Storage" } },
+        "c5": { "type": "category", "settings": { "title": "Tables" } },
+        "c6": { "type": "category", "settings": { "title": "Lighting and decor" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4", "c5", "c6"],
+      "settings": {
+        "eyebrow": "Shop by category",
+        "heading": "Every room, <em>considered</em>",
+        "link_label": "All collections",
+        "link": "/collections",
+        "columns": 6,
+        "mobile_layout": "mobile-scroll",
+        "image_ratio": "ratio-portrait",
+        "show_count": true
+      }
+    },
+    "ready_stock": {
+      "type": "featured-products",
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "eyebrow": "Ready stock",
+        "heading": "In stock and <em>ready to deliver</em>",
+        "text": "Prices, finishes and availability come straight from our inventory.",
+        "product_count": 8,
+        "columns": 4,
+        "link_label": "Shop all ready stock",
+        "link": "/collections/all"
+      }
+    },
+    "bespoke": {
+      "type": "image-with-text",
+      "blocks": {
+        "p1": { "type": "point", "settings": { "title": "Share your brief", "text": "Category, room size, dimensions and reference images." } },
+        "p2": { "type": "point", "settings": { "title": "Choose materials", "text": "Timbers, fabrics, finishes and colours from our library." } },
+        "p3": { "type": "point", "settings": { "title": "Receive your quotation", "text": "We review every detail and come back with a design and price." } }
+      },
+      "block_order": ["p1", "p2", "p3"],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "layout": "image-left",
+        "image_ratio": "ratio-portrait",
+        "placeholder_label": "Bespoke piece in a styled room, 1800 x 2250",
+        "eyebrow": "Bespoke furniture",
+        "heading": "Designed with you, <em>built for your room</em>",
+        "text": "<p>When the right piece does not exist yet, we make it. Tell us the space, the size and the feel you are after, and we will design it around you.</p>",
+        "button_label": "Start your design",
+        "button_link": "/pages/custom-enquiry",
+        "secondary_label": "How it works",
+        "secondary_link": "/pages/custom-furniture"
+      }
+    },
+    "materials": {
+      "type": "material-showcase",
+      "blocks": {
+        "m1": { "type": "material", "settings": { "category": "Timber", "name": "Walnut", "color": "#5a3e2b" } },
+        "m2": { "type": "material", "settings": { "category": "Timber", "name": "Oak", "color": "#b8946a" } },
+        "m3": { "type": "material", "settings": { "category": "Timber", "name": "Teak", "color": "#8a5a32" } },
+        "m4": { "type": "material", "settings": { "category": "Upholstery", "name": "Bouclé", "color": "#e6dccb" } },
+        "m5": { "type": "material", "settings": { "category": "Upholstery", "name": "Linen", "color": "#cbbfa9" } },
+        "m6": { "type": "material", "settings": { "category": "Upholstery", "name": "Leather", "color": "#6e4a33" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "source": "blocks",
+        "eyebrow": "Materials and craftsmanship",
+        "heading": "Honest materials, <em>finished by hand</em>",
+        "text": "<p>Explore the timbers, fabrics and finishes we work with. Every made-to-order piece can be specified in any of them.</p>",
+        "button_label": "Explore materials",
+        "button_link": "/pages/materials"
+      }
+    },
+    "curated": {
       "type": "featured-collections",
-      "settings": {}
+      "blocks": {
+        "k1": { "type": "collection", "settings": { "label": "Collection", "title": "The living room edit", "text": "Deep seating, low tables and quiet textures." } },
+        "k2": { "type": "collection", "settings": { "label": "Collection", "title": "Dining, together", "text": "Tables and chairs made for long evenings." } },
+        "k3": { "type": "collection", "settings": { "label": "Collection", "title": "Quiet bedrooms", "text": "Beds, side tables and storage in natural finishes." } }
+      },
+      "block_order": ["k1", "k2", "k3"],
+      "settings": {
+        "eyebrow": "Curated collections",
+        "heading": "Edited for <em>the way you live</em>",
+        "link_label": "All collections",
+        "link": "/collections"
+      }
     },
     "bestsellers": {
       "type": "featured-products",
-      "settings": {}
-    },
-    "custom": {
-      "type": "image-with-text",
       "settings": {
-        "layout": "image-right",
-        "eyebrow": "Bespoke",
-        "heading": "Designed with you, built for you",
-        "text": "<p>Choose the timber, the upholstery and the dimensions. Our makers build each piece by hand to your brief.</p>",
-        "button_label": "Start your commission"
-      }
-    },
-    "craft": {
-      "type": "image-with-text",
-      "settings": {
-        "layout": "image-left",
-        "eyebrow": "Craftsmanship",
-        "heading": "Solid timber, honest joinery",
-        "text": "<p>Every piece is made from responsibly sourced hardwood and finished by hand.</p>",
-        "button_label": "Our craft"
+        "color_scheme": "scheme-ivory",
+        "eyebrow": "Best sellers",
+        "heading": "Most <em>loved</em> pieces",
+        "product_count": 4,
+        "columns": 4,
+        "link_label": "View all",
+        "link": "/collections/all"
       }
     },
     "story": {
       "type": "image-with-text",
       "settings": {
+        "color_scheme": "scheme-charcoal",
         "layout": "image-right",
+        "image_ratio": "ratio-landscape",
+        "placeholder_label": "Workshop or founders, 1800 x 1200",
         "eyebrow": "Our story",
-        "heading": "Furniture with a point of view",
-        "text": "<p>Placeholder: tell the brand story here.</p>",
-        "button_label": "About us"
+        "heading": "A workshop with <em>a point of view</em>",
+        "text": "<p>Placeholder: tell the brand story here. Who makes the furniture, where, and why it is made the way it is.</p>",
+        "button_label": "About us",
+        "button_link": "/pages/about",
+        "secondary_label": "Our craft",
+        "secondary_link": "/pages/craftsmanship"
       }
-    },
-    "trust": {
-      "type": "trust-bar",
-      "blocks": {
-        "one": {
-          "type": "item",
-          "settings": {
-            "title": "Made by hand",
-            "text": "Built in our workshop"
-          }
-        },
-        "two": {
-          "type": "item",
-          "settings": {
-            "title": "White-glove delivery",
-            "text": "Delivered and installed"
-          }
-        },
-        "three": {
-          "type": "item",
-          "settings": {
-            "title": "Easy returns",
-            "text": "On ready-to-ship pieces"
-          }
-        }
-      },
-      "block_order": [
-        "one",
-        "two",
-        "three"
-      ],
-      "settings": {}
     },
     "testimonials": {
       "type": "testimonials",
       "blocks": {
-        "one": {
-          "type": "testimonial",
-          "settings": {}
-        },
-        "two": {
-          "type": "testimonial",
-          "settings": {}
-        },
-        "three": {
-          "type": "testimonial",
-          "settings": {}
-        }
+        "t1": { "type": "testimonial", "settings": {} },
+        "t2": { "type": "testimonial", "settings": {} },
+        "t3": { "type": "testimonial", "settings": {} }
       },
-      "block_order": [
-        "one",
-        "two",
-        "three"
-      ],
-      "settings": {}
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {
+        "eyebrow": "In their homes",
+        "heading": "Words from <em>our clients</em>"
+      }
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": { "type": "item", "settings": { "icon": "truck", "title": "Delivery and installation", "text": "Placeholder: confirm delivery areas, timelines and installation." } },
+        "a2": { "type": "item", "settings": { "icon": "shield", "title": "Quality assurance", "text": "Placeholder: confirm inspection process and warranty terms." } },
+        "a3": { "type": "item", "settings": { "icon": "tool", "title": "Made in our workshop", "text": "Placeholder: confirm where and how pieces are made." } },
+        "a4": { "type": "item", "settings": { "icon": "chat", "title": "Design support", "text": "Help choosing sizes, finishes and fabrics before you buy." } }
+      },
+      "block_order": ["a1", "a2", "a3", "a4"],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "cards",
+        "eyebrow": "Our promise",
+        "heading": "Delivered with <em>care</em>"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {
+        "color_scheme": "scheme-charcoal",
+        "eyebrow": "Talk to a designer",
+        "heading": "Plan your room <em>with us</em>",
+        "text": "Share your floor plan, measurements or inspiration. We will help you choose ready-stock pieces or design something new.",
+        "consult_label": "Book a consultation"
+      }
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": {}
+      "settings": {
+        "color_scheme": "scheme-sand",
+        "eyebrow": "The journal",
+        "heading": "New pieces, <em>first</em>"
+      }
     }
   },
   "order": [
     "hero",
-    "collections",
+    "categories",
+    "ready_stock",
+    "bespoke",
+    "materials",
+    "curated",
     "bestsellers",
-    "custom",
-    "craft",
     "story",
-    "trust",
     "testimonials",
+    "assurance",
+    "consultation",
     "newsletter"
   ]
 }

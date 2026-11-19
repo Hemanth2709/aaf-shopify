@@ -1,67 +1,153 @@
-<div class="image-with-text section-spacing image-with-text--{{ section.settings.layout }}">
-  <div class="image-with-text__media image-frame">
-    {%- if section.settings.image != blank -%}
-      {{ section.settings.image | image_url: width: 1400 | image_tag:
-        widths: '500, 800, 1100, 1400',
-        sizes: '(min-width: 990px) 50vw, 100vw',
-        loading: 'lazy'
-      }}
-    {%- else -%}
-      {{ 'lifestyle-2' | placeholder_svg_tag: 'image-with-text__placeholder' }}
-    {%- endif -%}
-  </div>
+{%- assign points = section.blocks | where: 'type', 'point' -%}
 
-  <div class="image-with-text__content">
-    {%- if section.settings.eyebrow != blank -%}
-      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    {%- endif -%}
-    <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
-    {%- if section.settings.text != blank -%}
-      <div class="image-with-text__text">{{ section.settings.text }}</div>
-    {%- endif -%}
-    {%- if section.settings.button_label != blank -%}
-      <a class="button button--secondary" href="{{ section.settings.button_link | default: routes.root_url }}">
-        {{- section.settings.button_label | escape -}}
-      </a>
-    {%- endif -%}
+<div class="editorial color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width editorial__grid editorial--{{ section.settings.layout }}{% if section.settings.detail_image != blank %} editorial--has-detail{% endif %}">
+    <div class="editorial__media-wrap" data-reveal>
+      <div class="editorial__media media {{ section.settings.image_ratio }}">
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1800
+            | image_tag:
+              widths: '600, 900, 1200, 1500, 1800',
+              sizes: '(min-width: 990px) 55vw, 100vw',
+              loading: 'lazy',
+              alt: section.settings.image.alt
+          }}
+        {%- else -%}
+          {% render 'placeholder', type: 'lifestyle-2', label: section.settings.placeholder_label %}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.detail_image != blank -%}
+        <div class="editorial__detail media ratio-portrait">
+          {{
+            section.settings.detail_image
+            | image_url: width: 800
+            | image_tag:
+              widths: '300, 500, 800',
+              sizes: '(min-width: 990px) 20vw, 40vw',
+              loading: 'lazy',
+              alt: section.settings.detail_image.alt
+          }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="editorial__content" data-reveal style="--reveal-delay: 0.12s">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="heading heading--lg">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="editorial__text rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if points.size > 0 -%}
+        <ol class="editorial__points" role="list">
+          {%- for block in points -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="editorial__index">{{ forloop.index | prepend: '0' }}</span>
+              <div>
+                <h3 class="heading heading--xs">{{ block.settings.title | escape }}</h3>
+                {%- if block.settings.text != blank -%}
+                  <p class="muted">{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+
+      <div class="button-row">
+        {%- if section.settings.button_label != blank -%}
+          <a
+            class="button"
+            href="{{ section.settings.button_link | default: '#' }}"
+            data-track="select_promotion"
+            data-track-params='{"promotion_name":{{ section.settings.eyebrow | json | escape }},"location":"editorial"}'
+          >
+            {{- section.settings.button_label | escape -}}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="link-arrow" href="{{ section.settings.secondary_link | default: '#' }}">
+            {{- section.settings.secondary_label | escape -}}
+            {% render 'icon', name: 'arrow' %}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 </div>
 
 {% stylesheet %}
-  .image-with-text {
+  .editorial__grid {
     display: grid;
     gap: var(--space-lg);
     align-items: center;
   }
-  .image-with-text__media {
-    aspect-ratio: 4 / 5;
+  .editorial__media-wrap {
+    position: relative;
   }
-  .image-with-text__media img,
-  .image-with-text__placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .editorial__detail {
+    position: absolute;
+    right: -0.5rem;
+    bottom: -2rem;
+    width: 38%;
+    border: 6px solid var(--color-background);
   }
-  .image-with-text__placeholder {
-    background-color: var(--color-surface);
-    fill: var(--color-muted);
+  .editorial--has-detail .editorial__media-wrap {
+    margin-bottom: 2rem;
   }
-  .image-with-text__content {
+  .editorial__content {
     display: grid;
-    gap: var(--space-sm);
+    gap: var(--space-md);
     justify-items: start;
-    max-width: 34rem;
   }
-  .image-with-text__text {
+  .editorial__text {
+    max-width: 36rem;
     color: var(--color-muted);
+    font-size: var(--text-md);
+  }
+  .editorial__points {
+    display: grid;
+    gap: var(--space-md);
+    width: 100%;
+    margin: var(--space-xs) 0;
+    padding: 0;
+  }
+  .editorial__points li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--color-border);
+  }
+  .editorial__points h3 {
+    margin-bottom: 0.25rem;
+  }
+  .editorial__index {
+    font-family: var(--font-heading--family);
+    color: var(--color-heading-accent);
   }
   @media (min-width: 990px) {
-    .image-with-text {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-xl);
+    .editorial__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--space-2xl);
     }
-    .image-with-text--image-right .image-with-text__media {
+    .editorial--image-right .editorial__media-wrap {
       order: 2;
+    }
+    .editorial__detail {
+      right: -3rem;
+      bottom: -3rem;
+      width: 34%;
+    }
+    .editorial--image-right .editorial__detail {
+      right: auto;
+      left: -3rem;
     }
   }
 {% endstylesheet %}
@@ -69,54 +155,116 @@
 {% schema %}
 {
   "name": "t:general.image_with_text",
+  "class": "section-editorial",
   "settings": [
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "t:labels.image"
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" },
+        { "value": "scheme-walnut", "label": "t:options.scheme.walnut" }
+      ],
+      "default": "scheme-ivory"
     },
     {
       "type": "select",
       "id": "layout",
       "label": "t:labels.layout",
       "options": [
-        {
-          "value": "image-left",
-          "label": "t:options.image_position.left"
-        },
-        {
-          "value": "image-right",
-          "label": "t:options.image_position.right"
-        }
+        { "value": "image-left", "label": "t:options.image_position.left" },
+        { "value": "image-right", "label": "t:options.image_position.right" }
       ],
       "default": "image-left"
     },
     {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "t:labels.eyebrow"
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:labels.image"
+    },
+    {
+      "type": "image_picker",
+      "id": "detail_image",
+      "label": "t:labels.detail_image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:labels.image_ratio",
+      "options": [
+        { "value": "ratio-portrait", "label": "t:options.ratio.portrait" },
+        { "value": "ratio-square", "label": "t:options.ratio.square" },
+        { "value": "ratio-landscape", "label": "t:options.ratio.landscape" }
+      ],
+      "default": "ratio-portrait"
     },
     {
       "type": "text",
+      "id": "placeholder_label",
+      "label": "t:labels.placeholder_label",
+      "default": "Editorial image, 1800 x 2250"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Bespoke"
+    },
+    {
+      "type": "inline_richtext",
       "id": "heading",
       "label": "t:labels.heading",
-      "default": "Crafted to your measure"
+      "default": "Designed with you, <em>built for your room</em>"
     },
     {
       "type": "richtext",
       "id": "text",
       "label": "t:labels.text",
-      "default": "<p>Choose the timber, the upholstery and the dimensions. Our makers build each piece by hand to your brief.</p>"
+      "default": "<p>Choose the form, the timber, the upholstery and the exact dimensions. Share a reference image or a sketch and we will turn it into a piece made for your space.</p>"
     },
     {
       "type": "text",
       "id": "button_label",
-      "label": "t:labels.button_label"
+      "label": "t:labels.button_label",
+      "default": "Start your design"
     },
     {
       "type": "url",
       "id": "button_link",
       "label": "t:labels.button_link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "t:labels.secondary_button_label"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "t:labels.secondary_button_link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "t:general.point",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:labels.title",
+          "default": "Point title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:labels.text"
+        }
+      ]
     }
   ],
   "presets": [

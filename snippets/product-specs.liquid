@@ -1,0 +1,111 @@
+{% doc %}
+  Renders the furniture specification list from product metafields
+  (namespace "custom"): dimensions, material, finish, upholstery, assembly,
+  warranty, plus product type and the selected variant's weight. Rows with
+  no data are skipped; nothing is rendered when no row has data.
+
+  @param {product} product - The product
+  @param {variant} [variant] - Selected variant, for weight
+
+  @example
+  {% render 'product-specs', product: product, variant: current_variant %}
+{% enddoc %}
+
+{%- liquid
+  assign fields = product.metafields.custom
+  assign material_field = fields.material
+  assign has_specs = false
+  if fields.dimensions != blank or material_field != blank or fields.finish != blank or fields.upholstery != blank
+    assign has_specs = true
+  endif
+  if fields.assembly != blank or fields.warranty != blank or product.type != blank
+    assign has_specs = true
+  endif
+-%}
+
+{%- if has_specs -%}
+  <dl class="specs">
+    {%- if fields.dimensions != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.dimensions' | t }}</dt>
+        <dd>{{ fields.dimensions.value | escape | newline_to_br }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if material_field != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.material' | t }}</dt>
+        <dd>
+          {%- if material_field.type contains 'metaobject' -%}
+            {%- for material in material_field.value -%}
+              {{ material.title.value | escape }}{% unless forloop.last %}, {% endunless %}
+            {%- endfor -%}
+          {%- elsif material_field.type contains 'list' -%}
+            {{ material_field.value | join: ', ' | escape }}
+          {%- else -%}
+            {{ material_field.value | escape }}
+          {%- endif -%}
+        </dd>
+      </div>
+    {%- endif -%}
+    {%- if fields.finish != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.finish' | t }}</dt>
+        <dd>{{ fields.finish.value | escape }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if fields.upholstery != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.upholstery' | t }}</dt>
+        <dd>{{ fields.upholstery.value | escape }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if product.type != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.type' | t }}</dt>
+        <dd>{{ product.type | escape }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if variant.weight > 0 -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.weight' | t }}</dt>
+        <dd>{{ variant.weight | weight_with_unit: variant.weight_unit }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if fields.assembly != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.assembly' | t }}</dt>
+        <dd>{{ fields.assembly.value | escape }}</dd>
+      </div>
+    {%- endif -%}
+    {%- if fields.warranty != blank -%}
+      <div class="specs__row">
+        <dt>{{ 'products.details.warranty' | t }}</dt>
+        <dd>{{ fields.warranty.value | escape }}</dd>
+      </div>
+    {%- endif -%}
+  </dl>
+{%- endif -%}
+
+{% stylesheet %}
+  .specs {
+    display: grid;
+    margin: 0;
+  }
+  .specs__row {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.8fr) 1.2fr;
+    gap: var(--space-sm);
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+  .specs__row:first-child {
+    padding-top: 0;
+  }
+  .specs dt {
+    color: var(--color-muted);
+  }
+  .specs dd {
+    margin: 0;
+  }
+{% endstylesheet %}

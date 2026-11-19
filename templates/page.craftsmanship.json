@@ -1,14 +1,138 @@
 {
   "sections": {
-    "craft": {
+    "hero": {
+      "type": "hero",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "Craftsmanship",
+        "heading": "Made slowly, <em>made well</em>",
+        "text": "Placeholder: one line on how the furniture is made.",
+        "primary_label": "Shop ready stock",
+        "primary_link": "/collections/all",
+        "secondary_label": "Commission a piece",
+        "secondary_link": "/pages/custom-enquiry",
+        "height": "medium"
+      }
+    },
+    "process": {
+      "type": "process-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Selecting materials",
+            "text": "Placeholder: describe how timber and fabrics are chosen."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Joinery and frame",
+            "text": "Placeholder: describe construction methods."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Finishing by hand",
+            "text": "Placeholder: describe finishing and upholstery."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Inspection",
+            "text": "Placeholder: describe quality checks before dispatch."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "eyebrow": "The process",
+        "heading": "Every piece, <em>step by step</em>",
+        "button_label": "",
+        "note": ""
+      }
+    },
+    "detail": {
       "type": "image-with-text",
       "settings": {
+        "color_scheme": "scheme-charcoal",
         "layout": "image-right",
-        "eyebrow": "Craftsmanship",
-        "heading": "Honest joinery, finished by hand",
-        "text": "<p>Describe the making process, the tools and the people behind each piece.</p>"
+        "eyebrow": "In the workshop",
+        "heading": "Hands, tools <em>and time</em>",
+        "text": "<p>Placeholder: workshop story.</p>",
+        "placeholder_label": "Workshop close-up, 1800 x 2250",
+        "button_label": "Start your design",
+        "button_link": "/pages/custom-enquiry"
+      }
+    },
+    "materials": {
+      "type": "material-showcase",
+      "settings": {
+        "button_label": "Explore materials",
+        "button_link": "/pages/materials"
+      }
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "cards"
       }
     }
   },
-  "order": ["craft"]
+  "order": [
+    "hero",
+    "process",
+    "detail",
+    "materials",
+    "assurance"
+  ]
 }

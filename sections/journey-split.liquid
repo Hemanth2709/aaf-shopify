@@ -1,0 +1,256 @@
+{%- assign panels = section.blocks | where: 'type', 'panel' -%}
+
+<div class="journey-split color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text,
+      align: 'center'
+    %}
+
+    <div class="journey-split__grid">
+      {%- for block in panels -%}
+        <a
+          class="journey-panel"
+          href="{{ block.settings.link | default: '#' }}"
+          {{ block.shopify_attributes }}
+          data-reveal
+          style="--reveal-delay: {{ forloop.index0 | times: 0.12 }}s"
+          data-track="select_journey"
+          data-track-params='{"journey":{{ block.settings.journey | json }},"location":"journey_split"}'
+        >
+          <div class="journey-panel__media media media--zoom">
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 1600
+                | image_tag:
+                  widths: '600, 900, 1200, 1600',
+                  sizes: '(min-width: 750px) 50vw, 100vw',
+                  loading: 'lazy',
+                  alt: block.settings.image.alt
+              }}
+            {%- else -%}
+              {%- if forloop.first -%}
+                {% render 'placeholder', type: 'lifestyle-2', tone: 'dark', label: 'Ready-stock room scene, 1600 x 2000' %}
+              {%- else -%}
+                {% render 'placeholder', type: 'lifestyle-1', tone: 'dark', label: 'Workshop or bespoke detail, 1600 x 2000' %}
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+          <div class="journey-panel__content">
+            <p class="eyebrow">{{ block.settings.label | escape }}</p>
+            <h3 class="heading heading--md">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="journey-panel__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+            {%- assign points = block.settings.points | newline_to_br | split: '<br />' -%}
+            {%- if block.settings.points != blank -%}
+              <ul class="journey-panel__points" role="list">
+                {%- for point in points -%}
+                  {%- assign point_text = point | strip -%}
+                  {%- if point_text != blank -%}
+                    <li>{% render 'icon', name: 'check' %}{{ point_text | escape }}</li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            <span class="button button--light journey-panel__cta">
+              {{- block.settings.button_label | escape -}}
+              {% render 'icon', name: 'arrow' %}
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .journey-split__grid {
+    display: grid;
+    gap: var(--space-sm);
+  }
+  .journey-panel {
+    position: relative;
+    display: grid;
+    min-height: 34rem;
+    overflow: hidden;
+    color: var(--color-ivory);
+    text-decoration: none;
+    isolation: isolate;
+  }
+  .journey-panel__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .journey-panel__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(20 18 16 / 0.82) 0%, rgb(20 18 16 / 0.35) 55%, rgb(20 18 16 / 0.1) 100%);
+  }
+  .journey-panel__content {
+    display: grid;
+    align-content: end;
+    justify-items: start;
+    gap: 0.9rem;
+    padding: var(--space-lg) var(--space-md);
+  }
+  .journey-panel .eyebrow {
+    color: var(--color-sand);
+  }
+  .journey-panel__text {
+    max-width: 30rem;
+    color: rgb(247 243 236 / 0.82);
+  }
+  .journey-panel__points {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+  .journey-panel__points li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .journey-panel__points .icon {
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-sand);
+  }
+  .journey-panel__cta {
+    margin-top: 0.75rem;
+  }
+  @media (min-width: 750px) {
+    .journey-split__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .journey-panel {
+      min-height: 42rem;
+    }
+    .journey-panel__content {
+      padding: var(--space-xl) var(--space-lg);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.journey_split",
+  "class": "section-journey-split",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Two ways to furnish"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Take it home now, or <em>have it made</em>"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "t:general.journey",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "select",
+          "id": "journey",
+          "label": "t:labels.journey",
+          "options": [
+            { "value": "ready_stock", "label": "t:options.journey.ready_stock" },
+            { "value": "custom", "label": "t:options.journey.custom" }
+          ],
+          "default": "ready_stock"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:labels.eyebrow",
+          "default": "Ready stock"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:labels.heading",
+          "default": "Finished pieces, ready for your home"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:labels.text",
+          "default": "Browse furniture that is in stock today, with prices, finishes and availability shown on every piece."
+        },
+        {
+          "type": "textarea",
+          "id": "points",
+          "label": "t:labels.points",
+          "info": "t:info.one_per_line",
+          "default": "Live stock and pricing\nSecure Shopify checkout\nDelivery details on every product"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:labels.button_label",
+          "default": "Shop ready stock"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:labels.link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.journey_split",
+      "blocks": [
+        { "type": "panel" },
+        {
+          "type": "panel",
+          "settings": {
+            "journey": "custom",
+            "label": "Made to order",
+            "title": "Designed around <em>your room</em>",
+            "text": "Choose the form, size, timber, fabric and finish. We review your brief and come back with a design and quotation.",
+            "points": "Your dimensions and materials\nReference images welcome\nPersonal quotation",
+            "button_label": "Start your design"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

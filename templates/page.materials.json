@@ -1,4 +1,127 @@
 {
-  "sections": { "materials": { "type": "material-showcase", "settings": {} } },
-  "order": ["materials"]
+  "sections": {
+    "intro": {
+      "type": "page",
+      "settings": {
+        "eyebrow": "Materials",
+        "width": "split"
+      }
+    },
+    "library": {
+      "type": "material-showcase",
+      "blocks": {
+        "m1": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Walnut",
+            "color": "#5a3e2b",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m2": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Oak",
+            "color": "#b8946a",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m3": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Teak",
+            "color": "#8a5a32",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m4": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Ash",
+            "color": "#d3bf9b",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m5": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Bouclé",
+            "color": "#e6dccb",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m6": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Linen",
+            "color": "#cbbfa9",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m7": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Velvet",
+            "color": "#5e6b5a",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m8": {
+          "type": "material",
+          "settings": {
+            "category": "Leather",
+            "name": "Tan leather",
+            "color": "#8c5a3c",
+            "text": "Placeholder: short description."
+          }
+        },
+        "m9": {
+          "type": "material",
+          "settings": {
+            "category": "Stone",
+            "name": "Marble",
+            "color": "#e7e2da",
+            "text": "Placeholder: short description."
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5",
+        "m6",
+        "m7",
+        "m8",
+        "m9"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "eyebrow": "The library",
+        "heading": "Timbers, fabrics <em>and finishes</em>",
+        "button_label": "Use these in a custom piece",
+        "button_link": "/pages/custom-enquiry"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {
+        "heading": "Request <em>samples</em>",
+        "text": "Ask our team about fabric and finish samples for your project."
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "library",
+    "consultation"
+  ]
 }

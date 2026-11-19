@@ -15,3 +15,13 @@ node_modules/
 ## Release files
 release
 *.zip
+
+# Locally installed agent tooling (Shopify AI Toolkit)
+.agents/
+.claude/skills/
+skills-lock.json
+
+# Preview harness output
+tools/preview-harness/node_modules/
+tools/preview-harness/out/
+tools/preview-harness/shots/

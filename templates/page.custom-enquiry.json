@@ -1,4 +1,170 @@
 {
-  "sections": { "main": { "type": "custom-enquiry", "settings": {} } },
-  "order": ["main"]
+  "sections": {
+    "main": {
+      "type": "custom-enquiry",
+      "blocks": {
+        "cat_1": {
+          "type": "category",
+          "settings": {
+            "title": "Sofas",
+            "types": "Three-seater\nSectional\nDaybed\nArmchair"
+          }
+        },
+        "cat_2": {
+          "type": "category",
+          "settings": {
+            "title": "Dining tables",
+            "types": "Rectangular\nRound\nOval\nExtendable"
+          }
+        },
+        "cat_3": {
+          "type": "category",
+          "settings": {
+            "title": "Beds",
+            "types": "King\nQueen\nWith storage\nUpholstered headboard"
+          }
+        },
+        "cat_4": {
+          "type": "category",
+          "settings": {
+            "title": "Wardrobes and storage",
+            "types": "Wardrobe\nSideboard\nTV unit\nBookshelf"
+          }
+        },
+        "cat_5": {
+          "type": "category",
+          "settings": {
+            "title": "Chairs",
+            "types": "Dining chair\nLounge chair\nBar stool"
+          }
+        },
+        "cat_6": {
+          "type": "category",
+          "settings": {
+            "title": "Coffee and side tables",
+            "types": "Coffee table\nSide table\nConsole"
+          }
+        },
+        "mat_1": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Walnut",
+            "color": "#5a3e2b"
+          }
+        },
+        "mat_2": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Oak",
+            "color": "#b8946a"
+          }
+        },
+        "mat_3": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Teak",
+            "color": "#8a5a32"
+          }
+        },
+        "mat_4": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Ash",
+            "color": "#d3bf9b"
+          }
+        },
+        "mat_5": {
+          "type": "material",
+          "settings": {
+            "category": "Stone",
+            "name": "Marble",
+            "color": "#e7e2da"
+          }
+        },
+        "mat_6": {
+          "type": "material",
+          "settings": {
+            "category": "Metal",
+            "name": "Brushed brass",
+            "color": "#b08d57"
+          }
+        }
+      },
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "cat_5",
+        "cat_6",
+        "mat_1",
+        "mat_2",
+        "mat_3",
+        "mat_4",
+        "mat_5",
+        "mat_6"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does a custom piece take?",
+            "answer": "<p>Placeholder: confirm typical lead times by category. We confirm the exact timeline with your quotation.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I send my own design or a photo?",
+            "answer": "<p>Yes. Add links in the enquiry form, or send images on WhatsApp after submitting, quoting your enquiry reference.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you visit to measure?",
+            "answer": "<p>Placeholder: confirm whether home measurement visits are offered, and in which cities.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How is pricing calculated?",
+            "answer": "<p>Pricing depends on size, materials, finish and upholstery. You receive an itemised quotation before anything is made.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Is there a deposit?",
+            "answer": "<p>Placeholder: confirm deposit and payment terms for made-to-order work.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "eyebrow": "Before you start",
+        "heading": "Custom furniture <em>questions</em>"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
 }

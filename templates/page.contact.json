@@ -1,4 +1,59 @@
 {
-  "sections": { "main": { "type": "contact-form", "settings": {} } },
-  "order": ["main"]
+  "sections": {
+    "main": {
+      "type": "contact-form",
+      "settings": {}
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "style": "bar"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "assurance"
+  ]
 }

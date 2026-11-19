@@ -1,66 +1,229 @@
-<div class="contact section-spacing">
-  <div class="section-heading">
-    <h1 class="heading heading--lg">{{ section.settings.heading | default: page.title | escape }}</h1>
-  </div>
-
-  {%- form 'contact', id: 'contact-form', class: 'contact__form' -%}
-    {%- if form.posted_successfully? -%}
-      <p class="contact__message" role="status">{{ 'contact.success' | t }}</p>
-    {%- else -%}
-      {%- if form.errors -%}
-        <div class="contact__message" role="alert">{{ form.errors | default_errors }}</div>
+<div class="contact color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width contact__grid">
+    <div class="contact__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
-      <div class="contact__field">
-        <label for="contact-name">{{ 'contact.name' | t }}</label>
-        <input id="contact-name" name="contact[name]" type="text" autocomplete="name" value="{{ form.name }}">
-      </div>
-      <div class="contact__field">
-        <label for="contact-email">{{ 'contact.email' | t }} *</label>
-        <input id="contact-email" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email }}">
-      </div>
-      <div class="contact__field">
-        <label for="contact-phone">{{ 'contact.phone' | t }}</label>
-        <input id="contact-phone" name="contact[phone]" type="tel" autocomplete="tel" value="{{ form.phone }}">
-      </div>
-      <div class="contact__field">
-        <label for="contact-body">{{ 'contact.message' | t }} *</label>
-        <textarea id="contact-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
-      </div>
-      <button type="submit" class="button">{{ 'contact.submit' | t }}</button>
-    {%- endif -%}
-  {%- endform -%}
+      <h1 class="heading heading--lg">
+        {%- if section.settings.heading != blank -%}
+          {{ section.settings.heading }}
+        {%- else -%}
+          {{ page.title | escape }}
+        {%- endif -%}
+      </h1>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+
+      <ul class="contact__channels" role="list">
+        {%- if settings.whatsapp_number != blank -%}
+          <li>
+            <a href="{% render 'whatsapp-url' %}" target="_blank" rel="noopener" data-track="contact" data-track-params='{"method":"whatsapp","location":"contact_page"}'>
+              {% render 'icon', name: 'whatsapp' %}
+              <span><span class="eyebrow">{{ 'whatsapp.short' | t }}</span>{{ 'whatsapp.chat_with_us' | t }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.contact_phone != blank -%}
+          <li>
+            <a href="tel:{{ settings.contact_phone | remove: ' ' }}" data-track="contact" data-track-params='{"method":"phone","location":"contact_page"}'>
+              {% render 'icon', name: 'phone' %}
+              <span><span class="eyebrow">{{ 'contact.phone' | t }}</span>{{ settings.contact_phone | escape }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- assign contact_email = settings.contact_email | default: shop.email -%}
+        {%- if contact_email != blank -%}
+          <li>
+            <a href="mailto:{{ contact_email }}">
+              {% render 'icon', name: 'mail' %}
+              <span><span class="eyebrow">{{ 'contact.email' | t }}</span>{{ contact_email | escape }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.showroom_address != blank -%}
+          <li>
+            <span class="contact__address">
+              {% render 'icon', name: 'pin' %}
+              <span><span class="eyebrow">{{ 'contact.showroom' | t }}</span>{{ settings.showroom_address | escape | newline_to_br }}</span>
+            </span>
+          </li>
+        {%- endif -%}
+        {%- if settings.consultation_url != blank -%}
+          <li>
+            <a href="{{ settings.consultation_url }}" data-track="select_journey" data-track-params='{"journey":"consultation","location":"contact_page"}'>
+              {% render 'icon', name: 'calendar' %}
+              <span><span class="eyebrow">{{ 'contact.consultation' | t }}</span>{{ 'announcement.book_consultation' | t }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="contact__panel">
+      {%- form 'contact', id: 'contact-form', class: 'contact__form', data-contact-form: '' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="contact__success" role="status" tabindex="-1" data-contact-success>
+            {% render 'icon', name: 'check' %}
+            <p class="heading heading--sm">{{ 'contact.success' | t }}</p>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="contact__errors" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <input type="hidden" name="contact[Enquiry type]" value="{{ 'contact.enquiry_type' | t }}">
+          <div class="field-row">
+            <div class="field">
+              <label for="contact-name">{{ 'contact.name' | t }}</label>
+              <input id="contact-name" name="contact[name]" type="text" autocomplete="name" value="{{ form.name }}">
+            </div>
+            <div class="field">
+              <label for="contact-phone">{{ 'contact.phone' | t }}</label>
+              <input id="contact-phone" name="contact[phone]" type="tel" autocomplete="tel" value="{{ form.phone }}">
+            </div>
+          </div>
+          <div class="field">
+            <label for="contact-email">{{ 'contact.email' | t }} <span aria-hidden="true">*</span></label>
+            <input id="contact-email" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email }}">
+          </div>
+          <div class="field">
+            <label for="contact-topic">{{ 'contact.topic' | t }}</label>
+            <select id="contact-topic" name="contact[Topic]">
+              <option value="{{ 'contact.topics.ready_stock' | t }}">{{ 'contact.topics.ready_stock' | t }}</option>
+              <option value="{{ 'contact.topics.custom' | t }}">{{ 'contact.topics.custom' | t }}</option>
+              <option value="{{ 'contact.topics.order' | t }}">{{ 'contact.topics.order' | t }}</option>
+              <option value="{{ 'contact.topics.consultation' | t }}">{{ 'contact.topics.consultation' | t }}</option>
+              <option value="{{ 'contact.topics.other' | t }}">{{ 'contact.topics.other' | t }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="contact-body">{{ 'contact.message' | t }} <span aria-hidden="true">*</span></label>
+            <textarea id="contact-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+          </div>
+          <button type="submit" class="button" data-contact-submit>{{ 'contact.submit' | t }}</button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
 </div>
 
 {% stylesheet %}
+  .contact__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .contact__intro {
+    display: grid;
+    gap: var(--space-md);
+    align-content: start;
+  }
+  .contact__channels {
+    display: grid;
+    gap: 0;
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .contact__channels li > * {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+  }
+  .contact__channels .eyebrow {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .contact__channels .icon {
+    margin-top: 0.15rem;
+    color: var(--color-heading-accent);
+  }
+  .contact__panel {
+    padding: var(--space-lg) var(--space-md);
+    background-color: var(--color-surface);
+  }
   .contact__form {
     display: grid;
     gap: var(--space-md);
-    justify-items: start;
-    max-width: 36rem;
+    justify-items: stretch;
   }
-  .contact__field {
-    display: grid;
-    gap: 0.4rem;
-    width: 100%;
+  .contact__form .button {
+    justify-self: start;
   }
-  .contact__field label {
-    font-size: var(--text-sm);
-    letter-spacing: 0.08em;
+  .contact__success {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
   }
-  .contact__message {
-    padding: var(--space-sm);
-    background-color: var(--color-surface);
+  .contact__errors {
+    color: var(--color-error);
+  }
+  @media (min-width: 750px) {
+    .contact .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+    }
+  }
+  @media (min-width: 990px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-2xl);
+    }
+    .contact__panel {
+      padding: var(--space-xl);
+    }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const success = document.querySelector('[data-contact-success]');
+    if (success && window.AAF) window.AAF.track('generate_lead', { lead_type: 'contact_form' });
+    const form = document.querySelector('[data-contact-form]');
+    if (form) {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('[data-contact-submit]');
+        if (button) button.classList.add('is-loading');
+      });
+    }
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.contact_form",
+  "class": "section-contact",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
       "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Contact"
+    },
+    {
+      "type": "inline_richtext",
       "id": "heading",
-      "label": "t:labels.heading"
+      "label": "t:labels.heading",
+      "default": "We would love to <em>hear from you</em>"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Questions about a piece, an order or a custom design. Write to us, or reach us directly on WhatsApp or by phone."
     }
   ],
   "presets": [
