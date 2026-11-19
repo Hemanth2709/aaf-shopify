@@ -176,7 +176,7 @@
                 {%- for type in types -%}
                   {%- assign type_text = type | strip -%}
                   {%- if type_text != blank -%}
-                    {%- assign type_id = section.id | append: '-type-' | append: forloop.parentloop.index | append: '-' | append: forloop.index -%}
+                    {%- assign type_id = section.id | append: '-type-' | append: block.id | append: '-' | append: forloop.index -%}
                     <div class="choice">
                       <input type="radio" id="{{ type_id }}" name="contact[Furniture type]" value="{{ type_text | escape }}">
                       <label for="{{ type_id }}" class="choice__pill">{{ type_text | escape }}</label>
@@ -606,6 +606,9 @@
       opacity: 0;
       transform: translateX(16px);
     }
+  }
+  .js-enquiry .enquiry-step__legend > .eyebrow {
+    display: none;
   }
   .enquiry-step__legend {
     display: grid;

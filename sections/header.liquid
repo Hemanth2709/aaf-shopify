@@ -361,7 +361,7 @@
     align-items: center;
     gap: var(--space-sm);
     width: min(calc(var(--page-width) - var(--page-margin) * 2), calc(100% - var(--page-margin) * 2));
-    min-height: var(--header-height);
+    min-height: var(--header-bar-height);
     margin-inline: auto;
   }
   .site-header__toggle {
@@ -717,6 +717,7 @@
   }
   @media (min-width: 990px) {
     :root {
+      --header-bar-height: 5rem;
       --header-height: 5rem;
     }
     .site-header__inner {

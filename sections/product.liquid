@@ -127,7 +127,7 @@
         <h1 class="product-info__title heading heading--lg">{{ product.title | escape }}</h1>
 
         <div class="product-info__price" data-variant-region="price">
-          {% render 'price', product: product, variant: current_variant, size: 'large' %}
+          {% render 'price', product: product, variant: current_variant, style: 'large' %}
           <p class="product-info__tax small muted">
             {%- if cart.taxes_included -%}
               {{ 'products.price.taxes_included' | t }}
@@ -343,7 +343,11 @@
   }
   .product-page__layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-lg);
+  }
+  .product-page__layout > * {
+    min-width: 0;
   }
   .product-gallery {
     position: relative;

@@ -341,7 +341,7 @@
       "type": "Custom furniture quotation"
     },
     "help": {
-      "text": "Not sure about something? Choose \"not sure\" and we will guide you. Your answers are saved on this device until you submit."
+      "text": "Not sure about something? Choose \"not sure\" and we will guide you. Your answers are kept in this browser tab until you submit."
     },
     "steps": {
       "step_1": "Category",

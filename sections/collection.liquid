@@ -122,7 +122,7 @@
           role="list"
           style="--columns-desktop: {{ section.settings.columns_desktop }}; --columns-mobile: {{ section.settings.columns_mobile }};"
           data-collection-grid
-          data-list-name="{{ collection.title | escape }}"
+          data-list-name="{{ collection.title | strip_html | escape }}"
         >
           {%- for product in collection.products -%}
             {%- assign eager = false -%}
@@ -397,7 +397,9 @@
     letter-spacing: 0;
   }
   .collection-toolbar__count {
+    min-width: 0;
     margin-right: auto;
+    white-space: nowrap;
     font-size: var(--text-sm);
     color: var(--color-muted);
   }
@@ -417,9 +419,14 @@
     font-weight: 400;
     color: var(--color-muted);
   }
+  .collection-toolbar__sort {
+    min-width: 0;
+  }
   .collection-toolbar__sort select {
     min-height: 2.5rem;
     width: auto;
+    max-width: 9.5rem;
+    padding-left: 0.25rem;
     padding-block: 0.4rem;
     border: 0;
     font-size: var(--text-sm);
@@ -656,9 +663,20 @@
   .filter-drawer__footer .button {
     padding-inline: 1rem;
   }
+  @media (max-width: 479px) {
+    .collection-toolbar__count {
+      display: none;
+    }
+    .collection-toolbar__sort {
+      margin-left: auto;
+    }
+  }
   @media (min-width: 750px) {
     .collection-toolbar__sort-label {
       display: block;
+    }
+    .collection-toolbar__sort select {
+      max-width: none;
     }
     .collection-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));

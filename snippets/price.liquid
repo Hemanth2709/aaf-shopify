@@ -4,11 +4,11 @@
 
   @param {product} product - The product to price
   @param {variant} [variant] - Render this variant's price instead of the product's
-  @param {string} [size] - Visual size: small (default) or large
+  @param {string} [style] - Visual style: small (default) or large
 
   @example
   {% render 'price', product: product %}
-  {% render 'price', product: product, variant: current_variant, size: 'large' %}
+  {% render 'price', product: product, variant: current_variant, style: 'large' %}
 {% enddoc %}
 
 {%- liquid
@@ -23,7 +23,7 @@
   endif
 -%}
 
-<p class="price price--{{ size | default: 'small' }}">
+<p class="price price--{{ style | default: 'small' }}">
   {%- if compare_at > price -%}
     <span class="visually-hidden">{{ 'products.price.sale' | t }}</span>
     <span class="price__current price__current--sale">

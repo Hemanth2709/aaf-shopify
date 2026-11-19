@@ -48,7 +48,7 @@
     class="product-card__link"
     href="{{ product.url }}"
     data-track="select_item"
-    data-track-params='{"item_list_name":{{ list_name | default: 'Product grid' | json | escape }},"ecommerce":{"items":[{"item_id":{{ product.id | json }},"item_name":{{ product.title | json | escape }},"price":{{ product.price | divided_by: 100.0 | json }}}]}}'
+    data-track-params='{"item_list_name":{{ list_name | default: 'Product grid' | strip_html | json | escape }},"ecommerce":{"items":[{"item_id":{{ product.id | json }},"item_name":{{ product.title | json | escape }},"price":{{ product.price | divided_by: 100.0 | json }}}]}}'
   >
     <div class="product-card__media media {{ settings.card_image_ratio }}{% if secondary and settings.card_show_secondary_image %} product-card__media--hover{% endif %}">
       {%- if product.featured_media -%}
@@ -216,8 +216,10 @@
   }
   .product-card__quick {
     margin: 0;
+    justify-self: start;
   }
   .product-card__quick-button {
+    justify-self: start;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;

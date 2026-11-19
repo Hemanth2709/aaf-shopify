@@ -20,3 +20,8 @@ release
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Preview harness output
+tools/preview-harness/node_modules/
+tools/preview-harness/out/
+tools/preview-harness/shots/

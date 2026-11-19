@@ -59,8 +59,7 @@ p:empty {
   display: none;
 }
 
-ul[role='list'],
-ol[role='list'] {
+:where(ul[role='list'], ol[role='list']) {
   padding: 0;
   list-style: none;
 }
@@ -86,6 +85,7 @@ ol[role='list'] {
   --heading-md: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
   --heading-lg: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
   --heading-xl: clamp(2.75rem, 1.7rem + 4.4vw, 5.75rem);
+  --header-bar-height: 4.5rem;
   --header-height: 4.5rem;
   --shadow-soft: 0 24px 60px -30px rgb(34 32 30 / 0.35);
 }
