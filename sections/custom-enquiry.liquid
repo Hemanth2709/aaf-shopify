@@ -1,0 +1,319 @@
+{%- assign categories = metaobjects.custom_category.values -%}
+{%- assign materials = metaobjects.material.values -%}
+
+<div class="enquiry section-spacing">
+  <div class="section-heading">
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h1 class="heading heading--lg">{{ section.settings.heading | escape }}</h1>
+    {%- if section.settings.text != blank -%}
+      <p class="enquiry__intro">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- form 'contact', id: 'custom-enquiry-form', class: 'enquiry__form', novalidate: 'novalidate' -%}
+    {%- if form.posted_successfully? -%}
+      <div class="enquiry__success" role="status" tabindex="-1" data-enquiry-success>
+        <h2 class="heading heading--md">{{ 'enquiry.success.title' | t }}</h2>
+        <p>{{ 'enquiry.success.text' | t }}</p>
+        <a class="button button--secondary" href="{{ routes.root_url }}">{{ 'enquiry.success.back' | t }}</a>
+      </div>
+    {%- else -%}
+      {%- if form.errors -%}
+        <div class="enquiry__errors" role="alert" tabindex="-1" data-enquiry-errors>
+          <p>{{ 'enquiry.errors.summary' | t }}</p>
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <input type="hidden" name="contact[Enquiry type]" value="Custom furniture">
+
+      <fieldset class="enquiry__group">
+        <legend class="heading heading--sm">{{ 'enquiry.sections.piece' | t }}</legend>
+
+        <div class="enquiry__field">
+          <label for="enquiry-category">{{ 'enquiry.fields.category' | t }} *</label>
+          {%- if categories.size > 0 -%}
+            <select id="enquiry-category" name="contact[Category]" required data-category>
+              <option value="">{{ 'enquiry.fields.choose' | t }}</option>
+              {%- for category in categories -%}
+                <option value="{{ category.system.handle }}">{{ category.title.value | escape }}</option>
+              {%- endfor -%}
+            </select>
+          {%- else -%}
+            <input id="enquiry-category" name="contact[Category]" type="text" required data-category>
+          {%- endif -%}
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-type">{{ 'enquiry.fields.type' | t }}</label>
+          <input id="enquiry-type" name="contact[Furniture type]" type="text" placeholder="{{ 'enquiry.fields.type_placeholder' | t }}">
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-dimensions">{{ 'enquiry.fields.dimensions' | t }}</label>
+          <input id="enquiry-dimensions" name="contact[Dimensions]" type="text" placeholder="{{ 'enquiry.fields.dimensions_placeholder' | t }}">
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-quantity">{{ 'enquiry.fields.quantity' | t }}</label>
+          <input id="enquiry-quantity" name="contact[Quantity]" type="number" min="1" value="1" inputmode="numeric">
+        </div>
+      </fieldset>
+
+      <fieldset class="enquiry__group">
+        <legend class="heading heading--sm">{{ 'enquiry.sections.materials' | t }}</legend>
+
+        <div class="enquiry__field">
+          <label for="enquiry-material">{{ 'enquiry.fields.material' | t }}</label>
+          {%- if materials.size > 0 -%}
+            <select id="enquiry-material" name="contact[Material]">
+              <option value="">{{ 'enquiry.fields.choose' | t }}</option>
+              {%- for material in materials -%}
+                <option value="{{ material.title.value | escape }}">{{ material.title.value | escape }}</option>
+              {%- endfor -%}
+            </select>
+          {%- else -%}
+            <input id="enquiry-material" name="contact[Material]" type="text">
+          {%- endif -%}
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-finish">{{ 'enquiry.fields.finish' | t }}</label>
+          <input id="enquiry-finish" name="contact[Finish]" type="text">
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-colour">{{ 'enquiry.fields.colour' | t }}</label>
+          <input id="enquiry-colour" name="contact[Colour]" type="text">
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-upholstery">{{ 'enquiry.fields.upholstery' | t }}</label>
+          <input id="enquiry-upholstery" name="contact[Upholstery]" type="text">
+        </div>
+      </fieldset>
+
+      <fieldset class="enquiry__group">
+        <legend class="heading heading--sm">{{ 'enquiry.sections.project' | t }}</legend>
+
+        <div class="enquiry__field">
+          <label for="enquiry-budget">{{ 'enquiry.fields.budget' | t }}</label>
+          <input id="enquiry-budget" name="contact[Budget range]" type="text">
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-images">{{ 'enquiry.fields.images' | t }}</label>
+          <input id="enquiry-images" name="contact[Reference images]" type="url" placeholder="https://" aria-describedby="enquiry-images-help">
+          <p class="enquiry__help" id="enquiry-images-help">{{ 'enquiry.fields.images_help' | t }}</p>
+        </div>
+
+        <div class="enquiry__field enquiry__field--wide">
+          <label for="enquiry-body">{{ 'enquiry.fields.body' | t }} *</label>
+          <textarea id="enquiry-body" name="contact[body]" rows="6" required></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="enquiry__group">
+        <legend class="heading heading--sm">{{ 'enquiry.sections.contact' | t }}</legend>
+
+        <div class="enquiry__field">
+          <label for="enquiry-name">{{ 'enquiry.fields.name' | t }} *</label>
+          <input id="enquiry-name" name="contact[name]" type="text" autocomplete="name" required>
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-email">{{ 'enquiry.fields.email' | t }} *</label>
+          <input id="enquiry-email" name="contact[email]" type="email" autocomplete="email" required>
+        </div>
+
+        <div class="enquiry__field">
+          <label for="enquiry-phone">{{ 'enquiry.fields.phone' | t }}</label>
+          <input id="enquiry-phone" name="contact[phone]" type="tel" autocomplete="tel">
+        </div>
+      </fieldset>
+
+      <div class="enquiry__actions">
+        <button
+          type="submit"
+          class="button"
+          data-submit
+          data-sending-label="{{ 'enquiry.sending' | t | escape }}"
+        >
+          {{- 'enquiry.submit' | t -}}
+        </button>
+        <p class="enquiry__help">{{ 'enquiry.required_note' | t }}</p>
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+
+{% stylesheet %}
+  .enquiry__intro {
+    max-width: 40rem;
+    color: var(--color-muted);
+  }
+  .enquiry__form {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: 52rem;
+  }
+  .enquiry__group {
+    display: grid;
+    gap: var(--space-sm);
+    margin: 0;
+    padding: var(--space-md) 0 0;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .enquiry__group legend {
+    float: left;
+    width: 100%;
+    margin-bottom: var(--space-sm);
+    padding: 0;
+  }
+  .enquiry__field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .enquiry__field label {
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+  }
+  .enquiry__help {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .enquiry__actions {
+    display: grid;
+    gap: var(--space-xs);
+    justify-items: start;
+  }
+  .enquiry__errors,
+  .enquiry__success {
+    padding: var(--space-md);
+    background-color: var(--color-surface);
+  }
+  .enquiry__errors {
+    border-left: 3px solid #8b2e2e;
+  }
+  .enquiry__success {
+    display: grid;
+    gap: var(--space-sm);
+    justify-items: start;
+  }
+  .enquiry__field input:user-invalid,
+  .enquiry__field textarea:user-invalid,
+  .enquiry__field select:user-invalid {
+    border-color: #8b2e2e;
+  }
+  @media (min-width: 750px) {
+    .enquiry__group {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+    .enquiry__field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const key = 'custom-enquiry-draft';
+    const form = document.getElementById('custom-enquiry-form');
+    if (!form) return;
+
+    const read = () => {
+      try {
+        return JSON.parse(sessionStorage.getItem(key) || '{}');
+      } catch (error) {
+        return {};
+      }
+    };
+    const save = () => {
+      try {
+        const data = {};
+        new FormData(form).forEach((value, name) => {
+          if (typeof value === 'string') data[name] = value;
+        });
+        sessionStorage.setItem(key, JSON.stringify(data));
+      } catch (error) {
+        return;
+      }
+    };
+    const clear = () => {
+      try {
+        sessionStorage.removeItem(key);
+      } catch (error) {
+        return;
+      }
+    };
+
+    const focusTarget = form.querySelector('[data-enquiry-errors], [data-enquiry-success]');
+    if (form.querySelector('[data-enquiry-success]')) clear();
+    if (form.querySelector('[data-enquiry-errors]')) {
+      const draft = read();
+      Object.keys(draft).forEach((name) => {
+        const field = form.elements[name];
+        if (field && field.type !== 'hidden') field.value = draft[name];
+      });
+    }
+    if (focusTarget) focusTarget.focus();
+
+    const category = new URLSearchParams(window.location.search).get('category');
+    const categoryField = form.querySelector('[data-category]');
+    if (category && categoryField && !categoryField.value) categoryField.value = category;
+
+    let sending = false;
+    form.addEventListener('submit', (event) => {
+      if (sending) {
+        event.preventDefault();
+        return;
+      }
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        form.reportValidity();
+        return;
+      }
+      sending = true;
+      save();
+      const button = form.querySelector('[data-submit]');
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.textContent = button.dataset.sendingLabel;
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.custom_enquiry",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Bespoke enquiry"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Tell us about your piece"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Share as much detail as you can. We will reply with a proposal and quotation."
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.custom_enquiry"
+    }
+  ]
+}
+{% endschema %}

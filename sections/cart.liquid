@@ -1,33 +1,223 @@
-{% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
+<div class="cart section-spacing">
+  <h1 class="heading heading--lg cart__title">{{ 'cart.title' | t }}</h1>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
-{% endcomment %}
+  {%- if cart.item_count == 0 -%}
+    <div class="cart__empty">
+      <p>{{ 'cart.empty' | t }}</p>
+      <a class="button" href="{{ routes.collections_url }}">{{ 'cart.continue_shopping' | t }}</a>
+    </div>
+  {%- else -%}
+    <cart-form>
+      <form class="cart__form" action="{{ routes.cart_url }}" method="post" id="cart-form">
+        <ul class="cart__items">
+          {%- for item in cart.items -%}
+            <li class="cart__item">
+              <a class="cart__image image-frame" href="{{ item.url }}">
+                {%- if item.image -%}
+                  {%- assign item_alt = item.image.alt | default: item.product.title -%}
+                  {{ item.image | image_url: width: 400 | image_tag:
+                    widths: '150, 300, 400',
+                    sizes: '(min-width: 750px) 160px, 100px',
+                    loading: 'lazy',
+                    alt: item_alt
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'cart__placeholder' }}
+                {%- endif -%}
+              </a>
 
-<h1>{{ 'cart.title' | t }}</h1>
+              <div class="cart__details">
+                <a class="heading heading--sm cart__name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="cart__meta">{{ item.variant.title | escape }}</p>
+                {%- endunless -%}
+                {%- for property in item.properties -%}
+                  {%- assign first_char = property.first | slice: 0 -%}
+                  {%- if first_char != '_' and property.last != blank -%}
+                    <p class="cart__meta">{{ property.first | escape }}: {{ property.last | escape }}</p>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- for allocation in item.line_level_discount_allocations -%}
+                  <p class="cart__discount">{{ allocation.discount_application.title | escape }} (-{{ allocation.amount | money }})</p>
+                {%- endfor -%}
+                <a class="cart__remove" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+              </div>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+              <div class="cart__quantity">
+                {% render 'quantity-selector',
+                  id: item.key,
+                  name: 'updates[]',
+                  value: item.quantity,
+                  min: 0
+                %}
+              </div>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+              <p class="cart__line-total">
+                {%- if item.original_line_price > item.final_line_price -%}
+                  <s>{{ item.original_line_price | money }}</s>
+                {%- endif -%}
+                {{ item.final_line_price | money }}
+              </p>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <div class="cart__summary">
+          <div class="cart__note">
+            <label for="cart-note" class="eyebrow">{{ 'cart.note' | t }}</label>
+            <textarea id="cart-note" name="note" rows="3">{{ cart.note }}</textarea>
+          </div>
+
+          <div class="cart__totals">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <p class="cart__discount">{{ discount.title | escape }} (-{{ discount.total_allocated_amount | money }})</p>
+            {%- endfor -%}
+            <p class="cart__subtotal">
+              <span>{{ 'cart.subtotal' | t }}</span>
+              <span>{{ cart.total_price | money_with_currency }}</span>
+            </p>
+            <p class="cart__tax-note">{{ 'cart.taxes_shipping' | t }}</p>
+            <button type="submit" class="button cart__checkout" name="checkout">{{ 'cart.checkout' | t }}</button>
+            <button type="submit" class="button button--text" name="update">{{ 'cart.update' | t }}</button>
+          </div>
+        </div>
+      </form>
+    </cart-form>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .cart__title {
+    margin-bottom: var(--space-lg);
+  }
+  .cart__empty {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+  }
+  .cart__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-border);
+  }
+  .cart__item {
+    display: grid;
+    grid-template-columns: 6.25rem 1fr;
+    gap: var(--space-sm);
+    padding-block: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cart__image {
+    aspect-ratio: 4 / 5;
+  }
+  .cart__image img,
+  .cart__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cart__details {
+    display: grid;
+    gap: 0.25rem;
+    align-content: start;
+  }
+  .cart__name {
+    text-decoration: none;
+  }
+  .cart__meta,
+  .cart__discount {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .cart__remove {
+    justify-self: start;
+    font-size: var(--text-sm);
+  }
+  .cart__quantity {
+    grid-column: 2;
+  }
+  .cart__line-total {
+    grid-column: 2;
+    display: flex;
+    gap: var(--space-xs);
+  }
+  .cart__line-total s {
+    color: var(--color-muted);
+  }
+  .cart__summary {
+    display: grid;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+  .cart__note {
+    display: grid;
+    gap: var(--space-xs);
+  }
+  .cart__totals {
+    display: grid;
+    gap: var(--space-sm);
+    justify-items: stretch;
+  }
+  .cart__subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-lg);
+  }
+  .cart__tax-note {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  @media (min-width: 750px) {
+    .cart__item {
+      grid-template-columns: 10rem 1fr auto auto;
+      align-items: start;
+      gap: var(--space-md);
+    }
+    .cart__quantity,
+    .cart__line-total {
+      grid-column: auto;
+    }
+    .cart__line-total {
+      min-width: 6rem;
+      justify-content: flex-end;
+    }
+    .cart__summary {
+      grid-template-columns: 1fr minmax(18rem, 24rem);
+      gap: var(--space-xl);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class CartForm extends HTMLElement {
+    constructor() {
+      super();
+      this.timer = null;
+      this.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-quantity-change]');
+        if (!button) return;
+        const input = button.parentElement.querySelector('input');
+        const min = Number(input.dataset.quantityMin || 0);
+        input.value = Math.max(min, Number(input.value || 0) + Number(button.dataset.quantityChange));
+        this.queueSubmit();
+      });
+      this.addEventListener('change', (event) => {
+        if (event.target.matches('input[name="updates[]"]')) this.queueSubmit();
+      });
+    }
+
+    queueSubmit() {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const form = this.querySelector('form');
+        const update = form.querySelector('button[name="update"]');
+        form.requestSubmit(update);
+      }, 600);
+    }
+  }
+  if (!customElements.get('cart-form')) customElements.define('cart-form', CartForm);
+{% endjavascript %}
 
 {% schema %}
 {

@@ -1,13 +1,19 @@
-{% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
+<article class="page section-spacing">
+  <h1 class="heading heading--lg page__title">{{ page.title | escape }}</h1>
+  <div class="rte page__content">{{ page.content }}</div>
+</article>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
-{% endcomment %}
-
-<h1>{{ page.title }}</h1>
-
-{{ page.content }}
+{% stylesheet %}
+  .page {
+    display: block;
+  }
+  .page__title {
+    margin-bottom: var(--space-lg);
+  }
+  .page__content {
+    max-width: 48rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

@@ -1,0 +1,86 @@
+<div class="trust section-spacing">
+  <ul class="trust__list">
+    {%- for block in section.blocks -%}
+      <li class="trust__item" {{ block.shopify_attributes }}>
+        <h3 class="heading heading--sm">{{ block.settings.title | escape }}</h3>
+        <p>{{ block.settings.text | escape }}</p>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .trust__list {
+    display: grid;
+    gap: var(--space-md);
+    margin: 0;
+    padding: var(--space-md) 0;
+    border-block: 1px solid var(--color-border);
+    list-style: none;
+    text-align: center;
+  }
+  .trust__item p {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  @media (min-width: 750px) {
+    .trust__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.trust_bar",
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:general.trust_item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:labels.title",
+          "default": "Title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:labels.text",
+          "default": "Short supporting line"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "t:general.trust_bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "title": "Made by hand",
+            "text": "Built in our workshop"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "title": "White-glove delivery",
+            "text": "Delivered and installed"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "title": "Easy returns",
+            "text": "On ready-to-ship pieces"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

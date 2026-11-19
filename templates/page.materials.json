@@ -1,0 +1,4 @@
+{
+  "sections": { "materials": { "type": "material-showcase", "settings": {} } },
+  "order": ["materials"]
+}

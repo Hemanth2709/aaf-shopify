@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "craft": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-right",
+        "eyebrow": "Craftsmanship",
+        "heading": "Honest joinery, finished by hand",
+        "text": "<p>Describe the making process, the tools and the people behind each piece.</p>"
+      }
+    }
+  },
+  "order": ["craft"]
+}

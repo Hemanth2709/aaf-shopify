@@ -1,20 +1,116 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "collections": {
+      "type": "featured-collections",
+      "settings": {}
+    },
+    "bestsellers": {
+      "type": "featured-products",
+      "settings": {}
+    },
+    "custom": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-right",
+        "eyebrow": "Bespoke",
+        "heading": "Designed with you, built for you",
+        "text": "<p>Choose the timber, the upholstery and the dimensions. Our makers build each piece by hand to your brief.</p>",
+        "button_label": "Start your commission"
+      }
+    },
+    "craft": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-left",
+        "eyebrow": "Craftsmanship",
+        "heading": "Solid timber, honest joinery",
+        "text": "<p>Every piece is made from responsibly sourced hardwood and finished by hand.</p>",
+        "button_label": "Our craft"
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-right",
+        "eyebrow": "Our story",
+        "heading": "Furniture with a point of view",
+        "text": "<p>Placeholder: tell the brand story here.</p>",
+        "button_label": "About us"
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "one": {
+          "type": "item",
+          "settings": {
+            "title": "Made by hand",
+            "text": "Built in our workshop"
+          }
+        },
+        "two": {
+          "type": "item",
+          "settings": {
+            "title": "White-glove delivery",
+            "text": "Delivered and installed"
+          }
+        },
+        "three": {
+          "type": "item",
+          "settings": {
+            "title": "Easy returns",
+            "text": "On ready-to-ship pieces"
+          }
+        }
+      },
+      "block_order": [
+        "one",
+        "two",
+        "three"
+      ],
+      "settings": {}
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "one": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "two": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "three": {
+          "type": "testimonial",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "one",
+        "two",
+        "three"
+      ],
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
       "settings": {}
     }
   },
   "order": [
-    "main"
+    "hero",
+    "collections",
+    "bestsellers",
+    "custom",
+    "craft",
+    "story",
+    "trust",
+    "testimonials",
+    "newsletter"
   ]
 }

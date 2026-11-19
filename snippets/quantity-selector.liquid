@@ -1,0 +1,72 @@
+{% doc %}
+  Renders a quantity input with decrease and increase buttons. Button clicks
+  are handled by delegated listeners in sections/product.liquid.
+
+  @param {string} id - Id for the number input
+  @param {number} [value] - Initial quantity, defaults to 1
+  @param {string} [name] - Input name, defaults to quantity
+  @param {number} [min] - Minimum value, defaults to 1
+
+  @example
+  {% render 'quantity-selector', id: 'quantity-123' %}
+  {% render 'quantity-selector', id: 'line-1', name: 'updates[]', min: 0 %}
+{% enddoc %}
+
+{%- assign input_name = name | default: 'quantity' -%}
+{%- assign input_min = min | default: 1 -%}
+
+<div class="quantity">
+  <button type="button" class="quantity__button" data-quantity-change="-1">
+    {% render 'icon', name: 'minus' %}
+    <span class="visually-hidden">{{ 'products.quantity.decrease' | t }}</span>
+  </button>
+  <label class="visually-hidden" for="{{ id }}">{{ 'products.quantity.label' | t }}</label>
+  <input
+    id="{{ id }}"
+    class="quantity__input"
+    type="number"
+    name="{{ input_name }}"
+    min="{{ input_min }}"
+    data-quantity-min="{{ input_min }}"
+    inputmode="numeric"
+    value="{{ value | default: 1 }}"
+  >
+  <button type="button" class="quantity__button" data-quantity-change="1">
+    {% render 'icon', name: 'plus' %}
+    <span class="visually-hidden">{{ 'products.quantity.increase' | t }}</span>
+  </button>
+</div>
+
+{% stylesheet %}
+  .quantity {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+  }
+  .quantity__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .quantity__button:hover {
+    color: var(--color-accent);
+  }
+  .quantity__input {
+    width: 3rem;
+    padding: 0;
+    border: 0;
+    text-align: center;
+    appearance: textfield;
+  }
+  .quantity__input::-webkit-inner-spin-button,
+  .quantity__input::-webkit-outer-spin-button {
+    appearance: none;
+  }
+{% endstylesheet %}

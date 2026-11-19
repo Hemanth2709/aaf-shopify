@@ -1,0 +1,36 @@
+{% doc %}
+  Renders a product price, with compare-at price when on sale.
+
+  @param {product} product - The product to price
+
+  @example
+  {% render 'price', product: product %}
+{% enddoc %}
+
+<p class="price">
+  {%- if product.compare_at_price > product.price and product.available -%}
+    <s class="price__compare">{{ product.compare_at_price | money }}</s>
+    <span class="price__sale">{{ product.price | money }}</span>
+  {%- else -%}
+    {%- if product.price_varies -%}
+      {%- assign min_price = product.price_min | money -%}
+      {{ 'products.price.from' | t: price: min_price }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  {%- endif -%}
+</p>
+
+{% stylesheet %}
+  .price {
+    font-size: var(--text-sm);
+    letter-spacing: 0.04em;
+  }
+  .price__compare {
+    margin-right: 0.5rem;
+    color: var(--color-muted);
+  }
+  .price__sale {
+    color: var(--color-accent);
+  }
+{% endstylesheet %}

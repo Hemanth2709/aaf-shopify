@@ -1,0 +1,53 @@
+{% doc %}
+  Renders an inline SVG icon that inherits the current text colour.
+
+  @param {string} name - One of: search, account, cart, menu, close, arrow, plus, minus, chevron
+  @param {string} [class] - Optional class added to the svg element
+
+  @example
+  {% render 'icon', name: 'search' %}
+{% enddoc %}
+
+<svg
+  class="icon {{ class }}"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 20 20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {%- case name -%}
+    {%- when 'search' -%}
+      <circle cx="9" cy="9" r="5.5" />
+      <path d="m13 13 4 4" />
+    {%- when 'account' -%}
+      <circle cx="10" cy="6.5" r="2.75" />
+      <path d="M4.5 16c.6-2.6 2.9-4.2 5.5-4.2s4.9 1.6 5.5 4.2" />
+    {%- when 'cart' -%}
+      <path d="M3.4 6.9h13.2v8c0 .6-.2 1.1-.6 1.5-.4.4-.9.6-1.5.6h-9c-.6 0-1.1-.2-1.5-.6-.4-.4-.6-.9-.6-1.5zM8.8 3h2.3c.6 0 1.2.2 1.6.7.5.4.7 1 .7 1.7v1.5H6.5V5.4c0-.6.2-1.2.7-1.7.4-.4 1-.7 1.6-.7" />
+    {%- when 'menu' -%}
+      <path d="M3 6h14M3 10h14M3 14h14" />
+    {%- when 'close' -%}
+      <path d="m4.5 4.5 11 11m0-11-11 11" />
+    {%- when 'arrow' -%}
+      <path d="M3 10h14m-5-5 5 5-5 5" />
+    {%- when 'plus' -%}
+      <path d="M10 4v12M4 10h12" />
+    {%- when 'minus' -%}
+      <path d="M4 10h12" />
+    {%- when 'chevron' -%}
+      <path d="m5 8 5 5 5-5" />
+  {%- endcase -%}
+</svg>
+
+{% stylesheet %}
+  .icon {
+    width: 1.375rem;
+    height: 1.375rem;
+    flex-shrink: 0;
+  }
+{% endstylesheet %}

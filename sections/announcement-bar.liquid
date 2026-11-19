@@ -1,0 +1,46 @@
+{%- if section.settings.text != blank -%}
+  <div class="announcement-bar full-width">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}">{{ section.settings.text | escape }}</a>
+    {%- else -%}
+      <p>{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    padding: 0.6rem var(--page-margin);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    font-size: var(--text-sm);
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .announcement-bar a {
+    text-decoration: none;
+  }
+  .announcement-bar a:hover {
+    text-decoration: underline;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.announcement_bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Complimentary delivery on ready-to-ship furniture"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:labels.link"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-left",
+        "eyebrow": "Our story",
+        "heading": "A workshop devoted to lasting furniture",
+        "text": "<p>Tell the story of the brand, the makers and what drives the work.</p>"
+      }
+    },
+    "values": {
+      "type": "trust-bar",
+      "blocks": {
+        "one": {
+          "type": "item",
+          "settings": {
+            "title": "Made by hand",
+            "text": "Built in our workshop"
+          }
+        },
+        "two": {
+          "type": "item",
+          "settings": {
+            "title": "Responsibly sourced",
+            "text": "Certified timber"
+          }
+        },
+        "three": {
+          "type": "item",
+          "settings": {
+            "title": "Built to last",
+            "text": "Designed for generations"
+          }
+        }
+      },
+      "block_order": [
+        "one",
+        "two",
+        "three"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "story",
+    "values"
+  ]
+}

@@ -1,52 +1,419 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+{%- assign current_variant = product.selected_or_first_available_variant -%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
+<div class="product section-spacing">
+  {%- if section.settings.show_breadcrumbs -%}
+    <nav class="product__breadcrumbs" aria-label="{{ 'products.breadcrumbs' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'products.home' | t }}</a>
+      {%- if collection != blank -%}
+        <span aria-hidden="true">/</span>
+        <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
+  <div class="product__layout">
+    <div class="product__gallery">
+      {%- for media in product.media -%}
+        <div class="product__media image-frame" id="media-{{ section.id }}-{{ media.id }}">
+          {%- if media.media_type == 'image' -%}
+            {%- assign media_alt = media.alt | default: product.title -%}
+            {%- if forloop.first -%}
+              {{ media | image_url: width: 1600 | image_tag:
+                widths: '600, 900, 1200, 1600',
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: media_alt
+              }}
+            {%- else -%}
+              {{ media | image_url: width: 1600 | image_tag:
+                widths: '600, 900, 1200, 1600',
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                loading: 'lazy',
+                alt: media_alt
+              }}
+            {%- endif -%}
+          {%- else -%}
+            {{ media | media_tag }}
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <div class="product__media image-frame">
+          {{ 'product-1' | placeholder_svg_tag: 'product__placeholder' }}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <product-info
+      class="product__info"
+      data-section-id="{{ section.id }}"
+      data-url="{{ product.url }}"
+    >
+      <div data-product-details data-featured-media="{{ current_variant.featured_media.id }}">
+        {%- if section.settings.show_vendor and product.vendor != blank -%}
+          <p class="eyebrow">{{ product.vendor | escape }}</p>
+        {%- endif -%}
+        <h1 class="heading heading--lg product__title">{{ product.title | escape }}</h1>
+
+        <p class="product__price">
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <s class="product__compare">{{ current_variant.compare_at_price | money }}</s>
+          {%- endif -%}
+          <span>{{ current_variant.price | money }}</span>
+        </p>
+
+        <p class="product__availability" role="status">
+          {%- if current_variant.available -%}
+            {{ 'products.availability.in_stock' | t }}
+          {%- else -%}
+            {{ 'products.availability.sold_out' | t }}
+          {%- endif -%}
+        </p>
+
+        {%- form 'product', product, id: 'product-form', class: 'product__form', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+          {% render 'variant-picker', product: product, section_id: section.id %}
+
+          <div class="product__buy">
+            {% render 'quantity-selector', id: 'quantity' %}
+            <button
+              type="submit"
+              class="button product__add"
+              {% unless current_variant.available %}
+                disabled
+              {% endunless %}
+              data-add-to-cart
+            >
+              {%- if current_variant.available -%}
+                {{- 'products.form.add_to_cart' | t -}}
+              {%- else -%}
+                {{- 'products.availability.sold_out' | t -}}
+              {%- endif -%}
+            </button>
+          </div>
+
+          <p
+            class="product__status"
+            role="status"
+            data-form-status
+            data-error-message="{{ 'products.form.error' | t | escape }}"
+            data-success-message="{{ 'products.form.added' | t | escape }}"
+            data-cart-url="{{ routes.cart_url }}"
+            data-add-url="{{ routes.cart_add_url }}.js"
+          ></p>
+
+          {%- if current_variant.available and section.settings.show_dynamic_checkout -%}
+            {{ form | payment_button }}
+          {%- endif -%}
+        {%- endform -%}
+
+        {%- if section.settings.delivery_info != blank -%}
+          <div class="product__delivery">{{ section.settings.delivery_info }}</div>
+        {%- endif -%}
+
+        <div class="product__accordion">
+          {%- if product.description != blank -%}
+            <details open>
+              <summary>{{ 'products.details.description' | t }}</summary>
+              <div class="rte">{{ product.description }}</div>
+            </details>
+          {%- endif -%}
+
+          {%- assign materials = product.metafields.custom.material.value -%}
+          {%- assign dimensions = product.metafields.custom.dimensions -%}
+          {%- assign finish = product.metafields.custom.finish -%}
+          {%- assign lead_time = product.metafields.custom.lead_time -%}
+          {%- assign care = product.metafields.custom.care_instructions -%}
+
+          {%- if materials != blank or dimensions != blank or finish != blank or lead_time != blank -%}
+            <details>
+              <summary>{{ 'products.details.specifications' | t }}</summary>
+              <dl class="product__specs">
+                {%- if materials != blank -%}
+                  <dt>{{ 'products.details.material' | t }}</dt>
+                  <dd>
+                    {%- for material in materials -%}
+                      {{ material.title.value | escape }}{% unless forloop.last %}, {% endunless %}
+                    {%- endfor -%}
+                  </dd>
+                {%- endif -%}
+                {%- if dimensions != blank -%}
+                  <dt>{{ 'products.details.dimensions' | t }}</dt>
+                  <dd>{{ dimensions | metafield_tag }}</dd>
+                {%- endif -%}
+                {%- if finish != blank -%}
+                  <dt>{{ 'products.details.finish' | t }}</dt>
+                  <dd>{{ finish | metafield_tag }}</dd>
+                {%- endif -%}
+                {%- if lead_time != blank -%}
+                  <dt>{{ 'products.details.lead_time' | t }}</dt>
+                  <dd>{{ lead_time | metafield_tag }}</dd>
+                {%- endif -%}
+              </dl>
+            </details>
+          {%- endif -%}
+
+          {%- if care != blank -%}
+            <details>
+              <summary>{{ 'products.details.care' | t }}</summary>
+              <div class="rte">{{ care | metafield_tag }}</div>
+            </details>
+          {%- endif -%}
+        </div>
+      </div>
+    </product-info>
+  </div>
 </div>
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+{% stylesheet %}
+  .product__breadcrumbs {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .product__breadcrumbs a {
+    text-decoration: none;
+  }
+  .product__layout {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .product__gallery {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+  }
+  .product__media {
+    aspect-ratio: 4 / 5;
+  }
+  .product__media img,
+  .product__media video,
+  .product__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .product__info {
+    display: block;
+  }
+  [data-product-details] {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+  }
+  .product__price {
+    font-size: var(--text-lg);
+  }
+  .product__compare {
+    margin-right: var(--space-xs);
+    color: var(--color-muted);
+  }
+  .product__availability {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .product__form {
+    display: grid;
+    gap: var(--space-md);
+    margin-block: var(--space-sm);
+  }
+  .product__buy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .product__add {
+    flex: 1 1 12rem;
+  }
+  .product__status {
+    min-height: 1.5em;
+    font-size: var(--text-sm);
+  }
+  .product__status[data-state='error'] {
+    color: #8b2e2e;
+  }
+  .product__delivery {
+    padding: var(--space-sm);
+    background-color: var(--color-surface);
+    font-size: var(--text-sm);
+  }
+  .product__accordion {
+    margin-top: var(--space-sm);
+    border-top: 1px solid var(--color-border);
+  }
+  .product__accordion details {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .product__accordion summary {
+    padding-block: var(--space-sm);
+    font-size: var(--text-sm);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .product__accordion .rte,
+  .product__specs {
+    padding-bottom: var(--space-sm);
+    color: var(--color-muted);
+  }
+  .product__specs {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5rem var(--space-md);
+    margin: 0;
+  }
+  .product__specs dd {
+    margin: 0;
+  }
+  @media (min-width: 990px) {
+    .product__layout {
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-xl);
+    }
+    .product__info {
+      position: sticky;
+      top: 7rem;
+      align-self: start;
+    }
+  }
+{% endstylesheet %}
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+{% javascript %}
+  class ProductInfo extends HTMLElement {
+    constructor() {
+      super();
+      this.busy = false;
+      this.addEventListener('change', (event) => {
+        if (event.target.matches('[data-option-value-id]')) this.updateVariant(event.target);
+      });
+      this.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-quantity-change]');
+        if (!button) return;
+        const input = this.querySelector('input[name="quantity"]');
+        const next = Number(input.value || 1) + Number(button.dataset.quantityChange);
+        input.value = Math.max(1, next);
+      });
+      this.addEventListener('submit', (event) => {
+        if (!event.target.matches('.product__form')) return;
+        if (!window.fetch || !window.FormData) return;
+        event.preventDefault();
+        this.addToCart(event.target);
+      });
+    }
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+    async updateVariant(changed) {
+      const ids = Array.from(this.querySelectorAll('[data-option-value-id]:checked')).map(
+        (input) => input.dataset.optionValueId
+      );
+      const url = `${this.dataset.url}?option_values=${ids.join(',')}&section_id=${this.dataset.sectionId}`;
+      const quantity = this.querySelector('input[name="quantity"]').value;
+      try {
+        const response = await fetch(url);
+        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+        const next = doc.querySelector('[data-product-details]');
+        const current = this.querySelector('[data-product-details]');
+        if (!next || !current) return;
+        current.replaceWith(next);
+        this.querySelector('input[name="quantity"]').value = quantity;
+        const variantId = next.querySelector('input[name="id"]').value;
+        window.history.replaceState({}, '', `${this.dataset.url}?variant=${variantId}`);
+        const focusTarget = document.getElementById(changed.id);
+        if (focusTarget) focusTarget.focus();
+        const media = document.getElementById(
+          `media-${this.dataset.sectionId}-${next.dataset.featuredMedia}`
+        );
+        if (media) media.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-    <input type="text" name="quantity" min="1" value="1">
+    async addToCart(form) {
+      if (this.busy) return;
+      const status = form.querySelector('[data-form-status]');
+      const button = form.querySelector('[data-add-to-cart]');
+      this.busy = true;
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      status.removeAttribute('data-state');
+      try {
+        const response = await fetch(status.dataset.addUrl, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          status.dataset.state = 'error';
+          status.textContent = result.description || status.dataset.errorMessage;
+          return;
+        }
+        status.textContent = status.dataset.successMessage;
+        this.refreshCartCount(status.dataset.cartUrl);
+      } catch (error) {
+        status.dataset.state = 'error';
+        status.textContent = status.dataset.errorMessage;
+      } finally {
+        this.busy = false;
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+    }
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+    async refreshCartCount(cartUrl) {
+      const response = await fetch(`${cartUrl}.js`);
+      const cart = await response.json();
+      const link = document.querySelector('.site-header__cart');
+      if (!link) return;
+      let badge = link.querySelector('.site-header__count');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'site-header__count';
+        badge.setAttribute('aria-hidden', 'true');
+        link.appendChild(badge);
+      }
+      badge.textContent = cart.item_count;
+    }
+  }
+  if (!customElements.get('product-info')) customElements.define('product-info', ProductInfo);
+{% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.product",
-  "settings": [],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "t:labels.show_breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:labels.show_vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "t:labels.show_dynamic_checkout",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "delivery_info",
+      "label": "t:labels.delivery_info",
+      "default": "<p>Delivery in 2 to 4 weeks. White-glove delivery and assembly available.</p>"
+    }
+  ],
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   }
 }
 {% endschema %}

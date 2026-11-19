@@ -1,0 +1,72 @@
+<div class="contact section-spacing">
+  <div class="section-heading">
+    <h1 class="heading heading--lg">{{ section.settings.heading | default: page.title | escape }}</h1>
+  </div>
+
+  {%- form 'contact', id: 'contact-form', class: 'contact__form' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="contact__message" role="status">{{ 'contact.success' | t }}</p>
+    {%- else -%}
+      {%- if form.errors -%}
+        <div class="contact__message" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="contact__field">
+        <label for="contact-name">{{ 'contact.name' | t }}</label>
+        <input id="contact-name" name="contact[name]" type="text" autocomplete="name" value="{{ form.name }}">
+      </div>
+      <div class="contact__field">
+        <label for="contact-email">{{ 'contact.email' | t }} *</label>
+        <input id="contact-email" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email }}">
+      </div>
+      <div class="contact__field">
+        <label for="contact-phone">{{ 'contact.phone' | t }}</label>
+        <input id="contact-phone" name="contact[phone]" type="tel" autocomplete="tel" value="{{ form.phone }}">
+      </div>
+      <div class="contact__field">
+        <label for="contact-body">{{ 'contact.message' | t }} *</label>
+        <textarea id="contact-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="button">{{ 'contact.submit' | t }}</button>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+
+{% stylesheet %}
+  .contact__form {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    max-width: 36rem;
+  }
+  .contact__field {
+    display: grid;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  .contact__field label {
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+  }
+  .contact__message {
+    padding: var(--space-sm);
+    background-color: var(--color-surface);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.contact_form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.contact_form"
+    }
+  ]
+}
+{% endschema %}

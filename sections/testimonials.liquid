@@ -1,0 +1,107 @@
+<div class="testimonials section-spacing">
+  <div class="section-heading">
+    <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
+  </div>
+
+  <ul class="testimonials__list">
+    {%- for block in section.blocks -%}
+      <li class="testimonials__item" {{ block.shopify_attributes }}>
+        <blockquote>
+          <p class="heading heading--sm">&ldquo;{{ block.settings.quote | escape }}&rdquo;</p>
+          <footer class="testimonials__author">
+            {{- block.settings.author | escape -}}
+            {%- if block.settings.location != blank -%}
+              <span>, {{ block.settings.location | escape }}</span>
+            {%- endif -%}
+          </footer>
+        </blockquote>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .testimonials__list {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .testimonials__item {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+  }
+  .testimonials__item .heading {
+    font-size: var(--text-lg);
+    line-height: 1.5;
+  }
+  .testimonials__author {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  @media (min-width: 750px) {
+    .testimonials__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Words from our clients"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "t:general.testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "t:labels.quote",
+          "default": "The table is the centrepiece of our home. The craftsmanship is exceptional."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "t:labels.author",
+          "default": "Client name"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "t:labels.location"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "t:general.testimonials",
+      "blocks": [
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

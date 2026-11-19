@@ -1,0 +1,69 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Bespoke furniture",
+        "heading": "Designed with you, made for your home",
+        "text": "Commission a one-of-a-kind piece in the timber, upholstery and dimensions you choose.",
+        "primary_label": "Start your enquiry",
+        "secondary_label": "",
+        "height": 70
+      }
+    },
+    "categories": {
+      "type": "custom-categories",
+      "settings": {}
+    },
+    "process": {
+      "type": "process-steps",
+      "blocks": {
+        "one": {
+          "type": "step",
+          "settings": {
+            "title": "Share your brief",
+            "text": "Tell us what you need, the space it is for and any references."
+          }
+        },
+        "two": {
+          "type": "step",
+          "settings": {
+            "title": "Receive a quotation",
+            "text": "We reply with a proposal, timeline and price."
+          }
+        },
+        "three": {
+          "type": "step",
+          "settings": {
+            "title": "We craft it",
+            "text": "Your piece is built by hand in our workshop."
+          }
+        },
+        "four": {
+          "type": "step",
+          "settings": {
+            "title": "Delivery",
+            "text": "White-glove delivery and installation."
+          }
+        }
+      },
+      "block_order": [
+        "one",
+        "two",
+        "three",
+        "four"
+      ],
+      "settings": {}
+    },
+    "materials": {
+      "type": "material-showcase",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "categories",
+    "process",
+    "materials"
+  ]
+}

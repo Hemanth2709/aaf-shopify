@@ -1,0 +1,39 @@
+{
+  "sections": {
+    "main": {
+      "type": "faq",
+      "blocks": {
+        "one": {
+          "type": "item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Placeholder: replace with your delivery times.</p>"
+          }
+        },
+        "two": {
+          "type": "item",
+          "settings": {
+            "question": "How does a custom commission work?",
+            "answer": "<p>Placeholder: replace with your commission process.</p>"
+          }
+        },
+        "three": {
+          "type": "item",
+          "settings": {
+            "question": "What is your returns policy?",
+            "answer": "<p>Placeholder: replace with your returns policy.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "one",
+        "two",
+        "three"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

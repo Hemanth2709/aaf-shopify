@@ -1,0 +1,88 @@
+{% doc %}
+  Renders radio inputs for each product option. Selection changes are handled
+  by the product-info custom element in sections/product.liquid.
+
+  @param {product} product - The product whose options are rendered
+  @param {string} section_id - Unique id used to namespace input ids
+
+  @example
+  {% render 'variant-picker', product: product, section_id: section.id %}
+{% enddoc %}
+
+{%- unless product.has_only_default_variant -%}
+  <div class="variant-picker">
+    {%- for option in product.options_with_values -%}
+      <fieldset class="variant-picker__option">
+        <legend class="eyebrow">{{ option.name | escape }}</legend>
+        <div class="variant-picker__values">
+          {%- for value in option.values -%}
+            <input
+              type="radio"
+              id="{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}"
+              name="{{ section_id }}-{{ option.position }}"
+              value="{{ value | escape }}"
+              data-option-value-id="{{ value.id }}"
+              {% if value.selected %}
+                checked
+              {% endif %}
+              {% unless value.available %}
+                class="is-unavailable"
+              {% endunless %}
+            >
+            <label for="{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}">{{ value | escape }}</label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+  </div>
+{%- endunless -%}
+
+{% stylesheet %}
+  .variant-picker {
+    display: grid;
+    gap: var(--space-md);
+  }
+  .variant-picker__option {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .variant-picker__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+  .variant-picker__values input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .variant-picker__values label {
+    min-width: 3rem;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    text-align: center;
+    cursor: pointer;
+    transition:
+      border-color var(--motion-duration) var(--ease),
+      background-color var(--motion-duration) var(--ease);
+  }
+  .variant-picker__values label:hover {
+    border-color: var(--color-foreground);
+  }
+  .variant-picker__values input:checked + label {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+  .variant-picker__values input:focus-visible + label {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .variant-picker__values input.is-unavailable + label {
+    color: var(--color-muted);
+    text-decoration: line-through;
+  }
+{% endstylesheet %}

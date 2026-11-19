@@ -1,0 +1,86 @@
+<product-recommendations
+  class="recommendations"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="section-spacing">
+      <div class="section-heading">
+        <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <ul class="recommendations__grid">
+        {%- for recommended in recommendations.products -%}
+          <li>{% render 'product-card', product: recommended %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</product-recommendations>
+
+{% stylesheet %}
+  .recommendations {
+    display: block;
+  }
+  .recommendations__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md) var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 990px) {
+    .recommendations__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg) var(--space-md);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class ProductRecommendations extends HTMLElement {
+    async connectedCallback() {
+      if (this.querySelector('.recommendations__grid')) return;
+      try {
+        const response = await fetch(this.dataset.url);
+        if (!response.ok) return;
+        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+        const loaded = doc.querySelector('product-recommendations');
+        if (loaded && loaded.innerHTML.trim()) this.innerHTML = loaded.innerHTML;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+  if (!customElements.get('product-recommendations')) {
+    customElements.define('product-recommendations', ProductRecommendations);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.product_recommendations",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "label": "t:labels.product_count",
+      "default": 4
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  }
+}
+{% endschema %}
