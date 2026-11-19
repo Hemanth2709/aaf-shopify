@@ -1,45 +1,208 @@
-{%- if section.settings.text != blank -%}
-  <div class="announcement-bar full-width">
-    {%- if section.settings.link != blank -%}
-      <a href="{{ section.settings.link }}">{{ section.settings.text | escape }}</a>
-    {%- else -%}
-      <p>{{ section.settings.text | escape }}</p>
-    {%- endif -%}
+{%- assign messages = section.blocks | where: 'type', 'message' -%}
+{%- if messages.size > 0 -%}
+  <div class="announcement-bar full-width color-scheme {{ section.settings.color_scheme }}">
+    <div class="announcement-bar__inner page-width">
+      <div class="announcement-bar__side">
+        {%- if settings.contact_phone != blank -%}
+          <a
+            href="tel:{{ settings.contact_phone | remove: ' ' }}"
+            data-track="contact"
+            data-track-params='{"method":"phone","location":"announcement"}'
+          >
+            {% render 'icon', name: 'phone' %}
+            {{ settings.contact_phone | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div
+        class="announcement-bar__messages"
+        data-announcements
+        data-interval="{{ section.settings.interval | times: 1000 }}"
+        aria-live="polite"
+      >
+        {%- for block in messages -%}
+          <p
+            class="announcement-bar__message{% if forloop.first %} is-active{% endif %}"
+            {% unless forloop.first %}
+              hidden
+            {% endunless %}
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+            {%- else -%}
+              {{- block.settings.text | escape -}}
+            {%- endif -%}
+          </p>
+        {%- endfor -%}
+      </div>
+
+      <div class="announcement-bar__side announcement-bar__side--end">
+        {%- if settings.consultation_url != blank -%}
+          <a
+            href="{{ settings.consultation_url }}"
+            data-track="select_journey"
+            data-track-params='{"journey":"consultation","location":"announcement"}'
+          >
+            {% render 'icon', name: 'calendar' %}
+            {{ 'announcement.book_consultation' | t }}
+          </a>
+        {%- endif -%}
+        {%- if settings.whatsapp_number != blank -%}
+          <a
+            href="{% render 'whatsapp-url' %}"
+            target="_blank"
+            rel="noopener"
+            data-track="contact"
+            data-track-params='{"method":"whatsapp","location":"announcement"}'
+          >
+            {% render 'icon', name: 'whatsapp' %}
+            {{ 'whatsapp.short' | t }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 {%- endif -%}
 
 {% stylesheet %}
   .announcement-bar {
-    padding: 0.6rem var(--page-margin);
-    background-color: var(--color-accent);
-    color: var(--color-accent-contrast);
-    font-size: var(--text-sm);
-    letter-spacing: 0.1em;
-    text-align: center;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
+  .announcement-bar__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    min-height: 2.5rem;
+  }
+  .announcement-bar__messages {
+    display: grid;
+    text-align: center;
+  }
+  .announcement-bar__message {
+    grid-area: 1 / 1;
+    animation: announcement-in 0.6s var(--ease-out);
+  }
+  @keyframes announcement-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
   .announcement-bar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     text-decoration: none;
   }
   .announcement-bar a:hover {
     text-decoration: underline;
   }
+  .announcement-bar .icon {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  .announcement-bar__side {
+    display: none;
+    gap: 1.5rem;
+  }
+  .announcement-bar__side--end {
+    justify-content: flex-end;
+  }
+  @media (min-width: 990px) {
+    .announcement-bar__inner {
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-md);
+    }
+    .announcement-bar__side {
+      display: flex;
+    }
+  }
 {% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const init = (root) => {
+      root.querySelectorAll('[data-announcements]').forEach((wrap) => {
+        const items = wrap.querySelectorAll('.announcement-bar__message');
+        if (items.length < 2 || wrap.dataset.bound) return;
+        wrap.dataset.bound = 'true';
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        let index = 0;
+        let paused = false;
+        wrap.addEventListener('mouseenter', () => (paused = true));
+        wrap.addEventListener('mouseleave', () => (paused = false));
+        wrap.addEventListener('focusin', () => (paused = true));
+        wrap.addEventListener('focusout', () => (paused = false));
+        setInterval(() => {
+          if (paused) return;
+          items[index].hidden = true;
+          index = (index + 1) % items.length;
+          items[index].hidden = false;
+        }, Number(wrap.dataset.interval) || 5000);
+      });
+    };
+    init(document);
+    document.addEventListener('shopify:section:load', (event) => init(event.target));
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.announcement_bar",
+  "class": "section-announcement",
   "settings": [
     {
-      "type": "text",
-      "id": "text",
-      "label": "t:labels.text",
-      "default": "Complimentary delivery on ready-to-ship furniture"
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" },
+        { "value": "scheme-walnut", "label": "t:options.scheme.walnut" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-charcoal"
     },
     {
-      "type": "url",
-      "id": "link",
-      "label": "t:labels.link"
+      "type": "range",
+      "id": "interval",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "t:labels.interval",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "t:general.message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:labels.text",
+          "default": "Ready-stock pieces and made-to-order commissions"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:labels.link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.announcement_bar",
+      "blocks": [
+        { "type": "message" }
+      ]
     }
   ]
 }

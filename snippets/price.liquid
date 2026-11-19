@@ -1,36 +1,74 @@
 {% doc %}
-  Renders a product price, with compare-at price when on sale.
+  Renders a product or variant price, with the compare-at price when on sale
+  and a "from" prefix when variant prices differ.
 
   @param {product} product - The product to price
+  @param {variant} [variant] - Render this variant's price instead of the product's
+  @param {string} [size] - Visual size: small (default) or large
 
   @example
   {% render 'price', product: product %}
+  {% render 'price', product: product, variant: current_variant, size: 'large' %}
 {% enddoc %}
 
-<p class="price">
-  {%- if product.compare_at_price > product.price and product.available -%}
-    <s class="price__compare">{{ product.compare_at_price | money }}</s>
-    <span class="price__sale">{{ product.price | money }}</span>
+{%- liquid
+  if variant
+    assign price = variant.price
+    assign compare_at = variant.compare_at_price
+    assign varies = false
+  else
+    assign price = product.price
+    assign compare_at = product.compare_at_price
+    assign varies = product.price_varies
+  endif
+-%}
+
+<p class="price price--{{ size | default: 'small' }}">
+  {%- if compare_at > price -%}
+    <span class="visually-hidden">{{ 'products.price.sale' | t }}</span>
+    <span class="price__current price__current--sale">
+      {%- if varies -%}
+        {%- assign min_price = product.price_min | money -%}
+        {{ 'products.price.from' | t: price: min_price }}
+      {%- else -%}
+        {{ price | money }}
+      {%- endif -%}
+    </span>
+    <span class="visually-hidden">{{ 'products.price.regular' | t }}</span>
+    <s class="price__compare">{{ compare_at | money }}</s>
   {%- else -%}
-    {%- if product.price_varies -%}
-      {%- assign min_price = product.price_min | money -%}
-      {{ 'products.price.from' | t: price: min_price }}
-    {%- else -%}
-      {{ product.price | money }}
-    {%- endif -%}
+    <span class="price__current">
+      {%- if varies -%}
+        {%- assign min_price = product.price_min | money -%}
+        {{ 'products.price.from' | t: price: min_price }}
+      {%- else -%}
+        {{ price | money }}
+      {%- endif -%}
+    </span>
   {%- endif -%}
 </p>
 
 {% stylesheet %}
   .price {
-    font-size: var(--text-sm);
-    letter-spacing: 0.04em;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: var(--text-base);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .price--large {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+    font-weight: var(--font-heading--weight);
   }
   .price__compare {
-    margin-right: 0.5rem;
+    font-size: 0.85em;
+    font-weight: 400;
     color: var(--color-muted);
   }
-  .price__sale {
+  .price__current--sale {
     color: var(--color-accent);
   }
 {% endstylesheet %}

@@ -1,0 +1,71 @@
+{% doc %}
+  Renders the standard section heading: eyebrow, heading, intro text and an
+  optional "view all" style link.
+
+  @param {string} [eyebrow] - Small uppercase label above the heading
+  @param {string} [heading] - Heading HTML (inline rich text allowed, for example <em>)
+  @param {string} [text] - Intro paragraph
+  @param {string} [link_label] - Label for the optional link
+  @param {string} [link_url] - URL for the optional link
+  @param {string} [align] - left (default), center or split
+  @param {string} [tag] - Heading tag, defaults to h2
+
+  @example
+  {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, align: 'center' %}
+{% enddoc %}
+
+{%- liquid
+  assign heading_tag = tag | default: 'h2'
+  assign alignment = align | default: 'left'
+-%}
+
+{%- if eyebrow != blank or heading != blank or text != blank -%}
+  <div class="section-heading section-heading--{{ alignment }}" data-reveal>
+    <div class="section-heading__main">
+      {%- if eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if heading != blank -%}
+        <{{ heading_tag }} class="heading heading--lg section-heading__title">{{ heading }}</{{ heading_tag }}>
+      {%- endif -%}
+      {%- if text != blank -%}
+        <p class="lead">{{ text | escape }}</p>
+      {%- endif -%}
+    </div>
+    {%- if link_label != blank and link_url != blank -%}
+      <a class="link-arrow section-heading__link" href="{{ link_url }}">
+        {{- link_label | escape -}}
+        {% render 'icon', name: 'arrow' %}
+      </a>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .section-heading__main {
+    display: grid;
+    gap: 1rem;
+  }
+  .section-heading--center .section-heading__main {
+    justify-items: center;
+  }
+  .section-heading--center .section-heading__link {
+    justify-self: center;
+  }
+  .section-heading--split {
+    display: grid;
+    gap: var(--space-md);
+  }
+  @media (min-width: 750px) {
+    .section-heading--split {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+    .section-heading--split .section-heading__title {
+      max-width: 18ch;
+    }
+  }
+  .section-heading--left .section-heading__link {
+    margin-top: 0.5rem;
+  }
+{% endstylesheet %}

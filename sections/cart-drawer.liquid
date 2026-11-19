@@ -1,0 +1,340 @@
+<dialog id="cart-drawer" class="cart-drawer" aria-labelledby="cart-drawer-title" scroll-lock>
+  <div
+    class="cart-drawer__content"
+    data-cart-drawer-content
+    data-cart-count="{{ cart.item_count }}"
+    data-cart-total="{{ cart.total_price }}"
+  >
+    <div class="cart-drawer__header">
+      <h2 id="cart-drawer-title" class="heading heading--sm">
+        {{ 'cart.drawer_title' | t }}
+        {%- if cart.item_count > 0 %}
+          <span class="cart-drawer__count">({{ cart.item_count }})</span>
+        {%- endif -%}
+      </h2>
+      <button type="button" class="icon-button" data-cart-close>
+        {% render 'icon', name: 'close' %}
+        <span class="visually-hidden">{{ 'cart.close' | t }}</span>
+      </button>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-drawer__empty">
+        <p class="heading heading--sm">{{ 'cart.empty' | t }}</p>
+        <p class="muted">{{ 'cart.empty_text' | t }}</p>
+        <div class="cart-drawer__journeys">
+          <a class="button" href="{{ section.settings.ready_stock_link | default: routes.all_products_collection_url }}">
+            {{- 'cart.shop_ready_stock' | t -}}
+          </a>
+          {%- if settings.enquiry_url != blank -%}
+            <a class="button button--secondary" href="{{ settings.enquiry_url }}">{{ 'cart.design_your_own' | t }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- else -%}
+      <ul class="cart-drawer__items" role="list">
+        {%- for item in cart.items -%}
+          <li class="cart-line" data-line="{{ forloop.index }}">
+            <a class="cart-line__media media ratio-portrait" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+              {%- if item.image -%}
+                {%- assign line_alt = item.image.alt | default: item.product.title | escape -%}
+                {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120, 240', sizes: '96px', alt: line_alt }}
+              {%- else -%}
+                {% render 'placeholder', type: 'product-1' %}
+              {%- endif -%}
+            </a>
+            <div class="cart-line__body">
+              <div class="cart-line__top">
+                <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                <span class="cart-line__price">
+                  {%- if item.original_line_price > item.final_line_price -%}
+                    <s class="muted">{{ item.original_line_price | money }}</s>
+                  {%- endif -%}
+                  {{ item.final_line_price | money }}
+                </span>
+              </div>
+              {%- unless item.product.has_only_default_variant -%}
+                <p class="cart-line__meta">{{ item.variant.title | escape }}</p>
+              {%- endunless -%}
+              {%- for property in item.properties -%}
+                {%- assign first_char = property.first | slice: 0 -%}
+                {%- if property.last != blank and first_char != '_' -%}
+                  <p class="cart-line__meta">{{ property.first | escape }}: {{ property.last | escape }}</p>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- for discount in item.line_level_discount_allocations -%}
+                <p class="cart-line__meta">{{ discount.discount_application.title | escape }}</p>
+              {%- endfor -%}
+              <div class="cart-line__actions">
+                <div class="qty qty--small">
+                  <button
+                    type="button"
+                    class="qty__button"
+                    data-line-change="{{ forloop.index }}"
+                    data-quantity="{{ item.quantity | minus: 1 }}"
+                  >
+                    {% render 'icon', name: 'minus' %}
+                    <span class="visually-hidden">{{ 'products.quantity.decrease' | t: product: item.product.title }}</span>
+                  </button>
+                  <span class="qty__value" aria-label="{{ 'products.quantity.label' | t }}">{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    class="qty__button"
+                    data-line-change="{{ forloop.index }}"
+                    data-quantity="{{ item.quantity | plus: 1 }}"
+                  >
+                    {% render 'icon', name: 'plus' %}
+                    <span class="visually-hidden">{{ 'products.quantity.increase' | t: product: item.product.title }}</span>
+                  </button>
+                </div>
+                <button type="button" class="cart-line__remove" data-line-change="{{ forloop.index }}" data-quantity="0">
+                  {{- 'cart.remove' | t -}}
+                </button>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="cart-drawer__footer">
+        <p class="cart-drawer__status" role="status" data-cart-status></p>
+        {%- if cart.cart_level_discount_applications.size > 0 -%}
+          <ul class="cart-drawer__discounts" role="list">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <li>{{ discount.title | escape }} (-{{ discount.total_allocated_amount | money }})</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <div class="cart-drawer__subtotal">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span class="heading heading--sm">{{ cart.total_price | money_with_currency }}</span>
+        </div>
+        <p class="small muted">{{ 'cart.taxes_shipping' | t }}</p>
+        {%- if settings.cart_note_text != blank -%}
+          <p class="cart-drawer__note small">{% render 'icon', name: 'truck' %}{{ settings.cart_note_text | escape }}</p>
+        {%- endif -%}
+        <form action="{{ routes.cart_url }}" method="post" class="cart-drawer__form">
+          <button
+            type="submit"
+            name="checkout"
+            class="button button--full"
+            data-checkout
+          >
+            {{- 'cart.checkout' | t -}}
+          </button>
+        </form>
+        <a class="cart-drawer__view" href="{{ routes.cart_url }}">{{ 'cart.view_cart' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</dialog>
+
+{% stylesheet %}
+  .cart-drawer {
+    width: min(28rem, 100vw);
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+  }
+  .cart-drawer[open] {
+    animation: drawer-right 0.4s var(--ease-out);
+  }
+  @keyframes drawer-right {
+    from {
+      transform: translateX(100%);
+    }
+  }
+  .cart-drawer::backdrop {
+    background: rgb(34 32 30 / 0.45);
+    backdrop-filter: blur(2px);
+  }
+  .cart-drawer__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: opacity var(--motion-duration) var(--ease);
+  }
+  .cart-drawer__content.is-busy {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .cart-drawer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cart-drawer__count {
+    color: var(--color-muted);
+    font-size: 0.8em;
+  }
+  .cart-drawer__empty {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-xl) 1.5rem;
+    text-align: center;
+  }
+  .cart-drawer__journeys {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: var(--space-md);
+  }
+  .cart-drawer__items {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0 1.5rem;
+  }
+  .cart-line {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cart-line__body {
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+  }
+  .cart-line__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .cart-line__title {
+    font-family: var(--font-heading--family);
+    font-size: 1.05rem;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .cart-line__price {
+    display: grid;
+    justify-items: end;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
+  .cart-line__meta {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .cart-line__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  .cart-line__remove {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    cursor: pointer;
+    color: var(--color-muted);
+  }
+  .cart-drawer__footer {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+  .cart-drawer__status:empty {
+    display: none;
+  }
+  .cart-drawer__status {
+    color: var(--color-error);
+    font-size: var(--text-sm);
+  }
+  .cart-drawer__discounts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+  }
+  .cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .cart-drawer__note {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .cart-drawer__note .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .cart-drawer__view {
+    justify-self: center;
+    font-size: var(--text-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+
+    drawer.addEventListener('click', async (event) => {
+      if (event.target === drawer || event.target.closest('[data-cart-close]')) {
+        drawer.close();
+        return;
+      }
+      const changer = event.target.closest('[data-line-change]');
+      if (changer && window.AAF && window.AAF.cart) {
+        const content = drawer.querySelector('[data-cart-drawer-content]');
+        content.classList.add('is-busy');
+        try {
+          await window.AAF.cart.change(Number(changer.dataset.lineChange), Number(changer.dataset.quantity));
+          if (Number(changer.dataset.quantity) === 0) window.AAF.track('remove_from_cart', {});
+        } catch (error) {
+          const status = drawer.querySelector('[data-cart-status]');
+          if (status) status.textContent = error.message;
+          content.classList.remove('is-busy');
+        }
+        return;
+      }
+      if (event.target.closest('[data-checkout]') && window.AAF) {
+        const content = drawer.querySelector('[data-cart-drawer-content]');
+        window.AAF.track('begin_checkout', {
+          ecommerce: {
+            currency: (window.AAFConfig || {}).currency,
+            value: Number(content.dataset.cartTotal || 0) / 100,
+          },
+        });
+      }
+    });
+
+    drawer.addEventListener('close', () => {
+      const trigger = window.AAF && window.AAF.cart && window.AAF.cart.lastTrigger;
+      if (trigger && typeof trigger.focus === 'function') trigger.focus();
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.cart_drawer",
+  "settings": [
+    {
+      "type": "url",
+      "id": "ready_stock_link",
+      "label": "t:labels.ready_stock_link"
+    }
+  ]
+}
+{% endschema %}

@@ -8,8 +8,7 @@
 
 {% style %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '500' | font_face: font_display: 'swap' }}
   {{ settings.type_heading_font | font_face: font_display: 'swap' }}
   {{ settings.type_heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
@@ -23,20 +22,35 @@
     --heading-letter-spacing: {{ settings.heading_letter_spacing }}px;
     --page-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --section-spacing: {{ settings.section_spacing }}px;
+    --section-spacing: clamp(3.5rem, 8vw, {{ settings.section_spacing }}px);
+    --color-ivory: {{ settings.background_color }};
+    --color-surface: {{ settings.surface_color }};
+    --color-sand: {{ settings.sand_color }};
+    --color-taupe: {{ settings.taupe_color }};
+    --color-accent: {{ settings.accent_color }};
+    --color-charcoal: {{ settings.foreground_color }};
     --color-background: {{ settings.background_color }};
     --color-foreground: {{ settings.foreground_color }};
-    --color-surface: {{ settings.surface_color }};
-    --color-accent: {{ settings.accent_color }};
-    --color-accent-contrast: {{ settings.background_color }};
     --color-muted: {{ settings.muted_color }};
     --color-border: {{ settings.border_color }};
+    --color-button: {{ settings.foreground_color }};
+    --color-button-text: {{ settings.background_color }};
+    --color-accent-contrast: {{ settings.background_color }};
+    --color-heading-accent: {{ settings.accent_color }};
+    --color-error: #9b2c1f;
+    --color-success: #3f6b45;
+    --color-warning: #b07a24;
     --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
     --style-border-radius-buttons: {{ settings.button_corner_radius }}px;
     {% if settings.enable_animations %}
-      --motion-duration: 0.3s;
+      --motion-duration: 0.35s;
     {% else %}
       --motion-duration: 0s;
     {% endif %}
+  }
+
+  .scheme-charcoal,
+  .scheme-walnut {
+    --color-heading-accent: {{ settings.sand_color }};
   }
 {% endstyle %}

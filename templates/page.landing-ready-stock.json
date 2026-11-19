@@ -1,0 +1,217 @@
+{
+  "layout": "landing",
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "j1": {
+          "type": "journey",
+          "settings": {
+            "title": "In stock now",
+            "text": "Live availability on every piece",
+            "link": "#shop"
+          }
+        },
+        "j2": {
+          "type": "journey",
+          "settings": {
+            "title": "Secure checkout",
+            "text": "Pay online with Shopify checkout",
+            "link": "#shop"
+          }
+        },
+        "j3": {
+          "type": "journey",
+          "settings": {
+            "title": "Need a custom size?",
+            "text": "We can make it to measure",
+            "link": "/pages/landing-custom"
+          }
+        }
+      },
+      "block_order": [
+        "j1",
+        "j2",
+        "j3"
+      ],
+      "settings": {
+        "eyebrow": "Ready-stock furniture",
+        "heading": "Beautiful furniture, <em>ready to deliver</em>",
+        "text": "Browse finished pieces in stock today, with prices and availability shown on every product.",
+        "primary_label": "Shop ready stock",
+        "primary_link": "#shop",
+        "secondary_label": "Chat with a designer",
+        "secondary_link": "/pages/contact",
+        "height": "large",
+        "overlay_opacity": 30
+      }
+    },
+    "assurance_bar": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "bar"
+      }
+    },
+    "products": {
+      "type": "featured-products",
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "eyebrow": "Shop the edit",
+        "heading": "In stock and <em>ready to deliver</em>",
+        "product_count": 12,
+        "columns": 4,
+        "link_label": "See everything in stock",
+        "link": "/collections/all",
+        "anchor": "shop"
+      }
+    },
+    "categories": {
+      "type": "category-grid",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "title": "Sofas"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "title": "Dining"
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "title": "Bedroom"
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "title": "Storage"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "columns": 4,
+        "heading": "Shop by <em>room</em>"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How soon can I receive my order?",
+            "answer": "<p>Placeholder: confirm ready-stock delivery timelines by city.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is installation included?",
+            "answer": "<p>Placeholder: confirm installation and assembly terms.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return a ready-stock piece?",
+            "answer": "<p>Placeholder: summarise the refund policy.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {}
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "assurance_bar",
+    "products",
+    "categories",
+    "testimonials",
+    "faq",
+    "consultation"
+  ]
+}

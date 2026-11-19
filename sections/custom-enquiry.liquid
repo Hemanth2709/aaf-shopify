@@ -1,313 +1,1513 @@
-{%- assign categories = metaobjects.custom_category.values -%}
-{%- assign materials = metaobjects.material.values -%}
+{%- liquid
+  assign categories = section.blocks | where: 'type', 'category'
+  assign materials = section.blocks | where: 'type', 'material'
+  assign finishes = section.settings.finishes | newline_to_br | split: '<br />'
+  assign colours = section.settings.colours | newline_to_br | split: '<br />'
+  assign upholstery_options = section.settings.upholstery | newline_to_br | split: '<br />'
+  assign budgets = section.settings.budgets | newline_to_br | split: '<br />'
+  assign timelines = section.settings.timelines | newline_to_br | split: '<br />'
+  assign total_steps = 9
+-%}
 
-<div class="enquiry section-spacing">
-  <div class="section-heading">
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h1 class="heading heading--lg">{{ section.settings.heading | escape }}</h1>
-    {%- if section.settings.text != blank -%}
-      <p class="enquiry__intro">{{ section.settings.text | escape }}</p>
-    {%- endif -%}
-  </div>
-
-  {%- form 'contact', id: 'custom-enquiry-form', class: 'enquiry__form', novalidate: 'novalidate' -%}
-    {%- if form.posted_successfully? -%}
-      <div class="enquiry__success" role="status" tabindex="-1" data-enquiry-success>
-        <h2 class="heading heading--md">{{ 'enquiry.success.title' | t }}</h2>
-        <p>{{ 'enquiry.success.text' | t }}</p>
-        <a class="button button--secondary" href="{{ routes.root_url }}">{{ 'enquiry.success.back' | t }}</a>
-      </div>
-    {%- else -%}
-      {%- if form.errors -%}
-        <div class="enquiry__errors" role="alert" tabindex="-1" data-enquiry-errors>
-          <p>{{ 'enquiry.errors.summary' | t }}</p>
-          {{ form.errors | default_errors }}
-        </div>
+<div id="enquiry" class="enquiry full-width color-scheme scheme-ivory" data-enquiry data-section-id="{{ section.id }}">
+  <div class="page-width enquiry__layout">
+    <aside class="enquiry__aside">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <{{ section.settings.heading_tag }} class="heading heading--lg">{{ section.settings.heading }}</{{ section.settings.heading_tag }}>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
       {%- endif -%}
 
-      <input type="hidden" name="contact[Enquiry type]" value="Custom furniture">
+      <ol class="enquiry__steps" role="list" data-step-list hidden>
+        {%- for i in (1..total_steps) -%}
+          {%- capture step_key -%}enquiry.steps.step_{{ i }}{%- endcapture -%}
+          <li data-step-link="{{ i }}">
+            <span class="enquiry__steps-index">{{ i | prepend: '0' }}</span>
+            <span>{{ step_key | t }}</span>
+          </li>
+        {%- endfor -%}
+      </ol>
 
-      <fieldset class="enquiry__group">
-        <legend class="heading heading--sm">{{ 'enquiry.sections.piece' | t }}</legend>
-
-        <div class="enquiry__field">
-          <label for="enquiry-category">{{ 'enquiry.fields.category' | t }} *</label>
-          {%- if categories.size > 0 -%}
-            <select id="enquiry-category" name="contact[Category]" required data-category>
-              <option value="">{{ 'enquiry.fields.choose' | t }}</option>
-              {%- for category in categories -%}
-                <option value="{{ category.system.handle }}">{{ category.title.value | escape }}</option>
-              {%- endfor -%}
-            </select>
-          {%- else -%}
-            <input id="enquiry-category" name="contact[Category]" type="text" required data-category>
-          {%- endif -%}
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-type">{{ 'enquiry.fields.type' | t }}</label>
-          <input id="enquiry-type" name="contact[Furniture type]" type="text" placeholder="{{ 'enquiry.fields.type_placeholder' | t }}">
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-dimensions">{{ 'enquiry.fields.dimensions' | t }}</label>
-          <input id="enquiry-dimensions" name="contact[Dimensions]" type="text" placeholder="{{ 'enquiry.fields.dimensions_placeholder' | t }}">
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-quantity">{{ 'enquiry.fields.quantity' | t }}</label>
-          <input id="enquiry-quantity" name="contact[Quantity]" type="number" min="1" value="1" inputmode="numeric">
-        </div>
-      </fieldset>
-
-      <fieldset class="enquiry__group">
-        <legend class="heading heading--sm">{{ 'enquiry.sections.materials' | t }}</legend>
-
-        <div class="enquiry__field">
-          <label for="enquiry-material">{{ 'enquiry.fields.material' | t }}</label>
-          {%- if materials.size > 0 -%}
-            <select id="enquiry-material" name="contact[Material]">
-              <option value="">{{ 'enquiry.fields.choose' | t }}</option>
-              {%- for material in materials -%}
-                <option value="{{ material.title.value | escape }}">{{ material.title.value | escape }}</option>
-              {%- endfor -%}
-            </select>
-          {%- else -%}
-            <input id="enquiry-material" name="contact[Material]" type="text">
-          {%- endif -%}
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-finish">{{ 'enquiry.fields.finish' | t }}</label>
-          <input id="enquiry-finish" name="contact[Finish]" type="text">
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-colour">{{ 'enquiry.fields.colour' | t }}</label>
-          <input id="enquiry-colour" name="contact[Colour]" type="text">
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-upholstery">{{ 'enquiry.fields.upholstery' | t }}</label>
-          <input id="enquiry-upholstery" name="contact[Upholstery]" type="text">
-        </div>
-      </fieldset>
-
-      <fieldset class="enquiry__group">
-        <legend class="heading heading--sm">{{ 'enquiry.sections.project' | t }}</legend>
-
-        <div class="enquiry__field">
-          <label for="enquiry-budget">{{ 'enquiry.fields.budget' | t }}</label>
-          <input id="enquiry-budget" name="contact[Budget range]" type="text">
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-images">{{ 'enquiry.fields.images' | t }}</label>
-          <input id="enquiry-images" name="contact[Reference images]" type="url" placeholder="https://" aria-describedby="enquiry-images-help">
-          <p class="enquiry__help" id="enquiry-images-help">{{ 'enquiry.fields.images_help' | t }}</p>
-        </div>
-
-        <div class="enquiry__field enquiry__field--wide">
-          <label for="enquiry-body">{{ 'enquiry.fields.body' | t }} *</label>
-          <textarea id="enquiry-body" name="contact[body]" rows="6" required></textarea>
-        </div>
-      </fieldset>
-
-      <fieldset class="enquiry__group">
-        <legend class="heading heading--sm">{{ 'enquiry.sections.contact' | t }}</legend>
-
-        <div class="enquiry__field">
-          <label for="enquiry-name">{{ 'enquiry.fields.name' | t }} *</label>
-          <input id="enquiry-name" name="contact[name]" type="text" autocomplete="name" required>
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-email">{{ 'enquiry.fields.email' | t }} *</label>
-          <input id="enquiry-email" name="contact[email]" type="email" autocomplete="email" required>
-        </div>
-
-        <div class="enquiry__field">
-          <label for="enquiry-phone">{{ 'enquiry.fields.phone' | t }}</label>
-          <input id="enquiry-phone" name="contact[phone]" type="tel" autocomplete="tel">
-        </div>
-      </fieldset>
-
-      <div class="enquiry__actions">
-        <button
-          type="submit"
-          class="button"
-          data-submit
-          data-sending-label="{{ 'enquiry.sending' | t | escape }}"
-        >
-          {{- 'enquiry.submit' | t -}}
-        </button>
-        <p class="enquiry__help">{{ 'enquiry.required_note' | t }}</p>
+      <div class="enquiry__help">
+        <p class="small muted">{{ 'enquiry.help.text' | t }}</p>
+        {%- if settings.whatsapp_number != blank -%}
+          <a
+            class="link-arrow"
+            href="{% render 'whatsapp-url', message: section.settings.whatsapp_message %}"
+            target="_blank"
+            rel="noopener"
+            data-track="contact"
+            data-track-params='{"method":"whatsapp","location":"enquiry_aside"}'
+          >
+            {%- render 'icon', name: 'whatsapp' -%}
+            {{- 'whatsapp.chat_with_us' | t -}}
+          </a>
+        {%- endif -%}
       </div>
-    {%- endif -%}
-  {%- endform -%}
+    </aside>
+
+    <div class="enquiry__main">
+      {%- assign form_id = 'enquiry-form-' | append: section.id -%}
+      {%- form 'contact', id: form_id, class: 'enquiry__form', novalidate: 'novalidate', data-enquiry-form: '' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="enquiry-success" role="status" tabindex="-1" data-enquiry-success>
+            <span class="enquiry-success__icon">{% render 'icon', name: 'check' %}</span>
+            <p class="eyebrow">{{ 'enquiry.success.eyebrow' | t }}</p>
+            <h2 class="heading heading--lg">{{ 'enquiry.success.title' | t }}</h2>
+            <p class="lead">
+              {%- if section.settings.success_text != blank -%}
+                {{ section.settings.success_text | escape }}
+              {%- else -%}
+                {{ 'enquiry.success.text' | t }}
+              {%- endif -%}
+            </p>
+            <p class="enquiry-success__reference" data-success-reference hidden>
+              {{ 'enquiry.success.reference' | t }} <strong data-success-reference-value></strong>
+            </p>
+            <ol class="enquiry-success__next" role="list">
+              <li><span>01</span>{{ 'enquiry.success.next_1' | t }}</li>
+              <li><span>02</span>{{ 'enquiry.success.next_2' | t }}</li>
+              <li><span>03</span>{{ 'enquiry.success.next_3' | t }}</li>
+            </ol>
+            <div class="button-row">
+              {%- if settings.whatsapp_number != blank -%}
+                <a
+                  class="button button--whatsapp"
+                  href="{% render 'whatsapp-url', message: section.settings.images_message %}"
+                  target="_blank"
+                  rel="noopener"
+                  data-whatsapp-images
+                  data-base-message="{{ section.settings.images_message | escape }}"
+                  data-track="contact"
+                  data-track-params='{"method":"whatsapp","location":"enquiry_success"}'
+                >
+                  {% render 'icon', name: 'whatsapp' %}
+                  {{ 'enquiry.success.send_images' | t }}
+                </a>
+              {%- endif -%}
+              <a class="button button--secondary" href="{{ routes.all_products_collection_url }}">{{ 'enquiry.success.browse' | t }}</a>
+            </div>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="enquiry-errors" role="alert" tabindex="-1" data-enquiry-errors>
+              <p><strong>{{ 'enquiry.errors.summary' | t }}</strong></p>
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="enquiry-progress" data-progress hidden>
+            <div class="enquiry-progress__meta">
+              <span data-progress-label></span>
+              <span data-progress-count></span>
+            </div>
+            <div
+              class="enquiry-progress__bar"
+              role="progressbar"
+              aria-valuemin="1"
+              aria-valuemax="{{ total_steps }}"
+              aria-valuenow="1"
+              aria-label="{{ 'enquiry.progress' | t }}"
+              data-progress-bar
+            >
+              <span data-progress-fill></span>
+            </div>
+          </div>
+
+          <input type="hidden" name="contact[Enquiry type]" value="{{ 'enquiry.email.type' | t }}">
+          <input type="hidden" name="contact[Enquiry reference]" value="" data-reference>
+          <input type="hidden" name="contact[Based on product]" value="" data-based-on>
+          <input type="hidden" name="contact[Page]" value="{{ request.path | escape }}">
+          <input type="hidden" name="contact[Campaign]" value="" data-campaign>
+
+          {%- comment -%} Step 1: category {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="1">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 1, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_1' | t }}</span>
+            </legend>
+            <div class="choice-grid choice-grid--cards" data-required-group="contact[Category]">
+              {%- for block in categories -%}
+                {%- assign cat_id = section.id | append: '-cat-' | append: forloop.index -%}
+                <div class="choice" {{ block.shopify_attributes }}>
+                  <input
+                    type="radio"
+                    id="{{ cat_id }}"
+                    name="contact[Category]"
+                    value="{{ block.settings.title | escape }}"
+                    data-category-handle="{{ block.settings.title | handleize }}"
+                    required
+                  >
+                  <label for="{{ cat_id }}" class="choice__card">
+                    <span class="choice__media media ratio-landscape">
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 15vw, 45vw', alt: '' }}
+                      {%- else -%}
+                        {%- capture placeholder_type -%}collection-{{ forloop.index | modulo: 6 | plus: 1 }}{%- endcapture -%}
+                        {% render 'placeholder', type: placeholder_type %}
+                      {%- endif -%}
+                    </span>
+                    <span class="choice__title">{{ block.settings.title | escape }}</span>
+                  </label>
+                </div>
+              {%- endfor -%}
+              <div class="choice">
+                <input type="radio" id="{{ section.id }}-cat-other" name="contact[Category]" value="{{ 'enquiry.fields.other' | t }}" data-category-handle="other" required>
+                <label for="{{ section.id }}-cat-other" class="choice__card choice__card--text">
+                  <span class="choice__title">{{ 'enquiry.fields.other_category' | t }}</span>
+                </label>
+              </div>
+            </div>
+            <p class="field__error" data-error-for="contact[Category]" hidden>{{ 'enquiry.errors.choose_category' | t }}</p>
+          </fieldset>
+
+          {%- comment -%} Step 2: design or type {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="2">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 2, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_2' | t }}</span>
+            </legend>
+            {%- for block in categories -%}
+              {%- assign types = block.settings.types | newline_to_br | split: '<br />' -%}
+              <div class="choice-grid choice-grid--pills" data-types-for="{{ block.settings.title | handleize }}">
+                <p class="enquiry-step__group-title">{{ block.settings.title | escape }}</p>
+                {%- for type in types -%}
+                  {%- assign type_text = type | strip -%}
+                  {%- if type_text != blank -%}
+                    {%- assign type_id = section.id | append: '-type-' | append: forloop.parentloop.index | append: '-' | append: forloop.index -%}
+                    <div class="choice">
+                      <input type="radio" id="{{ type_id }}" name="contact[Furniture type]" value="{{ type_text | escape }}">
+                      <label for="{{ type_id }}" class="choice__pill">{{ type_text | escape }}</label>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endfor -%}
+            <div class="choice-grid choice-grid--pills">
+              <div class="choice">
+                <input type="radio" id="{{ section.id }}-type-unsure" name="contact[Furniture type]" value="{{ 'enquiry.fields.not_sure' | t }}">
+                <label for="{{ section.id }}-type-unsure" class="choice__pill">{{ 'enquiry.fields.not_sure_type' | t }}</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="{{ section.id }}-type-notes">{{ 'enquiry.fields.type_notes' | t }}</label>
+              <input id="{{ section.id }}-type-notes" type="text" name="contact[Design notes]" placeholder="{{ 'enquiry.fields.type_placeholder' | t }}">
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 3: dimensions {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="3">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 3, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_3' | t }}</span>
+            </legend>
+            <p class="muted small">{{ 'enquiry.fields.dimensions_help' | t }}</p>
+            <div class="unit-toggle" role="radiogroup" aria-label="{{ 'enquiry.fields.units' | t }}">
+              <input type="radio" id="{{ section.id }}-unit-cm" name="contact[Units]" value="cm" {% if section.settings.default_unit == 'cm' %}checked{% endif %} data-unit>
+              <label for="{{ section.id }}-unit-cm">{{ 'enquiry.fields.unit_cm' | t }}</label>
+              <input type="radio" id="{{ section.id }}-unit-in" name="contact[Units]" value="in" {% if section.settings.default_unit == 'in' %}checked{% endif %} data-unit>
+              <label for="{{ section.id }}-unit-in">{{ 'enquiry.fields.unit_in' | t }}</label>
+            </div>
+            <div class="field-row field-row--3">
+              <div class="field">
+                <label for="{{ section.id }}-width">{{ 'enquiry.fields.width' | t }} <span class="muted" data-unit-label></span></label>
+                <input id="{{ section.id }}-width" type="number" inputmode="decimal" min="1" max="2000" step="any" name="contact[Width]">
+                <p class="field__error" data-error-for="contact[Width]" hidden>{{ 'enquiry.errors.number' | t }}</p>
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-depth">{{ 'enquiry.fields.depth' | t }} <span class="muted" data-unit-label></span></label>
+                <input id="{{ section.id }}-depth" type="number" inputmode="decimal" min="1" max="2000" step="any" name="contact[Depth]">
+                <p class="field__error" data-error-for="contact[Depth]" hidden>{{ 'enquiry.errors.number' | t }}</p>
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-height">{{ 'enquiry.fields.height' | t }} <span class="muted" data-unit-label></span></label>
+                <input id="{{ section.id }}-height" type="number" inputmode="decimal" min="1" max="2000" step="any" name="contact[Height]">
+                <p class="field__error" data-error-for="contact[Height]" hidden>{{ 'enquiry.errors.number' | t }}</p>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="{{ section.id }}-quantity">{{ 'enquiry.fields.quantity' | t }}</label>
+                <input id="{{ section.id }}-quantity" type="number" inputmode="numeric" min="1" max="500" step="1" value="1" name="contact[Quantity]">
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-room">{{ 'enquiry.fields.room' | t }}</label>
+                <input id="{{ section.id }}-room" type="text" name="contact[Room]" placeholder="{{ 'enquiry.fields.room_placeholder' | t }}">
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" id="{{ section.id }}-measure" name="contact[Needs help measuring]" value="{{ 'enquiry.fields.yes' | t }}" data-measure-help>
+              <label for="{{ section.id }}-measure">{{ 'enquiry.fields.measure_help' | t }}</label>
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 4: material and finish {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="4">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 4, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_4' | t }}</span>
+            </legend>
+            <p class="enquiry-step__group-title">{{ 'enquiry.fields.material' | t }}</p>
+            <div class="choice-grid choice-grid--swatches">
+              {%- for block in materials -%}
+                {%- assign mat_id = section.id | append: '-mat-' | append: forloop.index -%}
+                <div class="choice" {{ block.shopify_attributes }}>
+                  <input type="radio" id="{{ mat_id }}" name="contact[Material]" value="{{ block.settings.name | escape }}">
+                  <label for="{{ mat_id }}" class="choice__swatch">
+                    <span class="choice__swatch-media" style="--swatch: {{ block.settings.color }};">
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120, 240', sizes: '96px', alt: '' }}
+                      {%- endif -%}
+                    </span>
+                    <span class="choice__swatch-text">
+                      {%- if block.settings.category != blank -%}
+                        <span class="choice__swatch-category">{{ block.settings.category | escape }}</span>
+                      {%- endif -%}
+                      <span>{{ block.settings.name | escape }}</span>
+                    </span>
+                  </label>
+                </div>
+              {%- endfor -%}
+              <div class="choice">
+                <input type="radio" id="{{ section.id }}-mat-advise" name="contact[Material]" value="{{ 'enquiry.fields.advise' | t }}">
+                <label for="{{ section.id }}-mat-advise" class="choice__swatch">
+                  <span class="choice__swatch-media choice__swatch-media--advise">{% render 'icon', name: 'chat' %}</span>
+                  <span class="choice__swatch-text"><span>{{ 'enquiry.fields.advise_me' | t }}</span></span>
+                </label>
+              </div>
+            </div>
+            <p class="enquiry-step__group-title">{{ 'enquiry.fields.finish' | t }}</p>
+            <div class="choice-grid choice-grid--pills">
+              {%- for item in finishes -%}
+                {%- assign item_text = item | strip -%}
+                {%- if item_text != blank -%}
+                  {%- assign fin_id = section.id | append: '-fin-' | append: forloop.index -%}
+                  <div class="choice">
+                    <input type="radio" id="{{ fin_id }}" name="contact[Finish]" value="{{ item_text | escape }}">
+                    <label for="{{ fin_id }}" class="choice__pill">{{ item_text | escape }}</label>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 5: colour and upholstery {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="5">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 5, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_5' | t }}</span>
+            </legend>
+            <p class="enquiry-step__group-title">{{ 'enquiry.fields.colour' | t }} <span class="muted small">{{ 'enquiry.fields.choose_any' | t }}</span></p>
+            <div class="choice-grid choice-grid--pills" data-colour-group>
+              {%- for item in colours -%}
+                {%- assign item_text = item | strip -%}
+                {%- if item_text != blank -%}
+                  {%- assign col_id = section.id | append: '-col-' | append: forloop.index -%}
+                  <div class="choice">
+                    <input type="checkbox" id="{{ col_id }}" value="{{ item_text | escape }}" data-colour>
+                    <label for="{{ col_id }}" class="choice__pill">{{ item_text | escape }}</label>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <input type="hidden" name="contact[Colour preference]" value="" data-colour-value>
+            <div class="field">
+              <label for="{{ section.id }}-colour-notes">{{ 'enquiry.fields.colour_notes' | t }}</label>
+              <input id="{{ section.id }}-colour-notes" type="text" name="contact[Colour notes]" placeholder="{{ 'enquiry.fields.colour_placeholder' | t }}">
+            </div>
+            <p class="enquiry-step__group-title">{{ 'enquiry.fields.upholstery' | t }}</p>
+            <div class="choice-grid choice-grid--pills">
+              {%- for item in upholstery_options -%}
+                {%- assign item_text = item | strip -%}
+                {%- if item_text != blank -%}
+                  {%- assign uph_id = section.id | append: '-uph-' | append: forloop.index -%}
+                  <div class="choice">
+                    <input type="radio" id="{{ uph_id }}" name="contact[Upholstery]" value="{{ item_text | escape }}">
+                    <label for="{{ uph_id }}" class="choice__pill">{{ item_text | escape }}</label>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 6: reference images {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="6">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 6, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_6' | t }}</span>
+            </legend>
+            <p class="muted">{{ 'enquiry.fields.images_intro' | t }}</p>
+            <div class="field">
+              <label for="{{ section.id }}-images-1">{{ 'enquiry.fields.image_link' | t }}</label>
+              <input id="{{ section.id }}-images-1" type="url" name="contact[Reference link 1]" placeholder="https://" inputmode="url">
+              <p class="field__error" data-error-for="contact[Reference link 1]" hidden>{{ 'enquiry.errors.url' | t }}</p>
+            </div>
+            <div class="field">
+              <label for="{{ section.id }}-images-2">{{ 'enquiry.fields.image_link_2' | t }}</label>
+              <input id="{{ section.id }}-images-2" type="url" name="contact[Reference link 2]" placeholder="https://" inputmode="url">
+              <p class="field__error" data-error-for="contact[Reference link 2]" hidden>{{ 'enquiry.errors.url' | t }}</p>
+            </div>
+            <div class="enquiry-note">
+              {% render 'icon', name: 'upload' %}
+              <div>
+                <p><strong>{{ 'enquiry.fields.images_upload_title' | t }}</strong></p>
+                <p class="small muted">
+                  {%- if settings.whatsapp_number != blank -%}
+                    {{ 'enquiry.fields.images_upload_whatsapp' | t }}
+                  {%- else -%}
+                    {{ 'enquiry.fields.images_upload_email' | t }}
+                  {%- endif -%}
+                </p>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" id="{{ section.id }}-will-send" name="contact[Will send images separately]" value="{{ 'enquiry.fields.yes' | t }}">
+              <label for="{{ section.id }}-will-send">{{ 'enquiry.fields.will_send_images' | t }}</label>
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 7: requirements and budget {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="7">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 7, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_7' | t }}</span>
+            </legend>
+            <div class="field">
+              <label for="{{ section.id }}-body">{{ 'enquiry.fields.body' | t }} <span aria-hidden="true">*</span></label>
+              <textarea id="{{ section.id }}-body" name="contact[body]" rows="6" required minlength="10" placeholder="{{ 'enquiry.fields.body_placeholder' | t }}"></textarea>
+              <p class="field__error" data-error-for="contact[body]" hidden>{{ 'enquiry.errors.body' | t }}</p>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="{{ section.id }}-budget">{{ 'enquiry.fields.budget' | t }}</label>
+                <select id="{{ section.id }}-budget" name="contact[Budget]">
+                  <option value="">{{ 'enquiry.fields.choose' | t }}</option>
+                  {%- for item in budgets -%}
+                    {%- assign item_text = item | strip -%}
+                    {%- if item_text != blank -%}
+                      <option value="{{ item_text | escape }}">{{ item_text | escape }}</option>
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <option value="{{ 'enquiry.fields.not_sure' | t }}">{{ 'enquiry.fields.not_sure' | t }}</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-timeline">{{ 'enquiry.fields.timeline' | t }}</label>
+                <select id="{{ section.id }}-timeline" name="contact[Timeline]">
+                  <option value="">{{ 'enquiry.fields.choose' | t }}</option>
+                  {%- for item in timelines -%}
+                    {%- assign item_text = item | strip -%}
+                    {%- if item_text != blank -%}
+                      <option value="{{ item_text | escape }}">{{ item_text | escape }}</option>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="{{ section.id }}-city">{{ 'enquiry.fields.city' | t }}</label>
+                <input id="{{ section.id }}-city" type="text" name="contact[City]" autocomplete="address-level2">
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-postcode">{{ 'enquiry.fields.postcode' | t }}</label>
+                <input id="{{ section.id }}-postcode" type="text" name="contact[Postcode]" autocomplete="postal-code" inputmode="numeric">
+              </div>
+            </div>
+          </fieldset>
+
+          {%- comment -%} Step 8: contact details {%- endcomment -%}
+          <fieldset class="enquiry-step" data-step="8">
+            <legend class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 8, total: total_steps }}</span>
+              <span class="heading heading--md">{{ 'enquiry.steps.question_8' | t }}</span>
+            </legend>
+            <div class="field">
+              <label for="{{ section.id }}-name">{{ 'enquiry.fields.name' | t }} <span aria-hidden="true">*</span></label>
+              <input id="{{ section.id }}-name" type="text" name="contact[name]" autocomplete="name" required minlength="2">
+              <p class="field__error" data-error-for="contact[name]" hidden>{{ 'enquiry.errors.name' | t }}</p>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="{{ section.id }}-email">{{ 'enquiry.fields.email' | t }} <span aria-hidden="true">*</span></label>
+                <input id="{{ section.id }}-email" type="email" name="contact[email]" autocomplete="email" required>
+                <p class="field__error" data-error-for="contact[email]" hidden>{{ 'enquiry.errors.email' | t }}</p>
+              </div>
+              <div class="field">
+                <label for="{{ section.id }}-phone">{{ 'enquiry.fields.phone' | t }} <span aria-hidden="true">*</span></label>
+                <input id="{{ section.id }}-phone" type="tel" name="contact[phone]" autocomplete="tel" required inputmode="tel" data-phone>
+                <p class="field__error" data-error-for="contact[phone]" hidden>{{ 'enquiry.errors.phone' | t }}</p>
+              </div>
+            </div>
+            <p class="enquiry-step__group-title">{{ 'enquiry.fields.contact_method' | t }}</p>
+            <div class="choice-grid choice-grid--pills">
+              {%- assign methods = 'whatsapp,phone,email' | split: ',' -%}
+              {%- for method in methods -%}
+                {%- capture method_key -%}enquiry.fields.method_{{ method }}{%- endcapture -%}
+                <div class="choice">
+                  <input type="radio" id="{{ section.id }}-method-{{ method }}" name="contact[Preferred contact]" value="{{ method_key | t }}" {% if forloop.first %}checked{% endif %}>
+                  <label for="{{ section.id }}-method-{{ method }}" class="choice__pill">{{ method_key | t }}</label>
+                </div>
+              {%- endfor -%}
+            </div>
+            <div class="check">
+              <input type="checkbox" id="{{ section.id }}-consult" name="contact[Consultation requested]" value="{{ 'enquiry.fields.yes' | t }}">
+              <label for="{{ section.id }}-consult">{{ 'enquiry.fields.consultation' | t }}</label>
+            </div>
+            <p class="small muted">{{ 'enquiry.required_note' | t }}</p>
+          </fieldset>
+
+          {%- comment -%} Step 9: review and submit {%- endcomment -%}
+          <div class="enquiry-step" data-step="9" role="group" aria-labelledby="{{ section.id }}-review-title">
+            <div class="enquiry-step__legend">
+              <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 9, total: total_steps }}</span>
+              <h2 class="heading heading--md" id="{{ section.id }}-review-title">{{ 'enquiry.steps.question_9' | t }}</h2>
+            </div>
+            <dl class="enquiry-review" data-review></dl>
+            <p class="small muted">{{ section.settings.privacy_note | escape }}</p>
+          </div>
+
+          <div class="enquiry-nav" data-nav>
+            <button type="button" class="button button--secondary" data-prev hidden>
+              {% render 'icon', name: 'arrow-left' %}
+              {{ 'enquiry.back' | t }}
+            </button>
+            <button type="button" class="button" data-next hidden>
+              {{ 'enquiry.next' | t }}
+              {% render 'icon', name: 'arrow' %}
+            </button>
+            <button type="submit" class="button" data-submit>
+              {{ 'enquiry.submit' | t }}
+            </button>
+          </div>
+          <p class="enquiry-status" role="status" data-status></p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+
+  <template data-labels>
+    <span data-key="step_1">{{ 'enquiry.steps.step_1' | t }}</span>
+    <span data-key="step_2">{{ 'enquiry.steps.step_2' | t }}</span>
+    <span data-key="step_3">{{ 'enquiry.steps.step_3' | t }}</span>
+    <span data-key="step_4">{{ 'enquiry.steps.step_4' | t }}</span>
+    <span data-key="step_5">{{ 'enquiry.steps.step_5' | t }}</span>
+    <span data-key="step_6">{{ 'enquiry.steps.step_6' | t }}</span>
+    <span data-key="step_7">{{ 'enquiry.steps.step_7' | t }}</span>
+    <span data-key="step_8">{{ 'enquiry.steps.step_8' | t }}</span>
+    <span data-key="step_9">{{ 'enquiry.steps.step_9' | t }}</span>
+    <span data-key="count">{{ 'enquiry.step_count' | t: step: '[step]', total: total_steps }}</span>
+    <span data-key="edit">{{ 'enquiry.edit' | t }}</span>
+    <span data-key="empty">{{ 'enquiry.review_empty' | t }}</span>
+    <span data-key="sending">{{ 'enquiry.sending' | t }}</span>
+    <span data-key="dimensions">{{ 'enquiry.fields.dimensions' | t }}</span>
+    <span data-key="images">{{ 'enquiry.fields.images' | t }}</span>
+    <span data-key="details">{{ 'enquiry.fields.details' | t }}</span>
+  </template>
 </div>
 
 {% stylesheet %}
-  .enquiry__intro {
-    max-width: 40rem;
+  .enquiry {
+    padding-block: var(--space-lg) var(--section-spacing);
+  }
+  .enquiry__layout {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .enquiry__aside {
+    display: grid;
+    gap: var(--space-md);
+    align-content: start;
+  }
+  .enquiry__steps {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  .enquiry__steps li {
+    display: flex;
+    gap: 1rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
     color: var(--color-muted);
+    transition: color var(--motion-duration) var(--ease);
+  }
+  .enquiry__steps li.is-done {
+    color: var(--color-foreground);
+  }
+  .enquiry__steps li.is-current {
+    color: var(--color-foreground);
+    font-weight: 500;
+  }
+  .enquiry__steps-index {
+    font-family: var(--font-heading--family);
+    color: var(--color-heading-accent);
+  }
+  .enquiry__help {
+    display: grid;
+    gap: 0.6rem;
+    padding: var(--space-md);
+    background-color: var(--color-surface);
+  }
+  .enquiry__help .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  .enquiry__main {
+    min-width: 0;
   }
   .enquiry__form {
     display: grid;
     gap: var(--space-lg);
-    max-width: 52rem;
   }
-  .enquiry__group {
+  .enquiry-progress__meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    font-size: var(--text-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .enquiry-progress__bar {
+    height: 2px;
+    background-color: var(--color-border);
+  }
+  .enquiry-progress__bar span {
+    display: block;
+    height: 100%;
+    width: var(--progress, 11%);
+    background-color: var(--color-charcoal);
+    transition: width 0.5s var(--ease-out);
+  }
+  .enquiry-step {
     display: grid;
-    gap: var(--space-sm);
+    gap: var(--space-md);
+    min-width: 0;
     margin: 0;
-    padding: var(--space-md) 0 0;
+    padding: 0 0 var(--space-lg);
     border: 0;
-    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
-  .enquiry__group legend {
-    float: left;
-    width: 100%;
-    margin-bottom: var(--space-sm);
+  .js-enquiry .enquiry-step {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .js-enquiry .enquiry-step:not(.is-active) {
+    display: none;
+  }
+  .js-enquiry .enquiry-step.is-active {
+    animation: step-in 0.45s var(--ease-out);
+  }
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+  }
+  .enquiry-step__legend {
+    display: grid;
+    gap: 0.5rem;
     padding: 0;
+    margin-bottom: var(--space-xs);
   }
-  .enquiry__field {
+  .enquiry-step__group-title {
+    grid-column: 1 / -1;
+    margin-top: var(--space-xs);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .choice-grid {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.6rem;
   }
-  .enquiry__field label {
-    font-size: var(--text-sm);
-    letter-spacing: 0.08em;
+  .choice-grid--cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .enquiry__help {
-    font-size: var(--text-sm);
-    color: var(--color-muted);
+  .choice-grid--pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
-  .enquiry__actions {
+  .choice-grid--swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .js-enquiry [data-types-for]:not(.is-visible) {
+    display: none;
+  }
+  .js-enquiry [data-types-for] .enquiry-step__group-title {
+    display: none;
+  }
+  .choice {
+    position: relative;
+  }
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .choice label {
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .choice__card {
     display: grid;
-    gap: var(--space-xs);
-    justify-items: start;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    transition:
+      border-color var(--motion-duration) var(--ease),
+      box-shadow var(--motion-duration) var(--ease);
   }
-  .enquiry__errors,
-  .enquiry__success {
-    padding: var(--space-md);
+  .choice__card:hover {
+    border-color: var(--color-muted);
+  }
+  .choice__card--text {
+    align-content: center;
+    min-height: 6rem;
     background-color: var(--color-surface);
   }
-  .enquiry__errors {
-    border-left: 3px solid #8b2e2e;
+  .choice__title {
+    padding: 0.8rem 1rem;
+    font-family: var(--font-heading--family);
+    font-size: 1.1rem;
   }
-  .enquiry__success {
+  .choice input:checked + .choice__card {
+    border-color: var(--color-charcoal);
+    box-shadow: inset 0 0 0 1px var(--color-charcoal);
+  }
+  .choice input:checked + .choice__card .choice__title::after {
+    content: ' ✓';
+    color: var(--color-heading-accent);
+  }
+  .choice__pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    transition:
+      border-color var(--motion-duration) var(--ease),
+      background-color var(--motion-duration) var(--ease);
+  }
+  .choice__pill:hover {
+    border-color: var(--color-muted);
+  }
+  .choice input:checked + .choice__pill {
+    border-color: var(--color-charcoal);
+    background-color: var(--color-charcoal);
+    color: var(--color-ivory);
+  }
+  .choice input:focus-visible + label {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .choice__swatch {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.6rem;
+    border: 1px solid var(--color-border);
+    height: 100%;
+  }
+  .choice input:checked + .choice__swatch {
+    border-color: var(--color-charcoal);
+    box-shadow: inset 0 0 0 1px var(--color-charcoal);
+  }
+  .choice__swatch-media {
+    position: relative;
+    flex-shrink: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+    overflow: hidden;
+    border-radius: 50%;
+    background:
+      radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / 0.22), transparent 60%),
+      var(--swatch, var(--color-sand));
+  }
+  .choice__swatch-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .choice__swatch-media--advise {
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+  }
+  .choice__swatch-text {
+    display: grid;
+    font-size: var(--text-sm);
+    line-height: 1.35;
+  }
+  .choice__swatch-category {
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .field-row {
     display: grid;
     gap: var(--space-sm);
-    justify-items: start;
   }
-  .enquiry__field input:user-invalid,
-  .enquiry__field textarea:user-invalid,
-  .enquiry__field select:user-invalid {
-    border-color: #8b2e2e;
+  .unit-toggle {
+    display: inline-flex;
+    justify-self: start;
+    border: 1px solid var(--color-border);
+  }
+  .unit-toggle input {
+    position: absolute;
+    opacity: 0;
+  }
+  .unit-toggle label {
+    margin: 0;
+    padding: 0.5rem 1.1rem;
+    font-size: var(--text-sm);
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .unit-toggle input:checked + label {
+    background-color: var(--color-charcoal);
+    color: var(--color-ivory);
+  }
+  .unit-toggle input:focus-visible + label {
+    outline: 2px solid var(--color-accent);
+  }
+  .check {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .check input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.2rem;
+    accent-color: var(--color-charcoal);
+    flex-shrink: 0;
+  }
+  .check label {
+    margin: 0;
+    font-weight: 400;
+  }
+  .enquiry-note {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding: var(--space-md);
+    border: 1px dashed var(--color-border);
+    background-color: var(--color-surface);
+  }
+  .enquiry-review {
+    display: grid;
+    margin: 0;
+  }
+  .enquiry-review__row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .enquiry-review dt {
+    font-size: var(--text-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .enquiry-review dd {
+    grid-column: 1;
+    margin: 0;
+    font-size: var(--text-sm);
+    white-space: pre-line;
+  }
+  .enquiry-review__edit {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .enquiry-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: space-between;
+  }
+  .js-enquiry .enquiry-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    padding-block: 0.9rem;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-border);
+  }
+  .enquiry-nav [data-next],
+  .enquiry-nav [data-submit] {
+    flex: 1 1 auto;
+    margin-left: auto;
+  }
+  .enquiry-nav [hidden] {
+    display: none;
+  }
+  .enquiry-status:empty {
+    display: none;
+  }
+  .enquiry-status {
+    font-size: var(--text-sm);
+    color: var(--color-error);
+  }
+  .enquiry-errors {
+    padding: var(--space-md);
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
+  }
+  .enquiry-errors ul {
+    margin: 0.5rem 0 0;
+  }
+  .enquiry-success {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    padding: var(--space-xl) var(--space-md);
+    background-color: var(--color-surface);
+  }
+  .enquiry-success__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background-color: var(--color-charcoal);
+    color: var(--color-ivory);
+  }
+  .enquiry-success__reference {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+  }
+  .enquiry-success__next {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+  }
+  .enquiry-success__next li {
+    display: flex;
+    gap: 1rem;
+  }
+  .enquiry-success__next span {
+    font-family: var(--font-heading--family);
+    color: var(--color-heading-accent);
   }
   @media (min-width: 750px) {
-    .enquiry__group {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-md);
+    .choice-grid--cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-    .enquiry__field--wide {
-      grid-column: 1 / -1;
+    .choice-grid--swatches {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .field-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field-row--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .enquiry-nav [data-next],
+    .enquiry-nav [data-submit] {
+      flex: 0 0 auto;
+    }
+    .js-enquiry .enquiry-nav {
+      position: static;
+      border-top: 0;
+      padding-top: 0;
+    }
+    .enquiry-success {
+      padding: var(--space-xl);
+    }
+  }
+  @media (min-width: 990px) {
+    .enquiry {
+      padding-top: var(--space-xl);
+    }
+    .enquiry__layout {
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: var(--space-2xl);
+    }
+    .enquiry__aside {
+      position: sticky;
+      top: calc(var(--header-height) + 2rem);
+    }
+    .js-enquiry .enquiry__steps {
+      display: block;
+    }
+    .choice-grid--cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 {% endstylesheet %}
 
 {% javascript %}
   (() => {
-    const key = 'custom-enquiry-draft';
-    const form = document.getElementById('custom-enquiry-form');
-    if (!form) return;
-
-    const read = () => {
-      try {
-        return JSON.parse(sessionStorage.getItem(key) || '{}');
-      } catch (error) {
-        return {};
-      }
+    const root = document.querySelector('[data-enquiry]');
+    if (!root) return;
+    const storageKey = 'aaf-enquiry-' + root.dataset.sectionId;
+    const refKey = 'aaf-enquiry-ref';
+    const store = {
+      get(key) {
+        try {
+          return window.sessionStorage.getItem(key);
+        } catch (error) {
+          return null;
+        }
+      },
+      set(key, value) {
+        try {
+          window.sessionStorage.setItem(key, value);
+        } catch (error) {}
+      },
+      remove(key) {
+        try {
+          window.sessionStorage.removeItem(key);
+        } catch (error) {}
+      },
     };
-    const save = () => {
-      try {
-        const data = {};
-        new FormData(form).forEach((value, name) => {
-          if (typeof value === 'string') data[name] = value;
-        });
-        sessionStorage.setItem(key, JSON.stringify(data));
-      } catch (error) {
-        return;
-      }
-    };
-    const clear = () => {
-      try {
-        sessionStorage.removeItem(key);
-      } catch (error) {
-        return;
-      }
-    };
-
-    const focusTarget = form.querySelector('[data-enquiry-errors], [data-enquiry-success]');
-    if (form.querySelector('[data-enquiry-success]')) clear();
-    if (form.querySelector('[data-enquiry-errors]')) {
-      const draft = read();
-      Object.keys(draft).forEach((name) => {
-        const field = form.elements[name];
-        if (field && field.type !== 'hidden') field.value = draft[name];
-      });
+    const labels = {};
+    const labelTemplate = root.querySelector('template[data-labels]');
+    if (labelTemplate) {
+      labelTemplate.content.querySelectorAll('[data-key]').forEach((el) => (labels[el.dataset.key] = el.textContent.trim()));
     }
-    if (focusTarget) focusTarget.focus();
 
-    const category = new URLSearchParams(window.location.search).get('category');
-    const categoryField = form.querySelector('[data-category]');
-    if (category && categoryField && !categoryField.value) categoryField.value = category;
+    const success = root.querySelector('[data-enquiry-success]');
+    if (success) {
+      const reference = store.get(refKey);
+      if (reference) {
+        const wrap = success.querySelector('[data-success-reference]');
+        wrap.querySelector('[data-success-reference-value]').textContent = reference;
+        wrap.hidden = false;
+        const wa = success.querySelector('[data-whatsapp-images]');
+        if (wa) {
+          const url = new URL(wa.href);
+          url.searchParams.set('text', (wa.dataset.baseMessage || '') + ' ' + reference);
+          wa.href = url.toString();
+        }
+      }
+      const trackedKey = 'aaf-enquiry-tracked-' + (reference || 'none');
+      if (window.AAF && !store.get(trackedKey)) {
+        let draft = {};
+        try {
+          draft = JSON.parse(store.get(storageKey) || '{}');
+        } catch (error) {}
+        window.AAF.track('generate_lead', {
+          lead_type: 'custom_furniture_enquiry',
+          enquiry_reference: reference,
+          furniture_category: draft['contact[Category]'] || '',
+          budget: draft['contact[Budget]'] || '',
+        });
+        store.set(trackedKey, '1');
+      }
+      store.remove(storageKey);
+      success.focus();
+      return;
+    }
 
-    let sending = false;
-    form.addEventListener('submit', (event) => {
-      if (sending) {
-        event.preventDefault();
-        return;
+    const form = root.querySelector('[data-enquiry-form]');
+    if (!form) return;
+    root.classList.add('js-enquiry');
+    const steps = Array.from(form.querySelectorAll('[data-step]'));
+    const total = steps.length;
+    const prev = form.querySelector('[data-prev]');
+    const next = form.querySelector('[data-next]');
+    const submit = form.querySelector('[data-submit]');
+    const progress = form.querySelector('[data-progress]');
+    const stepList = root.querySelector('[data-step-list]');
+    const statusEl = form.querySelector('[data-status]');
+    let current = 1;
+    let started = false;
+
+    if (progress) progress.hidden = false;
+    if (stepList) stepList.hidden = false;
+
+    const params = new URLSearchParams(window.location.search);
+    const campaign = ['utm_source', 'utm_medium', 'utm_campaign', 'gclid', 'fbclid']
+      .filter((key) => params.get(key))
+      .map((key) => key + '=' + params.get(key))
+      .join('; ');
+    form.querySelector('[data-campaign]').value = campaign || document.referrer || '';
+
+    if (!store.get(refKey)) {
+      const d = new Date();
+      const stamp = String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      store.set(refKey, 'AAF-' + stamp + '-' + Math.random().toString(36).slice(2, 6).toUpperCase());
+    }
+    form.querySelector('[data-reference]').value = store.get(refKey) || '';
+
+    const saveDraft = () => {
+      const data = {};
+      form.querySelectorAll('input, textarea, select').forEach((el) => {
+        if (el.type === 'hidden' && !el.hasAttribute('data-colour-value')) return;
+        if (el.type === 'radio') {
+          if (el.checked) data[el.name] = el.value;
+        } else if (el.type === 'checkbox') {
+          if (el.hasAttribute('data-colour')) {
+            data['colour:' + el.value] = el.checked;
+          } else {
+            data[el.name] = el.checked;
+          }
+        } else if (el.name) {
+          data[el.name] = el.value;
+        }
+      });
+      data.__step = current;
+      store.set(storageKey, JSON.stringify(data));
+    };
+
+    const restoreDraft = () => {
+      let data;
+      try {
+        data = JSON.parse(store.get(storageKey) || 'null');
+      } catch (error) {
+        data = null;
       }
-      if (!form.checkValidity()) {
-        event.preventDefault();
-        form.reportValidity();
-        return;
+      if (!data) return null;
+      form.querySelectorAll('input, textarea, select').forEach((el) => {
+        if (el.type === 'hidden' && !el.hasAttribute('data-colour-value')) return;
+        if (el.type === 'radio') {
+          if (data[el.name] !== undefined) el.checked = data[el.name] === el.value;
+        } else if (el.type === 'checkbox') {
+          const key = el.hasAttribute('data-colour') ? 'colour:' + el.value : el.name;
+          if (data[key] !== undefined) el.checked = !!data[key];
+        } else if (el.name && data[el.name] !== undefined) {
+          el.value = data[el.name];
+        }
+      });
+      return data;
+    };
+
+    const prefill = () => {
+      const product = params.get('product');
+      if (product) form.querySelector('[data-based-on]').value = product;
+      const category = (params.get('category') || '').toLowerCase();
+      if (category) {
+        const match = Array.from(form.querySelectorAll('[data-category-handle]')).find((input) => {
+          const value = input.value.toLowerCase();
+          return value === category || category.includes(value) || value.includes(category);
+        });
+        if (match) match.checked = true;
       }
-      sending = true;
-      save();
-      const button = form.querySelector('[data-submit]');
-      if (button) {
-        button.disabled = true;
-        button.setAttribute('aria-busy', 'true');
-        button.textContent = button.dataset.sendingLabel;
+      if (product) {
+        const notes = form.querySelector('[name="contact[Design notes]"]');
+        if (notes && !notes.value) notes.value = product;
+      }
+    };
+
+    const syncTypes = () => {
+      const checked = form.querySelector('[data-category-handle]:checked');
+      const handle = checked ? checked.dataset.categoryHandle : null;
+      let anyVisible = false;
+      form.querySelectorAll('[data-types-for]').forEach((group) => {
+        const visible = group.dataset.typesFor === handle;
+        group.classList.toggle('is-visible', visible);
+        if (visible) anyVisible = true;
+        if (!visible) group.querySelectorAll('input').forEach((input) => (input.checked = false));
+      });
+      return anyVisible;
+    };
+
+    const syncColours = () => {
+      const values = Array.from(form.querySelectorAll('[data-colour]:checked')).map((el) => el.value);
+      form.querySelector('[data-colour-value]').value = values.join(', ');
+    };
+
+    const syncUnits = () => {
+      const unit = form.querySelector('[data-unit]:checked');
+      form.querySelectorAll('[data-unit-label]').forEach((el) => (el.textContent = unit ? '(' + unit.value + ')' : ''));
+    };
+
+    const errorFor = (name) => form.querySelector('[data-error-for="' + name + '"]');
+
+    const showError = (field, show) => {
+      const error = errorFor(field.name);
+      if (field.type !== 'radio') {
+        field.setAttribute('aria-invalid', show ? 'true' : 'false');
+        if (error) {
+          if (!error.id) error.id = field.id + '-error';
+          if (show) field.setAttribute('aria-describedby', error.id);
+          else field.removeAttribute('aria-describedby');
+        }
+      }
+      if (error) error.hidden = !show;
+    };
+
+    const validateStep = (index) => {
+      const step = steps[index - 1];
+      let firstInvalid = null;
+      const radiosChecked = new Set();
+      step.querySelectorAll('input, textarea, select').forEach((field) => {
+        if (field.disabled || field.type === 'hidden') return;
+        if (field.type === 'radio') {
+          if (!field.required || radiosChecked.has(field.name)) return;
+          radiosChecked.add(field.name);
+          const ok = !!step.querySelector('input[name="' + CSS.escape(field.name) + '"]:checked');
+          showError(field, !ok);
+          if (!ok && !firstInvalid) firstInvalid = field;
+          return;
+        }
+        if (typeof field.value === 'string' && field.type !== 'checkbox') field.value = field.value.trimStart();
+        if (field.hasAttribute('data-phone')) {
+          const digits = field.value.replace(/\D/g, '').length;
+          field.setCustomValidity(field.value && (digits < 7 || digits > 15) ? 'invalid' : '');
+        }
+        const ok = field.checkValidity();
+        showError(field, !ok);
+        if (!ok && !firstInvalid) firstInvalid = field;
+      });
+      if (firstInvalid) {
+        firstInvalid.focus({ preventScroll: false });
+        return false;
+      }
+      return true;
+    };
+
+    const valueOf = (name) => {
+      const el = form.querySelector('[name="' + name + '"]:checked') || form.querySelector('[name="' + name + '"]:not([type="radio"]):not([type="checkbox"])');
+      return el ? String(el.value || '').trim() : '';
+    };
+
+    const buildReview = () => {
+      const review = form.querySelector('[data-review]');
+      const unit = valueOf('contact[Units]');
+      const dims = ['contact[Width]', 'contact[Depth]', 'contact[Height]'].map(valueOf);
+      const dimText = dims.some(Boolean) ? dims.map((d) => d || '–').join(' × ') + ' ' + unit : '';
+      const extra = [];
+      const qty = valueOf('contact[Quantity]');
+      if (qty && qty !== '1') extra.push('× ' + qty);
+      if (valueOf('contact[Room]')) extra.push(valueOf('contact[Room]'));
+      const measure = form.querySelector('[data-measure-help]');
+      if (measure && measure.checked) extra.push(measure.nextElementSibling.textContent.trim());
+      const rows = [
+        [labels.step_1, valueOf('contact[Category]'), 1],
+        [labels.step_2, [valueOf('contact[Furniture type]'), valueOf('contact[Design notes]')].filter(Boolean).join(' · '), 2],
+        [labels.dimensions, [dimText, extra.join(' · ')].filter(Boolean).join('\n'), 3],
+        [labels.step_4, [valueOf('contact[Material]'), valueOf('contact[Finish]')].filter(Boolean).join(' · '), 4],
+        [labels.step_5, [valueOf('contact[Colour preference]'), valueOf('contact[Colour notes]'), valueOf('contact[Upholstery]')].filter(Boolean).join(' · '), 5],
+        [labels.images, [valueOf('contact[Reference link 1]'), valueOf('contact[Reference link 2]')].filter(Boolean).join('\n'), 6],
+        [labels.step_7, [valueOf('contact[body]'), valueOf('contact[Budget]'), valueOf('contact[Timeline]'), valueOf('contact[City]')].filter(Boolean).join('\n'), 7],
+        [labels.details, [valueOf('contact[name]'), valueOf('contact[email]'), valueOf('contact[phone]'), valueOf('contact[Preferred contact]')].filter(Boolean).join('\n'), 8],
+      ];
+      review.innerHTML = '';
+      rows.forEach(([label, value, step]) => {
+        const row = document.createElement('div');
+        row.className = 'enquiry-review__row';
+        const dt = document.createElement('dt');
+        dt.textContent = label;
+        const dd = document.createElement('dd');
+        dd.textContent = value || labels.empty;
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'enquiry-review__edit';
+        edit.textContent = labels.edit;
+        edit.dataset.goto = step;
+        edit.setAttribute('aria-label', labels.edit + ': ' + label);
+        row.append(dt, dd, edit);
+        review.append(row);
+      });
+    };
+
+    const show = (index, focus) => {
+      current = Math.max(1, Math.min(total, index));
+      steps.forEach((step, i) => step.classList.toggle('is-active', i === current - 1));
+      prev.hidden = current === 1;
+      next.hidden = current === total;
+      submit.hidden = current !== total;
+      const label = labels['step_' + current] || '';
+      form.querySelector('[data-progress-label]').textContent = label;
+      form.querySelector('[data-progress-count]').textContent = (labels.count || '').replace('[step]', current);
+      const bar = form.querySelector('[data-progress-bar]');
+      bar.setAttribute('aria-valuenow', current);
+      bar.style.setProperty('--progress', (current / total) * 100 + '%');
+      form.querySelector('[data-progress-fill]').style.width = (current / total) * 100 + '%';
+      if (stepList) {
+        stepList.querySelectorAll('[data-step-link]').forEach((li) => {
+          const n = Number(li.dataset.stepLink);
+          li.classList.toggle('is-current', n === current);
+          li.classList.toggle('is-done', n < current);
+          if (n === current) li.setAttribute('aria-current', 'step');
+          else li.removeAttribute('aria-current');
+        });
+      }
+      if (current === total) buildReview();
+      if (focus) {
+        const heading = steps[current - 1].querySelector('.heading');
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
+        const top = form.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 80) - 24;
+        if (window.scrollY > top) window.scrollTo({ top, behavior: 'smooth' });
+      }
+      saveDraft();
+      if (window.AAF) window.AAF.track('enquiry_step', { step: current, step_name: label });
+    };
+
+    form.addEventListener('change', (event) => {
+      if (!started && window.AAF) {
+        started = true;
+        window.AAF.track('enquiry_start', { lead_type: 'custom_furniture_enquiry' });
+      }
+      if (event.target.matches('[data-category-handle]')) {
+        syncTypes();
+        showError(event.target, false);
+      }
+      if (event.target.matches('[data-colour]')) syncColours();
+      if (event.target.matches('[data-unit]')) syncUnits();
+      if (event.target.getAttribute('aria-invalid') === 'true' && event.target.checkValidity()) showError(event.target, false);
+      saveDraft();
+    });
+    form.addEventListener('input', (event) => {
+      if (event.target.hasAttribute('data-phone')) event.target.setCustomValidity('');
+    });
+    form.addEventListener('input', (event) => {
+      if (event.target.getAttribute('aria-invalid') === 'true' && event.target.checkValidity()) showError(event.target, false);
+      saveDraft();
+    });
+
+    next.addEventListener('click', () => {
+      if (!validateStep(current)) return;
+      let target = current + 1;
+      if (target === 2 && !syncTypes()) {
+        const typeSection = steps[1];
+        const hasStandalone = typeSection.querySelector('.choice-grid--pills:not([data-types-for])');
+        if (!hasStandalone) target = 3;
+      }
+      show(target, true);
+    });
+    prev.addEventListener('click', () => show(current - 1, true));
+    form.addEventListener('click', (event) => {
+      const goto = event.target.closest('[data-goto]');
+      if (goto) show(Number(goto.dataset.goto), true);
+    });
+    form.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && event.target.tagName === 'INPUT' && current < total) {
+        event.preventDefault();
+        next.click();
       }
     });
+
+    let submitting = false;
+    form.addEventListener('submit', (event) => {
+      if (submitting) {
+        event.preventDefault();
+        return;
+      }
+      syncColours();
+      for (let i = 1; i < total; i++) {
+        if (!validateStep(i)) {
+          event.preventDefault();
+          show(i, false);
+          validateStep(i);
+          return;
+        }
+      }
+      submitting = true;
+      saveDraft();
+      submit.classList.add('is-loading');
+      submit.setAttribute('aria-busy', 'true');
+      statusEl.style.color = 'inherit';
+      statusEl.textContent = labels.sending;
+      if (window.AAF) window.AAF.track('enquiry_submit', { lead_type: 'custom_furniture_enquiry', furniture_category: valueOf('contact[Category]') });
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+          submitting = false;
+          submit.classList.remove('is-loading');
+          statusEl.textContent = '';
+        }
+      });
+    });
+
+    const draft = restoreDraft();
+    prefill();
+    syncTypes();
+    syncColours();
+    syncUnits();
+    const errors = form.querySelector('[data-enquiry-errors]');
+    if (errors) {
+      show(8, false);
+      errors.focus();
+    } else {
+      show(draft && draft.__step ? Math.min(draft.__step, total) : 1, false);
+    }
   })();
 {% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.custom_enquiry",
+  "class": "section-enquiry",
   "settings": [
     {
       "type": "text",
       "id": "eyebrow",
       "label": "t:labels.eyebrow",
-      "default": "Bespoke enquiry"
+      "default": "Custom furniture"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Design your <em>piece</em>"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "t:labels.heading_tag",
+      "options": [
+        { "value": "h1", "label": "t:options.heading_tag.h1" },
+        { "value": "h2", "label": "t:options.heading_tag.h2" }
+      ],
+      "default": "h1",
+      "info": "t:info.heading_tag"
     },
     {
       "type": "text",
-      "id": "heading",
-      "label": "t:labels.heading",
-      "default": "Tell us about your piece"
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Answer a few questions about the piece you have in mind. It takes about three minutes, and we reply with a design direction and quotation."
+    },
+    {
+      "type": "select",
+      "id": "default_unit",
+      "label": "t:labels.default_unit",
+      "options": [
+        { "value": "cm", "label": "t:options.unit.cm" },
+        { "value": "in", "label": "t:options.unit.in" }
+      ],
+      "default": "cm"
     },
     {
       "type": "textarea",
-      "id": "text",
-      "label": "t:labels.text",
-      "default": "Share as much detail as you can. We will reply with a proposal and quotation."
+      "id": "finishes",
+      "label": "t:labels.finishes",
+      "info": "t:info.one_per_line",
+      "default": "Natural oil\nMatte lacquer\nStained dark\nPainted\nNot sure yet"
+    },
+    {
+      "type": "textarea",
+      "id": "colours",
+      "label": "t:labels.colours",
+      "info": "t:info.one_per_line",
+      "default": "Ivory and cream\nSand and beige\nTaupe and grey\nWalnut and brown\nCharcoal and black\nGreen\nBlue\nTerracotta"
+    },
+    {
+      "type": "textarea",
+      "id": "upholstery",
+      "label": "t:labels.upholstery_options",
+      "info": "t:info.one_per_line",
+      "default": "Bouclé\nLinen\nVelvet\nLeather\nPerformance fabric\nNo upholstery\nNot sure yet"
+    },
+    {
+      "type": "textarea",
+      "id": "budgets",
+      "label": "t:labels.budgets",
+      "info": "t:info.budgets",
+      "default": "Placeholder range 1\nPlaceholder range 2\nPlaceholder range 3"
+    },
+    {
+      "type": "textarea",
+      "id": "timelines",
+      "label": "t:labels.timelines",
+      "info": "t:info.one_per_line",
+      "default": "As soon as possible\nWithin 1 to 2 months\nWithin 3 to 6 months\nJust exploring"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "t:labels.whatsapp_message",
+      "default": "Hello, I have a question about a custom furniture piece."
+    },
+    {
+      "type": "text",
+      "id": "images_message",
+      "label": "t:labels.images_message",
+      "default": "Hello, I am sending reference images for my custom furniture enquiry"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "t:labels.success_text",
+      "default": "We have received your brief. A member of our design team will review it and contact you with next steps."
+    },
+    {
+      "type": "text",
+      "id": "privacy_note",
+      "label": "t:labels.privacy_note",
+      "default": "We use your details only to respond to this enquiry."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "t:general.category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:labels.title",
+          "default": "Sofas"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.image"
+        },
+        {
+          "type": "textarea",
+          "id": "types",
+          "label": "t:labels.types",
+          "info": "t:info.one_per_line",
+          "default": "Three-seater\nSectional\nDaybed"
+        }
+      ]
+    },
+    {
+      "type": "material",
+      "name": "t:general.material",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category",
+          "label": "t:labels.material_category",
+          "default": "Timber"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:labels.title",
+          "default": "Walnut"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.swatch_image"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "t:labels.swatch_colour",
+          "default": "#5a3e2b"
+        }
+      ]
     }
   ],
   "presets": [

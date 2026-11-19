@@ -1,0 +1,261 @@
+{
+  "layout": "landing",
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "j1": {
+          "type": "journey",
+          "settings": {
+            "title": "Your size",
+            "text": "Made to your measurements",
+            "link": "#enquiry"
+          }
+        },
+        "j2": {
+          "type": "journey",
+          "settings": {
+            "title": "Your materials",
+            "text": "Timber, fabric and finish",
+            "link": "#enquiry"
+          }
+        },
+        "j3": {
+          "type": "journey",
+          "settings": {
+            "title": "Personal quotation",
+            "text": "No commitment to start",
+            "link": "#enquiry"
+          }
+        }
+      },
+      "block_order": [
+        "j1",
+        "j2",
+        "j3"
+      ],
+      "settings": {
+        "eyebrow": "Custom furniture",
+        "heading": "Furniture made <em>to fit your home</em>",
+        "text": "Tell us the piece, the size and the materials. We design it around your room and send a personal quotation.",
+        "primary_label": "Get a quotation",
+        "primary_link": "#enquiry",
+        "secondary_label": "Talk to a designer",
+        "secondary_link": "/pages/contact",
+        "height": "large",
+        "overlay_opacity": 30
+      }
+    },
+    "process": {
+      "type": "process-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Share your brief",
+            "text": "About three minutes, below."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Design and quotation",
+            "text": "We reply with a design direction and price."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Made and delivered",
+            "text": "Placeholder: confirm making and delivery process."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream",
+        "heading": "Three steps to <em>your piece</em>",
+        "button_label": "",
+        "note": ""
+      }
+    },
+    "enquiry": {
+      "type": "custom-enquiry",
+      "blocks": {
+        "cat_1": {
+          "type": "category",
+          "settings": {
+            "title": "Sofas",
+            "types": "Three-seater\nSectional\nDaybed\nArmchair"
+          }
+        },
+        "cat_2": {
+          "type": "category",
+          "settings": {
+            "title": "Dining tables",
+            "types": "Rectangular\nRound\nOval\nExtendable"
+          }
+        },
+        "cat_3": {
+          "type": "category",
+          "settings": {
+            "title": "Beds",
+            "types": "King\nQueen\nWith storage\nUpholstered headboard"
+          }
+        },
+        "cat_4": {
+          "type": "category",
+          "settings": {
+            "title": "Wardrobes and storage",
+            "types": "Wardrobe\nSideboard\nTV unit\nBookshelf"
+          }
+        },
+        "mat_1": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Walnut",
+            "color": "#5a3e2b"
+          }
+        },
+        "mat_2": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Oak",
+            "color": "#b8946a"
+          }
+        },
+        "mat_3": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Teak",
+            "color": "#8a5a32"
+          }
+        },
+        "mat_4": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Ash",
+            "color": "#d3bf9b"
+          }
+        },
+        "mat_5": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Bouclé",
+            "color": "#e6dccb"
+          }
+        },
+        "mat_6": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Linen",
+            "color": "#cbbfa9"
+          }
+        }
+      },
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "mat_1",
+        "mat_2",
+        "mat_3",
+        "mat_4",
+        "mat_5",
+        "mat_6"
+      ],
+      "settings": {
+        "heading_tag": "h2",
+        "heading": "Start your <em>design</em>"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {}
+    },
+    "assurance": {
+      "type": "trust-bar",
+      "blocks": {
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "cards"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "process",
+    "enquiry",
+    "testimonials",
+    "assurance"
+  ]
+}

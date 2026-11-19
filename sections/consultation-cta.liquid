@@ -1,0 +1,207 @@
+{%- liquid
+  assign consult_link = section.settings.consult_link | default: settings.consultation_url | default: settings.enquiry_url
+-%}
+
+<div class="consult color-scheme {{ section.settings.color_scheme }} full-width">
+  <div class="consult__grid">
+    <div class="consult__media media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1600
+          | image_tag:
+            widths: '600, 900, 1200, 1600',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            loading: 'lazy',
+            alt: section.settings.image.alt
+        }}
+      {%- else -%}
+        {% render 'placeholder', type: 'lifestyle-2', tone: 'dark', label: 'Showroom or designer consultation, 1600 x 1200' %}
+      {%- endif -%}
+    </div>
+    <div class="consult__content" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="heading heading--lg">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+
+      <div class="consult__actions">
+        {%- if settings.whatsapp_number != blank -%}
+          <a
+            class="button button--whatsapp"
+            href="{% render 'whatsapp-url', message: section.settings.whatsapp_message %}"
+            target="_blank"
+            rel="noopener"
+            data-track="contact"
+            data-track-params='{"method":"whatsapp","location":"consultation_cta"}'
+          >
+            {% render 'icon', name: 'whatsapp' %}
+            {{ 'whatsapp.chat_with_us' | t }}
+          </a>
+        {%- endif -%}
+        {%- if consult_link != blank -%}
+          <a
+            class="button button--light"
+            href="{{ consult_link }}"
+            data-track="select_journey"
+            data-track-params='{"journey":"consultation","location":"consultation_cta"}'
+          >
+            {% render 'icon', name: 'calendar' %}
+            {{ section.settings.consult_label | escape }}
+          </a>
+        {%- endif -%}
+        {%- if settings.contact_phone != blank -%}
+          <a
+            class="button button--ghost-light"
+            href="tel:{{ settings.contact_phone | remove: ' ' }}"
+            data-track="contact"
+            data-track-params='{"method":"phone","location":"consultation_cta"}'
+          >
+            {% render 'icon', name: 'phone' %}
+            {{ settings.contact_phone | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if settings.whatsapp_number == blank and settings.contact_phone == blank and consult_link == blank -%}
+        {%- if request.design_mode -%}
+          <p class="consult__notice small">{{ 'sections.consultation.setup_notice' | t }}</p>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if settings.showroom_address != blank -%}
+        <p class="consult__address small">
+          {% render 'icon', name: 'pin' %}
+          <span>{{ settings.showroom_address | escape | newline_to_br }}</span>
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .consult__grid {
+    display: grid;
+  }
+  .consult__media {
+    min-height: 20rem;
+  }
+  .consult__content {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    align-content: center;
+    padding: var(--space-xl) var(--page-margin);
+  }
+  .consult__actions {
+    display: grid;
+    gap: 0.6rem;
+    width: 100%;
+    margin-top: var(--space-xs);
+  }
+  .consult__address {
+    display: flex;
+    gap: 0.6rem;
+    color: var(--color-muted);
+  }
+  .consult__address .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+  }
+  .consult__notice {
+    padding: 0.75rem 1rem;
+    border: 1px dashed var(--color-border);
+  }
+  .consult .button--light:not(:hover) {
+    --button-bg: var(--color-button);
+    --button-fg: var(--color-button-text);
+    --button-border: var(--color-button);
+  }
+  @media (min-width: 750px) {
+    .consult__actions {
+      display: flex;
+      flex-wrap: wrap;
+      width: auto;
+    }
+  }
+  @media (min-width: 990px) {
+    .consult__grid {
+      grid-template-columns: 1fr 1fr;
+      min-height: 38rem;
+    }
+    .consult__content {
+      padding: var(--space-2xl) max(var(--page-margin), 6vw);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.consultation_cta",
+  "class": "section-consultation",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" },
+        { "value": "scheme-walnut", "label": "t:options.scheme.walnut" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-charcoal"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:labels.image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Talk to a designer"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Plan your room <em>with us</em>"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Share your floor plan, measurements or inspiration. We will help you choose ready-stock pieces or design something new."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "t:labels.whatsapp_message",
+      "default": "Hello, I would like help planning furniture for my home."
+    },
+    {
+      "type": "text",
+      "id": "consult_label",
+      "label": "t:labels.button_label",
+      "default": "Book a consultation"
+    },
+    {
+      "type": "url",
+      "id": "consult_link",
+      "label": "t:labels.button_link",
+      "info": "t:info.consult_link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.consultation_cta"
+    }
+  ]
+}
+{% endschema %}

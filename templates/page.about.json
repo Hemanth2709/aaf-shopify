@@ -1,49 +1,112 @@
 {
   "sections": {
+    "intro": {
+      "type": "page",
+      "settings": {
+        "eyebrow": "About us",
+        "width": "split"
+      }
+    },
     "story": {
       "type": "image-with-text",
       "settings": {
         "layout": "image-left",
         "eyebrow": "Our story",
-        "heading": "A workshop devoted to lasting furniture",
-        "text": "<p>Tell the story of the brand, the makers and what drives the work.</p>"
+        "heading": "A workshop with <em>a point of view</em>",
+        "text": "<p>Placeholder: tell the founding story, who the makers are and what drives the work.</p>",
+        "placeholder_label": "Founders or workshop, 1800 x 2250",
+        "button_label": "Our craft",
+        "button_link": "/pages/craftsmanship"
       }
     },
     "values": {
       "type": "trust-bar",
       "blocks": {
-        "one": {
+        "a1": {
           "type": "item",
           "settings": {
-            "title": "Made by hand",
-            "text": "Built in our workshop"
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
           }
         },
-        "two": {
+        "a2": {
           "type": "item",
           "settings": {
-            "title": "Responsibly sourced",
-            "text": "Certified timber"
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
           }
         },
-        "three": {
+        "a3": {
           "type": "item",
           "settings": {
-            "title": "Built to last",
-            "text": "Designed for generations"
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
           }
         }
       },
       "block_order": [
-        "one",
-        "two",
-        "three"
+        "a1",
+        "a2",
+        "a3",
+        "a4"
       ],
+      "settings": {
+        "color_scheme": "scheme-ivory",
+        "style": "cards"
+      }
+    },
+    "split": {
+      "type": "journey-split",
+      "blocks": {
+        "ready": {
+          "type": "panel",
+          "settings": {
+            "journey": "ready_stock",
+            "link": "/collections/all"
+          }
+        },
+        "custom": {
+          "type": "panel",
+          "settings": {
+            "journey": "custom",
+            "label": "Made to order",
+            "title": "Designed around <em>your room</em>",
+            "text": "Choose the form, size, timber, fabric and finish.",
+            "points": "Your dimensions and materials\nReference images welcome\nPersonal quotation",
+            "button_label": "Start your design",
+            "link": "/pages/custom-enquiry"
+          }
+        }
+      },
+      "block_order": [
+        "ready",
+        "custom"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
       "settings": {}
     }
   },
   "order": [
+    "intro",
     "story",
-    "values"
+    "values",
+    "split",
+    "consultation"
   ]
 }

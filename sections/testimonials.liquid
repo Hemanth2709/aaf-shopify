@@ -1,64 +1,187 @@
-<div class="testimonials section-spacing">
-  <div class="section-heading">
-    <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
-  </div>
+{%- assign quotes = section.blocks | where: 'type', 'testimonial' -%}
 
-  <ul class="testimonials__list">
-    {%- for block in section.blocks -%}
-      <li class="testimonials__item" {{ block.shopify_attributes }}>
-        <blockquote>
-          <p class="heading heading--sm">&ldquo;{{ block.settings.quote | escape }}&rdquo;</p>
-          <footer class="testimonials__author">
-            {{- block.settings.author | escape -}}
-            {%- if block.settings.location != blank -%}
-              <span>, {{ block.settings.location | escape }}</span>
+<div class="testimonials color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text,
+      align: 'center'
+    %}
+
+    <div class="testimonials__track scroller" data-testimonials tabindex="0" aria-label="{{ 'sections.testimonials.label' | t }}">
+      {%- for block in quotes -%}
+        <figure class="testimonial" {{ block.shopify_attributes }} data-reveal style="--reveal-delay: {{ forloop.index0 | times: 0.08 }}s">
+          {%- if block.settings.rating > 0 -%}
+            <div class="testimonial__rating" role="img" aria-label="{{ 'sections.testimonials.rating' | t: rating: block.settings.rating }}">
+              {%- for i in (1..block.settings.rating) -%}
+                {% render 'icon', name: 'star' %}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          <blockquote class="testimonial__quote">
+            <p>{{ block.settings.quote | escape }}</p>
+          </blockquote>
+          <figcaption class="testimonial__author">
+            {%- if block.settings.image != blank -%}
+              <span class="testimonial__avatar media ratio-square">
+                {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 160', sizes: '56px', alt: '' }}
+              </span>
             {%- endif -%}
-          </footer>
-        </blockquote>
-      </li>
-    {%- endfor -%}
-  </ul>
+            <span>
+              <span class="testimonial__name">{{ block.settings.author | escape }}</span>
+              {%- if block.settings.detail != blank -%}
+                <span class="testimonial__detail">{{ block.settings.detail | escape }}</span>
+              {%- endif -%}
+            </span>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+
+    {%- if quotes.size > 1 -%}
+      <div class="testimonials__nav">
+        <button type="button" class="icon-button" data-testimonials-prev>
+          {% render 'icon', name: 'arrow-left' %}
+          <span class="visually-hidden">{{ 'general.accessibility.previous' | t }}</span>
+        </button>
+        <button type="button" class="icon-button" data-testimonials-next>
+          {% render 'icon', name: 'arrow' %}
+          <span class="visually-hidden">{{ 'general.accessibility.next' | t }}</span>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
 </div>
 
 {% stylesheet %}
-  .testimonials__list {
+  .testimonials__track {
+    --scroller-item: 86%;
+    gap: var(--space-md);
+  }
+  .testimonial {
     display: grid;
+    align-content: space-between;
     gap: var(--space-lg);
     margin: 0;
-    padding: 0;
-    list-style: none;
+    padding: var(--space-lg) var(--space-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
   }
-  .testimonials__item {
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--color-border);
+  .testimonial__rating {
+    display: flex;
+    gap: 0.2rem;
+    color: var(--color-heading-accent);
   }
-  .testimonials__item .heading {
-    font-size: var(--text-lg);
-    line-height: 1.5;
+  .testimonial__rating .icon {
+    width: 1rem;
+    height: 1rem;
   }
-  .testimonials__author {
-    margin-top: var(--space-sm);
-    font-size: var(--text-sm);
-    letter-spacing: 0.1em;
+  .testimonial__quote {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.55rem);
+    line-height: 1.45;
+  }
+  .testimonial__author {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .testimonial__avatar {
+    width: 3.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .testimonial__name {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
+  }
+  .testimonial__detail {
+    display: block;
+    font-size: var(--text-sm);
     color: var(--color-muted);
   }
+  .testimonials__nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: var(--space-md);
+  }
+  .testimonials__nav .icon-button {
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+  }
   @media (min-width: 750px) {
-    .testimonials__list {
-      grid-template-columns: repeat(3, 1fr);
+    .testimonials__track {
+      --scroller-item: 48%;
+    }
+  }
+  @media (min-width: 990px) {
+    .testimonials__track {
+      --scroller-item: calc((100% - var(--space-md) * 2) / 3);
+    }
+    .testimonial {
+      padding: var(--space-xl) var(--space-lg);
     }
   }
 {% endstylesheet %}
 
+{% javascript %}
+  (() => {
+    const init = (scope) => {
+      scope.querySelectorAll('[data-testimonials]').forEach((track) => {
+        const wrap = track.parentElement;
+        const step = () => (track.firstElementChild ? track.firstElementChild.getBoundingClientRect().width + 24 : 300);
+        const prev = wrap.querySelector('[data-testimonials-prev]');
+        const next = wrap.querySelector('[data-testimonials-next]');
+        if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+        if (next) next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+      });
+    };
+    init(document);
+    document.addEventListener('shopify:section:load', (event) => init(event.target));
+  })();
+{% endjavascript %}
+
 {% schema %}
 {
   "name": "t:general.testimonials",
+  "class": "section-testimonials",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
       "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "In their homes"
+    },
+    {
+      "type": "inline_richtext",
       "id": "heading",
       "label": "t:labels.heading",
-      "default": "Words from our clients"
+      "default": "Words from <em>our clients</em>"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text"
     }
   ],
   "blocks": [
@@ -70,36 +193,45 @@
           "type": "textarea",
           "id": "quote",
           "label": "t:labels.quote",
-          "default": "The table is the centrepiece of our home. The craftsmanship is exceptional."
+          "info": "t:info.real_reviews_only",
+          "default": "Placeholder: replace with a genuine customer review before launch."
         },
         {
           "type": "text",
           "id": "author",
           "label": "t:labels.author",
-          "default": "Client name"
+          "default": "Customer name"
         },
         {
           "type": "text",
-          "id": "location",
-          "label": "t:labels.location"
+          "id": "detail",
+          "label": "t:labels.testimonial_detail",
+          "default": "City · Product purchased"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "t:labels.rating",
+          "default": 0
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.image"
         }
       ]
     }
   ],
-  "max_blocks": 6,
   "presets": [
     {
       "name": "t:general.testimonials",
       "blocks": [
-        {
-          "type": "testimonial"
-        },
-        {
-          "type": "testimonial"
-        },
-        {
-          "type": "testimonial"
-        }
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
       ]
     }
   ]

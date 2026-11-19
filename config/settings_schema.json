@@ -1,8 +1,8 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "AAF Custom Furniture",
-    "theme_version": "0.2.0",
+    "theme_name": "AAF Furniture",
+    "theme_version": "1.0.0",
     "theme_author": "AAF",
     "theme_documentation_url": "https://github.com/Hemanth2709/aaf-shopify",
     "theme_support_url": "https://github.com/Hemanth2709/aaf-shopify/issues"
@@ -75,7 +75,7 @@
         "step": 8,
         "unit": "px",
         "label": "t:labels.section_spacing",
-        "default": 96
+        "default": 112
       }
     ]
   },
@@ -85,37 +85,49 @@
       {
         "type": "color",
         "id": "background_color",
-        "default": "#FAF7F2",
-        "label": "t:labels.background"
-      },
-      {
-        "type": "color",
-        "id": "foreground_color",
-        "default": "#2B2927",
-        "label": "t:labels.foreground"
+        "default": "#F7F3EC",
+        "label": "t:labels.ivory"
       },
       {
         "type": "color",
         "id": "surface_color",
-        "default": "#F0E9DD",
-        "label": "t:labels.surface"
+        "default": "#EEE7DB",
+        "label": "t:labels.cream"
+      },
+      {
+        "type": "color",
+        "id": "sand_color",
+        "default": "#DFD3BF",
+        "label": "t:labels.sand"
+      },
+      {
+        "type": "color",
+        "id": "taupe_color",
+        "default": "#A39581",
+        "label": "t:labels.taupe"
       },
       {
         "type": "color",
         "id": "accent_color",
-        "default": "#5C4033",
-        "label": "t:labels.accent"
+        "default": "#5A3E2B",
+        "label": "t:labels.walnut"
+      },
+      {
+        "type": "color",
+        "id": "foreground_color",
+        "default": "#22201E",
+        "label": "t:labels.charcoal"
       },
       {
         "type": "color",
         "id": "muted_color",
-        "default": "#7A7064",
+        "default": "#6B6258",
         "label": "t:labels.muted"
       },
       {
         "type": "color",
         "id": "border_color",
-        "default": "#D8CEBF",
+        "default": "#D9CFBF",
         "label": "t:labels.border"
       }
     ]
@@ -147,6 +159,155 @@
         "type": "checkbox",
         "id": "enable_animations",
         "label": "t:labels.enable_animations",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "t:labels.card_image_ratio",
+        "options": [
+          { "value": "ratio-portrait", "label": "t:options.ratio.portrait" },
+          { "value": "ratio-square", "label": "t:options.ratio.square" },
+          { "value": "ratio-landscape", "label": "t:options.ratio.landscape" }
+        ],
+        "default": "ratio-portrait"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_secondary_image",
+        "label": "t:labels.card_show_secondary_image",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "t:general.brand_contact",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "t:labels.logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "t:labels.favicon"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "t:labels.whatsapp_number",
+        "info": "t:info.whatsapp_number"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_message",
+        "label": "t:labels.whatsapp_message",
+        "default": "Hello, I would like to know more about your furniture."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_whatsapp_float",
+        "label": "t:labels.show_whatsapp_float",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "t:labels.contact_phone"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "t:labels.contact_email"
+      },
+      {
+        "type": "textarea",
+        "id": "showroom_address",
+        "label": "t:labels.showroom_address"
+      },
+      {
+        "type": "url",
+        "id": "consultation_url",
+        "label": "t:labels.consultation_url",
+        "info": "t:info.consultation_url"
+      },
+      {
+        "type": "url",
+        "id": "enquiry_url",
+        "label": "t:labels.enquiry_url",
+        "info": "t:info.enquiry_url"
+      }
+    ]
+  },
+  {
+    "name": "t:general.commerce",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "t:labels.cart_type",
+        "options": [
+          { "value": "drawer", "label": "t:options.cart_type.drawer" },
+          { "value": "page", "label": "t:options.cart_type.page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "text",
+        "id": "ready_stock_delivery",
+        "label": "t:labels.ready_stock_delivery",
+        "info": "t:info.business_copy"
+      },
+      {
+        "type": "text",
+        "id": "made_to_order_lead_time",
+        "label": "t:labels.made_to_order_lead_time",
+        "info": "t:info.business_copy"
+      },
+      {
+        "type": "text",
+        "id": "warranty_text",
+        "label": "t:labels.warranty_text",
+        "info": "t:info.business_copy"
+      },
+      {
+        "type": "text",
+        "id": "cart_note_text",
+        "label": "t:labels.cart_note_text"
+      },
+      {
+        "type": "range",
+        "id": "low_stock_threshold",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "label": "t:labels.low_stock_threshold",
+        "default": 3
+      }
+    ]
+  },
+  {
+    "name": "t:general.social",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "t:labels.instagram" },
+      { "type": "url", "id": "social_pinterest", "label": "t:labels.pinterest" },
+      { "type": "url", "id": "social_facebook", "label": "t:labels.facebook" },
+      { "type": "url", "id": "social_youtube", "label": "t:labels.youtube" },
+      { "type": "url", "id": "social_linkedin", "label": "t:labels.linkedin" }
+    ]
+  },
+  {
+    "name": "t:general.tracking",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:info.tracking"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_datalayer",
+        "label": "t:labels.enable_datalayer",
         "default": true
       }
     ]

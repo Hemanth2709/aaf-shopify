@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    {% render 'meta-tags' %}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {% render 'css-variables' %}
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+
+    <script>
+      window.AAFConfig = {
+        currency: {{ cart.currency.iso_code | json }},
+        pageType: {{ request.page_type | json }},
+        cartType: {{ settings.cart_type | json }},
+        dataLayer: {{ settings.enable_datalayer | json }},
+        motion: {{ settings.enable_animations | json }},
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }}
+        }
+      };
+      if (window.AAFConfig.motion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-motion');
+      }
+    </script>
+
+    {% render 'structured-data' %}
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }} layout-landing">
+    <a class="skip-link" href="#main-content">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {% section 'landing-header' %}
+
+    <main id="main-content" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    {% render 'whatsapp-float' %}
+    {% render 'theme-scripts' %}
+  </body>
+</html>

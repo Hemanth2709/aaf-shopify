@@ -1,0 +1,85 @@
+{% doc %}
+  Renders the floating WhatsApp contact button when a WhatsApp number is set
+  and the floating button is enabled in theme settings. Hidden on the cart
+  and checkout-adjacent pages to keep focus on purchase.
+
+  @example
+  {% render 'whatsapp-float' %}
+{% enddoc %}
+
+{%- if settings.whatsapp_number != blank and settings.show_whatsapp_float -%}
+  {%- unless request.page_type == 'cart' or request.page_type == 'password' -%}
+    {%- capture wa_message -%}
+      {%- if request.page_type == 'product' -%}
+        {{ 'whatsapp.product_message' | t: product: product.title, url: canonical_url }}
+      {%- else -%}
+        {{ settings.whatsapp_message }}
+      {%- endif -%}
+    {%- endcapture -%}
+    <a
+      class="whatsapp-float"
+      href="{% render 'whatsapp-url', message: wa_message %}"
+      target="_blank"
+      rel="noopener"
+      data-track="contact"
+      data-track-params='{"method":"whatsapp","location":"floating_button"}'
+    >
+      {% render 'icon', name: 'whatsapp' %}
+      <span class="whatsapp-float__label">{{ 'whatsapp.float_label' | t }}</span>
+      <span class="visually-hidden">{{ 'general.accessibility.new_window' | t }}</span>
+    </a>
+  {%- endunless -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .whatsapp-float {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3.25rem;
+    padding: 0.8rem;
+    border-radius: 999px;
+    background-color: #1f7a4d;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.45);
+    transition: transform var(--motion-duration) var(--ease);
+  }
+  .whatsapp-float:hover {
+    transform: translateY(-2px);
+  }
+  .whatsapp-float .icon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .whatsapp-float__label {
+    display: none;
+    padding-right: 0.4rem;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 990px) {
+    .whatsapp-float {
+      right: 1.5rem;
+      bottom: 1.5rem;
+      padding-inline: 1rem 1.1rem;
+    }
+    .whatsapp-float__label {
+      display: inline;
+    }
+  }
+  .template-product .whatsapp-float {
+    bottom: 5.5rem;
+  }
+  @media (min-width: 990px) {
+    .template-product .whatsapp-float {
+      bottom: 1.5rem;
+    }
+  }
+{% endstylesheet %}

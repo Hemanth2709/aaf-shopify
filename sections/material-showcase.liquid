@@ -1,68 +1,150 @@
-{%- assign materials = metaobjects.material.values -%}
+{%- liquid
+  assign swatch_blocks = section.blocks | where: 'type', 'material'
+  assign use_metaobjects = false
+  if section.settings.source == 'metaobjects' and metaobjects.material.values.size > 0
+    assign use_metaobjects = true
+  endif
+-%}
 
-<div class="materials section-spacing">
-  <div class="section-heading">
-    {%- if section.settings.eyebrow != blank -%}
-      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    {%- endif -%}
-    <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
-  </div>
+<div class="materials color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width materials__grid">
+    <div class="materials__intro" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="heading heading--lg">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="rte muted">{{ section.settings.text }}</div>
+      {%- endif -%}
+      <div class="materials__feature media ratio-landscape">
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1400
+            | image_tag:
+              widths: '600, 900, 1200, 1400',
+              sizes: '(min-width: 990px) 40vw, 100vw',
+              loading: 'lazy',
+              alt: section.settings.image.alt
+          }}
+        {%- else -%}
+          {% render 'placeholder', type: 'image', label: 'Craftsmanship close-up, 1400 x 930' %}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.button_label != blank -%}
+        <a class="link-arrow" href="{{ section.settings.button_link | default: '#' }}">
+          {{- section.settings.button_label | escape -}}
+          {% render 'icon', name: 'arrow' %}
+        </a>
+      {%- endif -%}
+    </div>
 
-  {%- if materials.size > 0 -%}
-    <ul class="materials__grid">
-      {%- for material in materials -%}
-        <li class="materials__item">
-          <div class="image-frame materials__swatch">
-            {%- if material.swatch.value != blank -%}
-              {{ material.swatch.value | image_url: width: 600 | image_tag:
-                widths: '300, 450, 600',
-                sizes: '(min-width: 990px) 20vw, 50vw',
-                loading: 'lazy'
-              }}
-            {%- else -%}
-              {{ 'image' | placeholder_svg_tag: 'materials__placeholder' }}
+    <ul class="materials__swatches" role="list">
+      {%- if use_metaobjects -%}
+        {%- for material in metaobjects.material.values limit: 12 -%}
+          <li class="swatch" data-reveal style="--reveal-delay: {{ forloop.index0 | times: 0.05 }}s">
+            <div class="swatch__media media ratio-square">
+              {%- if material.swatch.value != blank -%}
+                {{ material.swatch.value | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '(min-width: 990px) 14vw, 30vw', alt: '' }}
+              {%- else -%}
+                {% render 'placeholder', type: 'image' %}
+              {%- endif -%}
+            </div>
+            <p class="swatch__name">{{ material.title.value | escape }}</p>
+            {%- if material.description.value != blank -%}
+              <p class="swatch__text">{{ material.description.value | escape }}</p>
             {%- endif -%}
-          </div>
-          <h3 class="heading heading--sm">{{ material.title.value | escape }}</h3>
-          {%- if material.description.value != blank -%}
-            <p class="materials__text">{{ material.description.value | escape }}</p>
-          {%- endif -%}
-        </li>
-      {%- endfor -%}
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in swatch_blocks -%}
+          <li class="swatch" {{ block.shopify_attributes }} data-reveal style="--reveal-delay: {{ forloop.index0 | times: 0.05 }}s">
+            <div class="swatch__media media ratio-square" style="--swatch: {{ block.settings.color }};">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '(min-width: 990px) 14vw, 30vw', alt: '' }}
+              {%- else -%}
+                <span class="swatch__colour" aria-hidden="true"></span>
+              {%- endif -%}
+            </div>
+            {%- if block.settings.category != blank -%}
+              <p class="eyebrow swatch__category">{{ block.settings.category | escape }}</p>
+            {%- endif -%}
+            <p class="swatch__name">{{ block.settings.name | escape }}</p>
+            {%- if block.settings.text != blank -%}
+              <p class="swatch__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
     </ul>
-  {%- elsif request.design_mode -%}
-    <p class="materials__text">{{ 'sections.material_showcase.empty_editor' | t }}</p>
-  {%- endif -%}
+  </div>
 </div>
 
 {% stylesheet %}
   .materials__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+  .materials__intro {
+    display: grid;
+    gap: var(--space-md);
+    align-content: start;
+    justify-items: start;
+  }
+  .materials__feature {
+    width: 100%;
+    margin-top: var(--space-xs);
+  }
+  .materials__swatches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-md) var(--space-sm);
     margin: 0;
     padding: 0;
-    list-style: none;
+    align-content: start;
   }
-  .materials__swatch {
-    aspect-ratio: 1;
-    margin-bottom: var(--space-sm);
+  .swatch {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
   }
-  .materials__swatch img,
-  .materials__placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .swatch__media {
+    margin-bottom: 0.4rem;
   }
-  .materials__text {
-    margin-top: 0.25rem;
+  .swatch__colour {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(100deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 9px),
+      radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / 0.18), transparent 60%),
+      var(--swatch, var(--color-sand));
+  }
+  .swatch__category {
+    font-size: 0.625rem;
+  }
+  .swatch__name {
+    font-family: var(--font-heading--family);
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+  .swatch__text {
     font-size: var(--text-sm);
     color: var(--color-muted);
+    line-height: 1.5;
+  }
+  @media (min-width: 750px) {
+    .materials__swatches {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   @media (min-width: 990px) {
     .materials__grid {
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--space-lg) var(--space-md);
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-2xl);
+    }
+    .materials__intro {
+      position: sticky;
+      top: calc(var(--header-height) + 2rem);
     }
   }
 {% endstylesheet %}
@@ -70,23 +152,113 @@
 {% schema %}
 {
   "name": "t:general.material_showcase",
+  "class": "section-materials",
   "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" },
+        { "value": "scheme-charcoal", "label": "t:options.scheme.charcoal" }
+      ],
+      "default": "scheme-cream"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "t:labels.material_source",
+      "options": [
+        { "value": "blocks", "label": "t:options.source.blocks" },
+        { "value": "metaobjects", "label": "t:options.source.metaobjects" }
+      ],
+      "default": "blocks",
+      "info": "t:info.material_source"
+    },
     {
       "type": "text",
       "id": "eyebrow",
       "label": "t:labels.eyebrow",
-      "default": "Materials"
+      "default": "Materials and craft"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Honest materials, <em>finished by hand</em>"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "<p>Explore the timbers, fabrics and finishes we work with. Every custom piece can be specified in any of them.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:labels.image"
     },
     {
       "type": "text",
-      "id": "heading",
-      "label": "t:labels.heading",
-      "default": "Timbers, fabrics and finishes"
+      "id": "button_label",
+      "label": "t:labels.button_label",
+      "default": "Explore materials"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:labels.button_link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "material",
+      "name": "t:general.material",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category",
+          "label": "t:labels.material_category",
+          "default": "Timber"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:labels.title",
+          "default": "Material name"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:labels.text"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.swatch_image"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "t:labels.swatch_colour",
+          "default": "#8a6a4f"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "t:general.material_showcase"
+      "name": "t:general.material_showcase",
+      "blocks": [
+        { "type": "material", "settings": { "category": "Timber", "name": "Walnut", "color": "#5a3e2b" } },
+        { "type": "material", "settings": { "category": "Timber", "name": "Oak", "color": "#b8946a" } },
+        { "type": "material", "settings": { "category": "Timber", "name": "Teak", "color": "#8a5a32" } },
+        { "type": "material", "settings": { "category": "Upholstery", "name": "Bouclé", "color": "#e6dccb" } },
+        { "type": "material", "settings": { "category": "Upholstery", "name": "Linen", "color": "#cbbfa9" } },
+        { "type": "material", "settings": { "category": "Upholstery", "name": "Leather", "color": "#6e4a33" } }
+      ]
     }
   ]
 }

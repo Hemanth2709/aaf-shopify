@@ -3,37 +3,79 @@
     "main": {
       "type": "faq",
       "blocks": {
-        "one": {
-          "type": "item",
+        "q1": {
+          "type": "question",
           "settings": {
-            "question": "How long does delivery take?",
-            "answer": "<p>Placeholder: replace with your delivery times.</p>"
+            "question": "How long does a custom piece take?",
+            "answer": "<p>Placeholder: confirm typical lead times by category. We confirm the exact timeline with your quotation.</p>"
           }
         },
-        "two": {
-          "type": "item",
+        "q2": {
+          "type": "question",
           "settings": {
-            "question": "How does a custom commission work?",
-            "answer": "<p>Placeholder: replace with your commission process.</p>"
+            "question": "Can I send my own design or a photo?",
+            "answer": "<p>Yes. Add links in the enquiry form, or send images on WhatsApp after submitting, quoting your enquiry reference.</p>"
           }
         },
-        "three": {
-          "type": "item",
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you visit to measure?",
+            "answer": "<p>Placeholder: confirm whether home measurement visits are offered, and in which cities.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How is pricing calculated?",
+            "answer": "<p>Pricing depends on size, materials, finish and upholstery. You receive an itemised quotation before anything is made.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Is there a deposit?",
+            "answer": "<p>Placeholder: confirm deposit and payment terms for made-to-order work.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Which products are ready to ship?",
+            "answer": "<p>Every ready-stock product page shows live availability from our inventory.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
           "settings": {
             "question": "What is your returns policy?",
-            "answer": "<p>Placeholder: replace with your returns policy.</p>"
+            "answer": "<p>Placeholder: link to or summarise the refund policy.</p>"
           }
         }
       },
       "block_order": [
-        "one",
-        "two",
-        "three"
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Help",
+        "heading": "Frequently <em>asked</em>"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {
+        "heading": "Still have <em>a question</em>?"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "consultation"
   ]
 }

@@ -1,86 +1,145 @@
-<product-recommendations
-  class="recommendations"
-  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related"
+{%- liquid
+  assign product_id = product.id | default: section.settings.product.id
+-%}
+
+<div
+  class="recommendations color-scheme {{ section.settings.color_scheme }} full-width section-spacing"
+  data-recommendations
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ section.settings.limit }}&intent={{ section.settings.intent }}"
 >
-  {%- if recommendations.performed and recommendations.products_count > 0 -%}
-    <div class="section-spacing">
-      <div class="section-heading">
-        <h2 class="heading heading--lg">{{ section.settings.heading | escape }}</h2>
-      </div>
-      <ul class="recommendations__grid">
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <div class="page-width">
+      {% render 'section-heading',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        align: 'split'
+      %}
+      <ul class="scroller scroller--desktop-grid recommendations__list" role="list" style="--columns-desktop: {{ section.settings.limit | at_most: 4 }}; --scroller-item: 72%;">
         {%- for recommended in recommendations.products -%}
-          <li>{% render 'product-card', product: recommended %}</li>
+          <li>
+            {% render 'product-card',
+              product: recommended,
+              sizes: '(min-width: 990px) 25vw, 72vw',
+              list_name: section.settings.heading
+            %}
+          </li>
         {%- endfor -%}
       </ul>
     </div>
   {%- endif -%}
-</product-recommendations>
+</div>
 
 {% stylesheet %}
-  .recommendations {
-    display: block;
+  .recommendations:not(:has(.recommendations__list)) {
+    padding: 0;
   }
-  .recommendations__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md) var(--space-sm);
+  .recommendations__list {
     margin: 0;
     padding: 0;
-    list-style: none;
   }
-  @media (min-width: 990px) {
-    .recommendations__grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-lg) var(--space-md);
+  @media (max-width: 989px) {
+    .recommendations__list {
+      margin-right: calc(var(--page-margin) * -1);
+      padding-right: var(--page-margin);
     }
   }
 {% endstylesheet %}
 
 {% javascript %}
-  class ProductRecommendations extends HTMLElement {
-    async connectedCallback() {
-      if (this.querySelector('.recommendations__grid')) return;
-      try {
-        const response = await fetch(this.dataset.url);
-        if (!response.ok) return;
-        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-        const loaded = doc.querySelector('product-recommendations');
-        if (loaded && loaded.innerHTML.trim()) this.innerHTML = loaded.innerHTML;
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-  if (!customElements.get('product-recommendations')) {
-    customElements.define('product-recommendations', ProductRecommendations);
-  }
+  (() => {
+    const load = (scope) => {
+      scope.querySelectorAll('[data-recommendations]').forEach((el) => {
+        if (el.dataset.loaded || el.querySelector('.recommendations__list')) return;
+        el.dataset.loaded = 'true';
+        const fetchIt = async () => {
+          try {
+            const response = await fetch(el.dataset.url);
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const next = doc.querySelector('[data-recommendations]');
+            if (next && next.innerHTML.trim()) el.innerHTML = next.innerHTML;
+          } catch (error) {}
+        };
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              if (entries.some((e) => e.isIntersecting)) {
+                io.disconnect();
+                fetchIt();
+              }
+            },
+            { rootMargin: '600px 0px' }
+          );
+          io.observe(el);
+        } else {
+          fetchIt();
+        }
+      });
+    };
+    load(document);
+    document.addEventListener('shopify:section:load', (event) => load(event.target));
+  })();
 {% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.product_recommendations",
+  "class": "section-recommendations",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "t:labels.intent",
+      "options": [
+        { "value": "related", "label": "t:options.intent.related" },
+        { "value": "complementary", "label": "t:options.intent.complementary" }
+      ],
+      "default": "related",
+      "info": "t:info.intent"
+    },
+    {
       "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "You may also like"
+    },
+    {
+      "type": "inline_richtext",
       "id": "heading",
       "label": "t:labels.heading",
-      "default": "You may also like"
+      "default": "Pieces that <em>belong together</em>"
     },
     {
       "type": "range",
       "id": "limit",
       "min": 2,
       "max": 8,
-      "step": 2,
+      "step": 1,
       "label": "t:labels.product_count",
       "default": 4
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:labels.product",
+      "info": "t:info.recommendation_product"
     }
   ],
-  "disabled_on": {
-    "groups": [
-      "header",
-      "footer"
-    ]
-  }
+  "presets": [
+    {
+      "name": "t:general.product_recommendations"
+    }
+  ]
 }
 {% endschema %}

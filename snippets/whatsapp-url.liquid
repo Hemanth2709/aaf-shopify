@@ -1,0 +1,18 @@
+{% doc %}
+  Outputs a wa.me link for the WhatsApp number set in theme settings, with an
+  optional pre-filled message. Outputs nothing when no number is configured,
+  so callers should check settings.whatsapp_number first.
+
+  @param {string} [message] - Message to pre-fill; defaults to the theme setting
+
+  @example
+  <a href="{% render 'whatsapp-url', message: product.title %}">WhatsApp</a>
+{% enddoc %}
+
+{%- liquid
+  assign number = settings.whatsapp_number | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')' | remove: '.'
+  assign text = message | default: settings.whatsapp_message
+-%}
+{%- if number != blank -%}
+  https://wa.me/{{ number }}{% if text != blank %}?text={{ text | url_encode }}{% endif %}
+{%- endif -%}

@@ -11,3 +11,9 @@
 #
 # Ignore templates and sections with a regular expression:
 #   /(templates|sections)/.*\.json/
+
+.agents/**
+.claude/**
+docs/**
+skills-lock.json
+*.md
