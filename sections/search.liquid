@@ -1,70 +1,192 @@
-{% comment %}
-  This section is used in the search template to render search results for
-  products, articles, and pages.
+{%- liquid
+  assign product_results = search.results | where: 'object_type', 'product'
+  assign other_results = search.results | where: 'object_type', 'page'
+  assign article_results = search.results | where: 'object_type', 'article'
+  assign other_results = other_results | concat: article_results
+-%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
-{% endcomment %}
+<div class="search-page full-width section-spacing--tight">
+  <div class="page-width">
+    <header class="search-page__header">
+      <p class="eyebrow eyebrow--rule">{{ 'search.title' | t }}</p>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+        <label for="search-page-input" class="visually-hidden">{{ 'search.placeholder' | t }}</label>
+        <input
+          id="search-page-input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'header.search_placeholder' | t }}"
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="icon-button">
+          {% render 'icon', name: 'search' %}
+          <span class="visually-hidden">{{ 'search.submit' | t }}</span>
+        </button>
+      </form>
+      {%- if search.performed -%}
+        <p class="search-page__count muted" role="status">
+          {%- if search.results_count == 0 -%}
+            {{ 'search.no_results_html' | t: terms: search.terms }}
+          {%- else -%}
+            {{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    </header>
 
-<h1>{{ 'search.title' | t }}</h1>
+    {%- if search.performed and search.results_count > 0 -%}
+      {%- paginate search.results by 24 -%}
+        {%- if product_results.size > 0 -%}
+          <ul class="collection-grid search-page__grid" role="list" style="--columns-desktop: 4; --columns-mobile: 2;">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                <li>
+                  {% render 'product-card',
+                    product: item,
+                    sizes: '(min-width: 990px) 25vw, 50vw',
+                    list_name: 'Search results'
+                  %}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
 
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
-
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
+        {%- if other_results.size > 0 -%}
+          <div class="search-page__other">
+            <h2 class="heading heading--sm">{{ 'search.pages_and_articles' | t }}</h2>
+            <ul role="list">
+              {%- for item in search.results -%}
+                {%- unless item.object_type == 'product' -%}
+                  <li>
+                    <a href="{{ item.url }}">
+                      <span class="eyebrow">{{ item.object_type }}</span>
+                      <span class="search-page__title">{{ item.title | escape }}</span>
+                      <span class="small muted">{{ item.content | strip_html | truncatewords: 24 }}</span>
+                    </a>
+                  </li>
+                {%- endunless -%}
+              {%- endfor -%}
+            </ul>
           </div>
-        {% endfor %}
+        {%- endif -%}
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
-    </div>
-  {% endif %}
-{% endif %}
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="{{ 'collections.pagination' | t }}">
+            {%- if paginate.previous -%}
+              <a class="pagination__arrow" href="{{ paginate.previous.url }}">{% render 'icon', name: 'arrow-left' %}<span class="visually-hidden">{{ 'general.accessibility.previous' | t }}</span></a>
+            {%- endif -%}
+            <ul role="list">
+              {%- for part in paginate.parts -%}
+                <li>
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}">{{ part.title }}</a>
+                  {%- else -%}
+                    <span {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+            {%- if paginate.next -%}
+              <a class="pagination__arrow" href="{{ paginate.next.url }}">{% render 'icon', name: 'arrow' %}<span class="visually-hidden">{{ 'general.accessibility.next' | t }}</span></a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="search-page__empty">
+        {%- if section.settings.suggestions.links.size > 0 -%}
+          <p class="eyebrow">{{ 'header.popular' | t }}</p>
+          <ul class="search-page__chips" role="list">
+            {%- for link in section.settings.suggestions.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <div class="button-row">
+          <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.shop_ready_stock' | t }}</a>
+          {%- if settings.enquiry_url != blank -%}
+            <a class="button button--secondary" href="{{ settings.enquiry_url }}">{{ 'cart.design_your_own' | t }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
 
 {% stylesheet %}
-  .search-results {
+  .search-page__header {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
+  .search-page__form {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-foreground);
+  }
+  .search-page__form input[type='search'] {
+    border: 0;
+    padding-inline: 0;
+    font-family: var(--font-heading--family);
+    font-size: var(--heading-md);
+    min-height: 4rem;
+    background: transparent;
+  }
+  .search-page__form input[type='search']:focus-visible {
+    outline: none;
+  }
+  .search-page__other {
+    display: grid;
+    gap: var(--space-sm);
+    margin-top: var(--space-xl);
+  }
+  .search-page__other ul {
+    margin: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .search-page__other a {
+    display: grid;
+    gap: 0.25rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+  }
+  .search-page__title {
+    font-family: var(--font-heading--family);
+    font-size: 1.2rem;
+  }
+  .search-page__empty {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+  }
+  .search-page__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .search-page__chips a {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    text-decoration: none;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.search",
-  "settings": []
+  "class": "section-search",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "suggestions",
+      "label": "t:labels.search_menu"
+    }
+  ]
 }
 {% endschema %}

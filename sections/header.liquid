@@ -201,6 +201,13 @@
           <span class="visually-hidden">{{ 'header.account' | t }}</span>
         </a>
       {%- endif -%}
+      {%- if section.settings.wishlist_page != blank -%}
+        <a class="icon-button site-header__wishlist" href="{{ section.settings.wishlist_page.url }}">
+          {% render 'icon', name: 'heart' %}
+          <span class="site-header__count" data-wishlist-count aria-hidden="true" hidden>0</span>
+          <span class="visually-hidden">{{ 'products.wishlist.title' | t }}</span>
+        </a>
+      {%- endif -%}
       <a class="icon-button site-header__cart" href="{{ routes.cart_url }}" data-cart-open>
         {% render 'icon', name: 'cart' %}
         <span
@@ -231,6 +238,10 @@
           name="q"
           placeholder="{{ 'header.search_placeholder' | t }}"
           autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="predictive-results"
+          data-predictive-input
         >
         <input type="hidden" name="options[prefix]" value="last">
         <button type="button" class="icon-button" data-search-close>
@@ -238,8 +249,9 @@
           <span class="visually-hidden">{{ 'header.close_search' | t }}</span>
         </button>
       </form>
+      <div id="predictive-results" class="search-modal__results" aria-live="polite" data-predictive-target></div>
       {%- if section.settings.search_menu.links.size > 0 -%}
-        <div class="search-modal__suggestions">
+        <div class="search-modal__suggestions" data-predictive-hide>
           <p class="eyebrow">{{ 'header.popular' | t }}</p>
           <ul role="list">
             {%- for link in section.settings.search_menu.links -%}
@@ -533,7 +545,8 @@
     padding: 0.7rem 1.25rem;
     margin-right: 0.75rem;
   }
-  .site-header__account {
+  .site-header__account,
+  .site-header__wishlist {
     display: none;
   }
   .site-header__count {
@@ -740,7 +753,8 @@
     .site-header__cta {
       display: inline-flex;
     }
-    .site-header__account {
+    .site-header__account,
+    .site-header__wishlist {
       display: inline-flex;
     }
   }
@@ -822,6 +836,40 @@
         document.querySelectorAll(openSelector).forEach((el) => el.setAttribute('aria-expanded', 'false'));
       });
     };
+    const predictiveInput = header.querySelector('[data-predictive-input]');
+    const predictiveTarget = header.querySelector('[data-predictive-target]');
+    if (predictiveInput && predictiveTarget) {
+      let timer;
+      let controller;
+      const root = (window.AAFConfig && window.AAFConfig.routes.root) || '/';
+      predictiveInput.addEventListener('input', () => {
+        clearTimeout(timer);
+        const term = predictiveInput.value.trim();
+        const hide = header.querySelector('[data-predictive-hide]');
+        if (term.length < 2) {
+          predictiveTarget.innerHTML = '';
+          predictiveInput.setAttribute('aria-expanded', 'false');
+          if (hide) hide.hidden = false;
+          return;
+        }
+        timer = setTimeout(async () => {
+          if (controller) controller.abort();
+          controller = new AbortController();
+          try {
+            const url = root.replace(/\/$/, '') + '/search/suggest?q=' + encodeURIComponent(term) + '&resources[type]=product,collection,page&resources[limit]=6&resources[options][fields]=title,product_type,variants.title,vendor,tag&section_id=predictive-search';
+            const response = await fetch(url, { signal: controller.signal });
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const results = doc.querySelector('[data-predictive-results]');
+            predictiveTarget.innerHTML = results ? results.outerHTML : '';
+            predictiveInput.setAttribute('aria-expanded', results ? 'true' : 'false');
+            if (hide) hide.hidden = !!results;
+            if (window.AAF) window.AAF.track('search', { search_term: term });
+          } catch (error) {}
+        }, 250);
+      });
+    }
+
     bindDialog('mobile-menu', '[data-menu-open]', '[data-menu-close]');
     bindDialog('search-modal', '[data-search-open]', '[data-search-close]', (dialog) => {
       const input = dialog.querySelector('input[type="search"]');
@@ -893,6 +941,12 @@
       "type": "link_list",
       "id": "search_menu",
       "label": "t:labels.search_menu"
+    },
+    {
+      "type": "page",
+      "id": "wishlist_page",
+      "label": "t:labels.wishlist_page",
+      "info": "t:info.wishlist_page"
     }
   ],
   "blocks": [

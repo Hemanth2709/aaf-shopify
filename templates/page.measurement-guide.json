@@ -1,0 +1,91 @@
+{
+  "sections": {
+    "main": {
+      "type": "measurement-guide",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {}
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Check the route in",
+            "text": "<p>Measure the width and height of every door, corridor, stairwell and lift the piece must pass through.</p>"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Compare with the product",
+            "text": "<p>Use the dimensions on each product page. The diagonal depth matters for sofas and wardrobes.</p>"
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Mark it out",
+            "text": "<p>Outline the footprint on the floor with tape or newspaper to see how it feels in the room.</p>"
+          }
+        },
+        "c1": {
+          "type": "clearance",
+          "settings": {}
+        },
+        "c2": {
+          "type": "clearance",
+          "settings": {
+            "label": "Coffee table to sofa",
+            "value": "35 to 45 cm"
+          }
+        },
+        "c3": {
+          "type": "clearance",
+          "settings": {
+            "label": "Behind dining chairs",
+            "value": "At least 90 cm to pull out and walk past"
+          }
+        },
+        "c4": {
+          "type": "clearance",
+          "settings": {
+            "label": "Around a bed",
+            "value": "At least 60 cm on each accessible side"
+          }
+        },
+        "c5": {
+          "type": "clearance",
+          "settings": {
+            "label": "In front of a wardrobe",
+            "value": "Door swing plus about 60 cm"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ],
+      "settings": {
+        "heading_tag": "h1"
+      }
+    },
+    "consultation": {
+      "type": "consultation-cta",
+      "settings": {
+        "heading": "Prefer we <em>measure for you</em>?",
+        "text": "Book a consultation and our team can help you measure and plan the space."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "consultation"
+  ]
+}

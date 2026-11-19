@@ -21,6 +21,8 @@
   assign enquiry_base = section.settings.customise_link | default: settings.enquiry_url
   assign highlights = section.blocks | where: 'type', 'highlight'
   assign collapsibles = section.blocks | where: 'type', 'collapsible'
+  assign app_blocks = section.blocks | where: 'type', '@app'
+  assign guide_url = section.settings.measurement_guide | default: settings.measurement_guide_url
 -%}
 
 <div class="product-page section-spacing--tight" data-product-page data-section-id="{{ section.id }}" data-url="{{ product.url }}">
@@ -124,7 +126,21 @@
             {%- endif -%}
           </p>
         {%- endif -%}
-        <h1 class="product-info__title heading heading--lg">{{ product.title | escape }}</h1>
+        <div class="product-info__heading">
+          <h1 class="product-info__title heading heading--lg">{{ product.title | escape }}</h1>
+          <button
+            type="button"
+            class="product-card__action product-info__wishlist"
+            data-wishlist-toggle
+            data-handle="{{ product.handle }}"
+            data-title="{{ product.title | escape }}"
+            aria-pressed="false"
+            aria-label="{{ 'products.wishlist.toggle' | t: product: product.title | escape }}"
+          >
+            {% render 'icon', name: 'heart' %}
+          </button>
+        </div>
+        {% render 'rating', product: product %}
 
         <div class="product-info__price" data-variant-region="price">
           {% render 'price', product: product, variant: current_variant, style: 'large' %}
@@ -208,6 +224,21 @@
           {%- endif -%}
         {%- endform -%}
 
+        {%- if is_made_to_order and section.settings.show_customise and enquiry_base != blank -%}
+          {%- assign quote_joiner = '?' -%}
+          {%- if enquiry_base contains '?' -%}
+            {%- assign quote_joiner = '&' -%}
+          {%- endif -%}
+          <a
+            class="button button--secondary button--full"
+            href="{{ enquiry_base }}{{ quote_joiner }}product={{ product.title | url_encode }}{% if product.type != blank %}&category={{ product.type | url_encode }}{% endif %}"
+            data-track="select_journey"
+            data-track-params='{"journey":"custom","location":"product_quote","item_id":{{ product.id | json }}}'
+          >
+            {{- 'products.assist.request_quote' | t -}}
+          </a>
+        {%- endif -%}
+
         <div class="product-info__assist">
           {%- if settings.whatsapp_number != blank -%}
             {%- capture wa_message -%}{{ 'whatsapp.product_message' | t: product: product.title, url: canonical_url }}{%- endcapture -%}
@@ -239,6 +270,17 @@
             </a>
           {%- endif -%}
         </div>
+
+        {%- if guide_url != blank -%}
+          <a class="product-info__assist-link product-info__guide" href="{{ guide_url }}">
+            {% render 'icon', name: 'ruler' %}
+            <span>{{ 'products.assist.measurement_guide' | t }}</span>
+          </a>
+        {%- endif -%}
+
+        {%- for block in app_blocks -%}
+          <div class="product-info__app">{% render block %}</div>
+        {%- endfor -%}
 
         {%- if delivery_text != blank or warranty_text != blank -%}
           <ul class="product-info__delivery" role="list">
@@ -403,6 +445,20 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+  }
+  .product-info__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  .product-info__wishlist {
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+    border: 1px solid var(--color-border);
+  }
+  .product-info__guide {
+    margin-top: -0.75rem;
   }
   .product-info__title {
     font-size: clamp(2rem, 1.6rem + 1.6vw, 3rem);
@@ -773,9 +829,18 @@
       "id": "customise_link",
       "label": "t:labels.customise_link",
       "info": "t:info.customise_link"
+    },
+    {
+      "type": "url",
+      "id": "measurement_guide",
+      "label": "t:labels.measurement_guide",
+      "info": "t:info.measurement_guide"
     }
   ],
   "blocks": [
+    {
+      "type": "@app"
+    },
     {
       "type": "highlight",
       "name": "t:general.highlight",

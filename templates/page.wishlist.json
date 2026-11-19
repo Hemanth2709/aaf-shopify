@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "wishlist",
+      "settings": {}
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {
+        "color_scheme": "scheme-cream"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recent"
+  ]
+}

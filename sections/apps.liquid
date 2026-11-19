@@ -1,0 +1,17 @@
+<div class="apps-section full-width section-spacing--tight">
+  <div class="page-width">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.apps",
+  "class": "section-apps",
+  "settings": [],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "t:general.apps" }]
+}
+{% endschema %}

@@ -67,7 +67,19 @@
     "grid_promo": "Grid promo",
     "highlight": "Highlight",
     "collapsible": "Collapsible",
-    "landing_header": "Landing header"
+    "landing_header": "Landing header",
+    "apps": "Apps",
+    "measurement_guide": "Measurement guide",
+    "clearance": "Clearance",
+    "predictive_search": "Predictive search",
+    "product_card_render": "Product card render",
+    "quick_view": "Quick view",
+    "consultation_form": "Consultation form",
+    "consultation_mode": "Consultation mode",
+    "recently_viewed": "Recently viewed",
+    "room_finder": "Room finder",
+    "room": "Room",
+    "wishlist": "Wishlist"
   },
   "labels": {
     "accent": "Accent",
@@ -189,7 +201,11 @@
     "images_message": "Images message",
     "success_text": "Success text",
     "privacy_note": "Privacy note",
-    "types": "Types"
+    "types": "Types",
+    "table_heading": "Table heading",
+    "wishlist_page": "Wishlist page",
+    "measurement_guide": "Measurement guide",
+    "enquiry_category": "Enquiry category"
   },
   "options": {
     "alignment": {
@@ -274,7 +290,8 @@
       "chat": "Chat",
       "clock": "Clock",
       "sofa": "Sofa",
-      "check": "Check"
+      "check": "Check",
+      "pin": "Pin"
     },
     "intent": {
       "related": "Related",
@@ -312,6 +329,9 @@
     "category_match": "Category match",
     "anchor": "Anchor",
     "heading_tag": "Heading tag",
-    "budgets": "Budgets"
+    "budgets": "Budgets",
+    "wishlist_page": "Wishlist page",
+    "measurement_guide": "Measurement guide",
+    "room_collection": "Room collection"
   }
 }

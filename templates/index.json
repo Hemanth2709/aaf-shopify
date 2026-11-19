@@ -24,11 +24,15 @@
           "settings": {
             "title": "Design consultation",
             "text": "Plan your space with our team",
-            "link": "/pages/contact"
+            "link": "/pages/consultation"
           }
         }
       },
-      "block_order": ["journey_ready", "journey_custom", "journey_consult"],
+      "block_order": [
+        "journey_ready",
+        "journey_custom",
+        "journey_consult"
+      ],
       "settings": {
         "eyebrow": "Furniture, considered",
         "heading": "Rooms that feel <em>made for you</em>",
@@ -45,14 +49,51 @@
     "categories": {
       "type": "category-grid",
       "blocks": {
-        "c1": { "type": "category", "settings": { "title": "Sofas and seating" } },
-        "c2": { "type": "category", "settings": { "title": "Dining" } },
-        "c3": { "type": "category", "settings": { "title": "Bedroom" } },
-        "c4": { "type": "category", "settings": { "title": "Storage" } },
-        "c5": { "type": "category", "settings": { "title": "Tables" } },
-        "c6": { "type": "category", "settings": { "title": "Lighting and decor" } }
+        "c1": {
+          "type": "category",
+          "settings": {
+            "title": "Sofas and seating"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "title": "Dining"
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "title": "Bedroom"
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "title": "Storage"
+          }
+        },
+        "c5": {
+          "type": "category",
+          "settings": {
+            "title": "Tables"
+          }
+        },
+        "c6": {
+          "type": "category",
+          "settings": {
+            "title": "Lighting and decor"
+          }
+        }
       },
-      "block_order": ["c1", "c2", "c3", "c4", "c5", "c6"],
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
       "settings": {
         "eyebrow": "Shop by category",
         "heading": "Every room, <em>considered</em>",
@@ -80,11 +121,33 @@
     "bespoke": {
       "type": "image-with-text",
       "blocks": {
-        "p1": { "type": "point", "settings": { "title": "Share your brief", "text": "Category, room size, dimensions and reference images." } },
-        "p2": { "type": "point", "settings": { "title": "Choose materials", "text": "Timbers, fabrics, finishes and colours from our library." } },
-        "p3": { "type": "point", "settings": { "title": "Receive your quotation", "text": "We review every detail and come back with a design and price." } }
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Share your brief",
+            "text": "Category, room size, dimensions and reference images."
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Choose materials",
+            "text": "Timbers, fabrics, finishes and colours from our library."
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "title": "Receive your quotation",
+            "text": "We review every detail and come back with a design and price."
+          }
+        }
       },
-      "block_order": ["p1", "p2", "p3"],
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
       "settings": {
         "color_scheme": "scheme-ivory",
         "layout": "image-left",
@@ -102,14 +165,63 @@
     "materials": {
       "type": "material-showcase",
       "blocks": {
-        "m1": { "type": "material", "settings": { "category": "Timber", "name": "Walnut", "color": "#5a3e2b" } },
-        "m2": { "type": "material", "settings": { "category": "Timber", "name": "Oak", "color": "#b8946a" } },
-        "m3": { "type": "material", "settings": { "category": "Timber", "name": "Teak", "color": "#8a5a32" } },
-        "m4": { "type": "material", "settings": { "category": "Upholstery", "name": "Bouclé", "color": "#e6dccb" } },
-        "m5": { "type": "material", "settings": { "category": "Upholstery", "name": "Linen", "color": "#cbbfa9" } },
-        "m6": { "type": "material", "settings": { "category": "Upholstery", "name": "Leather", "color": "#6e4a33" } }
+        "m1": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Walnut",
+            "color": "#5a3e2b"
+          }
+        },
+        "m2": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Oak",
+            "color": "#b8946a"
+          }
+        },
+        "m3": {
+          "type": "material",
+          "settings": {
+            "category": "Timber",
+            "name": "Teak",
+            "color": "#8a5a32"
+          }
+        },
+        "m4": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Bouclé",
+            "color": "#e6dccb"
+          }
+        },
+        "m5": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Linen",
+            "color": "#cbbfa9"
+          }
+        },
+        "m6": {
+          "type": "material",
+          "settings": {
+            "category": "Upholstery",
+            "name": "Leather",
+            "color": "#6e4a33"
+          }
+        }
       },
-      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"],
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5",
+        "m6"
+      ],
       "settings": {
         "color_scheme": "scheme-cream",
         "source": "blocks",
@@ -123,11 +235,36 @@
     "curated": {
       "type": "featured-collections",
       "blocks": {
-        "k1": { "type": "collection", "settings": { "label": "Collection", "title": "The living room edit", "text": "Deep seating, low tables and quiet textures." } },
-        "k2": { "type": "collection", "settings": { "label": "Collection", "title": "Dining, together", "text": "Tables and chairs made for long evenings." } },
-        "k3": { "type": "collection", "settings": { "label": "Collection", "title": "Quiet bedrooms", "text": "Beds, side tables and storage in natural finishes." } }
+        "k1": {
+          "type": "collection",
+          "settings": {
+            "label": "Collection",
+            "title": "The living room edit",
+            "text": "Deep seating, low tables and quiet textures."
+          }
+        },
+        "k2": {
+          "type": "collection",
+          "settings": {
+            "label": "Collection",
+            "title": "Dining, together",
+            "text": "Tables and chairs made for long evenings."
+          }
+        },
+        "k3": {
+          "type": "collection",
+          "settings": {
+            "label": "Collection",
+            "title": "Quiet bedrooms",
+            "text": "Beds, side tables and storage in natural finishes."
+          }
+        }
       },
-      "block_order": ["k1", "k2", "k3"],
+      "block_order": [
+        "k1",
+        "k2",
+        "k3"
+      ],
       "settings": {
         "eyebrow": "Curated collections",
         "heading": "Edited for <em>the way you live</em>",
@@ -166,11 +303,24 @@
     "testimonials": {
       "type": "testimonials",
       "blocks": {
-        "t1": { "type": "testimonial", "settings": {} },
-        "t2": { "type": "testimonial", "settings": {} },
-        "t3": { "type": "testimonial", "settings": {} }
+        "t1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {}
+        }
       },
-      "block_order": ["t1", "t2", "t3"],
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
       "settings": {
         "eyebrow": "In their homes",
         "heading": "Words from <em>our clients</em>"
@@ -179,12 +329,45 @@
     "assurance": {
       "type": "trust-bar",
       "blocks": {
-        "a1": { "type": "item", "settings": { "icon": "truck", "title": "Delivery and installation", "text": "Placeholder: confirm delivery areas, timelines and installation." } },
-        "a2": { "type": "item", "settings": { "icon": "shield", "title": "Quality assurance", "text": "Placeholder: confirm inspection process and warranty terms." } },
-        "a3": { "type": "item", "settings": { "icon": "tool", "title": "Made in our workshop", "text": "Placeholder: confirm where and how pieces are made." } },
-        "a4": { "type": "item", "settings": { "icon": "chat", "title": "Design support", "text": "Help choosing sizes, finishes and fabrics before you buy." } }
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation",
+            "text": "Placeholder: confirm delivery areas, timelines and installation."
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance",
+            "text": "Placeholder: confirm inspection process and warranty terms."
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "tool",
+            "title": "Made in our workshop",
+            "text": "Placeholder: confirm where and how pieces are made."
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support",
+            "text": "Help choosing sizes, finishes and fabrics before you buy."
+          }
+        }
       },
-      "block_order": ["a1", "a2", "a3", "a4"],
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
       "settings": {
         "color_scheme": "scheme-ivory",
         "style": "cards",
@@ -209,6 +392,71 @@
         "eyebrow": "The journal",
         "heading": "New pieces, <em>first</em>"
       }
+    },
+    "room_finder": {
+      "type": "room-finder",
+      "blocks": {
+        "r1": {
+          "type": "room",
+          "settings": {
+            "title": "Living room",
+            "enquiry_category": "Sofas"
+          }
+        },
+        "r2": {
+          "type": "room",
+          "settings": {
+            "title": "Dining room",
+            "enquiry_category": "Dining tables"
+          }
+        },
+        "r3": {
+          "type": "room",
+          "settings": {
+            "title": "Bedroom",
+            "enquiry_category": "Beds"
+          }
+        },
+        "r4": {
+          "type": "room",
+          "settings": {
+            "title": "Storage and media",
+            "enquiry_category": "Wardrobes and storage"
+          }
+        },
+        "r5": {
+          "type": "room",
+          "settings": {
+            "title": "Study",
+            "enquiry_category": "Chairs"
+          }
+        },
+        "r6": {
+          "type": "room",
+          "settings": {
+            "title": "Something else",
+            "enquiry_category": "Other"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6"
+      ],
+      "settings": {
+        "color_scheme": "scheme-sand",
+        "enquiry_url": "/pages/custom-enquiry"
+      }
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {
+        "color_scheme": "scheme-ivory"
+      }
     }
   },
   "order": [
@@ -217,12 +465,14 @@
     "ready_stock",
     "bespoke",
     "materials",
+    "room_finder",
     "curated",
     "bestsellers",
     "story",
     "testimonials",
     "assurance",
     "consultation",
+    "recent",
     "newsletter"
   ]
 }

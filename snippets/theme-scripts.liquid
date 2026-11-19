@@ -46,6 +46,101 @@
     };
     reveal();
 
+    const safeStore = {
+      get(key, fallback) {
+        try {
+          const raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      },
+      set(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {}
+      },
+    };
+    AAF.store = safeStore;
+
+    const rootUrl = (config.routes.root || '/').replace(/\/$/, '');
+    AAF.renderCards = async (handles, container, emptyEl) => {
+      if (!container) return 0;
+      const html = await Promise.all(
+        handles.map((handle) =>
+          fetch(rootUrl + '/products/' + encodeURIComponent(handle) + '?section_id=product-card-render')
+            .then((r) => (r.ok ? r.text() : ''))
+            .catch(() => '')
+        )
+      );
+      container.innerHTML = '';
+      let count = 0;
+      html.forEach((chunk) => {
+        const card = new DOMParser().parseFromString(chunk, 'text/html').querySelector('[data-card-render]');
+        if (!card) return;
+        const li = document.createElement('li');
+        li.innerHTML = card.innerHTML;
+        container.appendChild(li);
+        count++;
+      });
+      if (emptyEl) emptyEl.hidden = count > 0;
+      AAF.wishlist.sync();
+      return count;
+    };
+
+    AAF.wishlist = {
+      key: 'aaf-wishlist',
+      get() {
+        return safeStore.get(this.key, []);
+      },
+      has(handle) {
+        return this.get().includes(handle);
+      },
+      toggle(handle, title) {
+        let list = this.get();
+        const adding = !list.includes(handle);
+        list = adding ? [handle].concat(list).slice(0, 48) : list.filter((h) => h !== handle);
+        safeStore.set(this.key, list);
+        this.sync();
+        AAF.track(adding ? 'add_to_wishlist' : 'remove_from_wishlist', { item_id: handle, item_name: title });
+        document.dispatchEvent(new CustomEvent('aaf:wishlist', { detail: { list } }));
+        return adding;
+      },
+      sync() {
+        const list = this.get();
+        document.querySelectorAll('[data-wishlist-toggle]').forEach((button) => {
+          const active = list.includes(button.dataset.handle);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+          button.classList.toggle('is-active', active);
+        });
+        document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
+          el.textContent = list.length;
+          el.hidden = list.length === 0;
+        });
+      },
+    };
+
+    AAF.recent = {
+      key: 'aaf-recently-viewed',
+      add(handle) {
+        const list = safeStore.get(this.key, []).filter((h) => h !== handle);
+        list.unshift(handle);
+        safeStore.set(this.key, list.slice(0, 12));
+      },
+      get(exclude) {
+        return safeStore.get(this.key, []).filter((h) => h !== exclude);
+      },
+    };
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-wishlist-toggle]');
+      if (!button) return;
+      event.preventDefault();
+      AAF.wishlist.toggle(button.dataset.handle, button.dataset.title);
+    });
+    AAF.wishlist.sync();
+    document.addEventListener('shopify:section:load', () => AAF.wishlist.sync());
+
     const drawerSectionId = 'cart-drawer';
 
     AAF.cart = {

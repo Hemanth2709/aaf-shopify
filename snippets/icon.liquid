@@ -1,7 +1,7 @@
 {% doc %}
   Renders an inline line icon that inherits the current text colour.
 
-  @param {string} name - Icon name: search, account, cart, menu, close, arrow, arrow-left, plus, minus, chevron, check, whatsapp, phone, mail, truck, shield, ruler, leaf, tool, sofa, calendar, star, pin, clock, returns, award, chat, upload, home, instagram, pinterest, facebook, youtube, linkedin
+  @param {string} name - Icon name: heart, eye, search, account, cart, menu, close, arrow, arrow-left, plus, minus, chevron, check, whatsapp, phone, mail, truck, shield, ruler, leaf, tool, sofa, calendar, star, pin, clock, returns, award, chat, upload, home, instagram, pinterest, facebook, youtube, linkedin
   @param {string} [class] - Optional class added to the svg element
 
   @example
@@ -83,6 +83,10 @@
       <path d="M4 5.5h16v10H9.5L5 19.5v-4H4z"/>
     {%- when 'upload' -%}
       <path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5"/><path d="M4.5 15v4.5h15V15"/>
+    {%- when 'heart' -%}
+      <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20"/>
+    {%- when 'eye' -%}
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12"/><circle cx="12" cy="12" r="3"/>
     {%- when 'home' -%}
       <path d="m3.5 11 8.5-7 8.5 7"/><path d="M5.5 9.5v10h13v-10"/><path d="M10 19.5v-5h4v5"/>
     {%- when 'whatsapp' -%}

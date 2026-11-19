@@ -1,23 +1,45 @@
-{% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
+<div class="not-found full-width section-spacing">
+  <div class="page-width not-found__inner">
+    <p class="eyebrow eyebrow--rule">404</p>
+    <h1 class="heading heading--xl">{{ '404.title' | t }}</h1>
+    <p class="lead">{{ '404.not_found' | t }}</p>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form not-found__search">
+      <label for="not-found-search" class="visually-hidden">{{ 'search.placeholder' | t }}</label>
+      <input id="not-found-search" type="search" name="q" placeholder="{{ 'header.search_placeholder' | t }}">
+      <button type="submit" class="icon-button">{% render 'icon', name: 'search' %}<span class="visually-hidden">{{ 'search.submit' | t }}</span></button>
+    </form>
+    <div class="button-row">
+      <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.shop_ready_stock' | t }}</a>
+      {%- if settings.enquiry_url != blank -%}
+        <a class="button button--secondary" href="{{ settings.enquiry_url }}">{{ 'cart.design_your_own' | t }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
-{% endcomment %}
-
-<h1>{{ '404.title' | t }}</h1>
-
-<p>
-  {{ '404.not_found' | t }}
-</p>
-
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+{% stylesheet %}
+  .not-found__inner {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    max-width: 44rem;
+  }
+  .not-found__search {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid var(--color-foreground);
+  }
+  .not-found__search input {
+    border: 0;
+    padding-inline: 0;
+    background: transparent;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.404",
+  "class": "section-404",
   "settings": []
 }
 {% endschema %}

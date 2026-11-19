@@ -1,0 +1,263 @@
+{%- assign form_id = 'consultation-form-' | append: section.id -%}
+
+<div id="consultation" class="consultation color-scheme {{ section.settings.color_scheme }} full-width section-spacing" data-consultation>
+  <div class="page-width consultation__grid">
+    <div class="consultation__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <{{ section.settings.heading_tag }} class="heading heading--lg">{{ section.settings.heading }}</{{ section.settings.heading_tag }}>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+      <ul class="consultation__types" role="list">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}>
+            {% render 'icon', name: block.settings.icon %}
+            <div>
+              <p class="consultation__type-title">{{ block.settings.title | escape }}</p>
+              <p class="small muted">{{ block.settings.text | escape }}</p>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="consultation__panel">
+      {%- form 'contact', id: form_id, class: 'consultation__form', data-consultation-form: '' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="contact__success" role="status" tabindex="-1" data-consultation-success>
+            {% render 'icon', name: 'check' %}
+            <div>
+              <p class="heading heading--sm">{{ 'consultation.success_title' | t }}</p>
+              <p class="muted">{{ 'consultation.success_text' | t }}</p>
+            </div>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="contact__errors" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <input type="hidden" name="contact[Enquiry type]" value="{{ 'consultation.email_type' | t }}">
+          <input type="hidden" name="contact[Campaign]" value="" data-campaign>
+          <fieldset class="consultation__fieldset">
+            <legend class="label">{{ 'consultation.mode' | t }}</legend>
+            <div class="choice-grid choice-grid--pills">
+              {%- for block in section.blocks -%}
+                {%- assign mode_id = section.id | append: '-mode-' | append: forloop.index -%}
+                <div class="choice">
+                  <input type="radio" id="{{ mode_id }}" name="contact[Consultation type]" value="{{ block.settings.title | escape }}" required {% if forloop.first %}checked{% endif %}>
+                  <label for="{{ mode_id }}" class="choice__pill">{{ block.settings.title | escape }}</label>
+                </div>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+          <div class="field-row">
+            <div class="field">
+              <label for="{{ section.id }}-date">{{ 'consultation.date' | t }}</label>
+              <input id="{{ section.id }}-date" type="date" name="contact[Preferred date]" data-min-today>
+            </div>
+            <div class="field">
+              <label for="{{ section.id }}-time">{{ 'consultation.time' | t }}</label>
+              <select id="{{ section.id }}-time" name="contact[Preferred time]">
+                <option value="{{ 'consultation.time_morning' | t }}">{{ 'consultation.time_morning' | t }}</option>
+                <option value="{{ 'consultation.time_afternoon' | t }}">{{ 'consultation.time_afternoon' | t }}</option>
+                <option value="{{ 'consultation.time_evening' | t }}">{{ 'consultation.time_evening' | t }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="{{ section.id }}-name">{{ 'enquiry.fields.name' | t }} <span aria-hidden="true">*</span></label>
+              <input id="{{ section.id }}-name" type="text" name="contact[name]" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="{{ section.id }}-phone">{{ 'enquiry.fields.phone' | t }} <span aria-hidden="true">*</span></label>
+              <input id="{{ section.id }}-phone" type="tel" name="contact[phone]" autocomplete="tel" inputmode="tel" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="{{ section.id }}-email">{{ 'enquiry.fields.email' | t }} <span aria-hidden="true">*</span></label>
+              <input id="{{ section.id }}-email" type="email" name="contact[email]" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="{{ section.id }}-city">{{ 'enquiry.fields.city' | t }}</label>
+              <input id="{{ section.id }}-city" type="text" name="contact[City]" autocomplete="address-level2">
+            </div>
+          </div>
+          <div class="field">
+            <label for="{{ section.id }}-body">{{ 'consultation.notes' | t }}</label>
+            <textarea id="{{ section.id }}-body" name="contact[body]" rows="4" placeholder="{{ 'consultation.notes_placeholder' | t }}"></textarea>
+          </div>
+          <p class="small muted">{{ 'consultation.confirm_note' | t }}</p>
+          <button type="submit" class="button" data-consultation-submit>{{ 'consultation.submit' | t }}</button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .consultation__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .consultation__intro {
+    display: grid;
+    gap: var(--space-md);
+    align-content: start;
+  }
+  .consultation__types {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .consultation__types li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .consultation__types .icon {
+    color: var(--color-heading-accent);
+  }
+  .consultation__type-title {
+    font-family: var(--font-heading--family);
+    font-size: 1.15rem;
+  }
+  .consultation__panel {
+    padding: var(--space-lg) var(--space-md);
+    background-color: var(--color-surface);
+  }
+  .consultation__form {
+    display: grid;
+    gap: var(--space-md);
+  }
+  .consultation__form .button {
+    justify-self: start;
+  }
+  .consultation__fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  @media (min-width: 750px) {
+    .consultation .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+    }
+  }
+  @media (min-width: 990px) {
+    .consultation__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-2xl);
+    }
+    .consultation__panel {
+      padding: var(--space-xl);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const root = document.querySelector('[data-consultation]');
+    if (!root) return;
+    const success = root.querySelector('[data-consultation-success]');
+    if (success) {
+      let tracked = false;
+      try {
+        tracked = sessionStorage.getItem('aaf-consult-tracked') === location.pathname;
+        sessionStorage.setItem('aaf-consult-tracked', location.pathname);
+      } catch (error) {}
+      if (!tracked && window.AAF) window.AAF.track('generate_lead', { lead_type: 'consultation_request' });
+      success.focus();
+      return;
+    }
+    const form = root.querySelector('[data-consultation-form]');
+    if (!form) return;
+    const params = new URLSearchParams(location.search);
+    const campaign = ['utm_source', 'utm_medium', 'utm_campaign', 'gclid', 'fbclid'].filter((k) => params.get(k)).map((k) => k + '=' + params.get(k)).join('; ');
+    const campaignField = form.querySelector('[data-campaign]');
+    if (campaignField) campaignField.value = campaign || document.referrer || '';
+    const date = form.querySelector('[data-min-today]');
+    if (date) date.min = new Date().toISOString().slice(0, 10);
+    form.addEventListener('submit', (event) => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        form.reportValidity();
+        return;
+      }
+      const button = form.querySelector('[data-consultation-submit]');
+      button.classList.add('is-loading');
+      window.setTimeout(() => button.classList.remove('is-loading'), 8000);
+      if (window.AAF) window.AAF.track('consultation_submit', {});
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.consultation_form",
+  "class": "section-consultation-form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "t:labels.heading_tag",
+      "options": [
+        { "value": "h1", "label": "t:options.heading_tag.h1" },
+        { "value": "h2", "label": "t:options.heading_tag.h2" }
+      ],
+      "default": "h1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Design consultation" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Book time with <em>a designer</em>" },
+    { "type": "text", "id": "text", "label": "t:labels.text", "default": "Tell us how you would like to meet and when suits you. We confirm the appointment by phone or WhatsApp." }
+  ],
+  "blocks": [
+    {
+      "type": "mode",
+      "name": "t:general.consultation_mode",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:labels.icon",
+          "options": [
+            { "value": "home", "label": "t:options.icon.home" },
+            { "value": "pin", "label": "t:options.icon.pin" },
+            { "value": "chat", "label": "t:options.icon.chat" },
+            { "value": "calendar", "label": "t:options.icon.calendar" }
+          ],
+          "default": "pin"
+        },
+        { "type": "text", "id": "title", "label": "t:labels.title", "default": "Showroom visit" },
+        { "type": "text", "id": "text", "label": "t:labels.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.consultation_form",
+      "blocks": [
+        { "type": "mode", "settings": { "icon": "pin", "title": "Showroom visit", "text": "Placeholder: confirm showroom location and hours." } },
+        { "type": "mode", "settings": { "icon": "home", "title": "Home visit", "text": "Placeholder: confirm cities and any visit fee." } },
+        { "type": "mode", "settings": { "icon": "chat", "title": "Video call", "text": "Walk us through your space from your phone." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

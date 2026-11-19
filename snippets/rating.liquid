@@ -1,0 +1,50 @@
+{% doc %}
+  Renders the product star rating from Shopify's standard review metafields
+  (reviews.rating, reviews.rating_count), which product review apps such as
+  Shopify Product Reviews, Judge.me or Yotpo can populate. Renders nothing
+  when no rating exists, so no ratings are ever invented.
+
+  @param {product} product - The product
+
+  @example
+  {% render 'rating', product: product %}
+{% enddoc %}
+
+{%- assign rating = product.metafields.reviews.rating.value -%}
+{%- if rating != blank -%}
+  {%- liquid
+    assign value = rating.rating | round: 1
+    assign scale_max = rating.scale_max | default: 5
+    assign percent = value | divided_by: scale_max | times: 100
+    assign count = product.metafields.reviews.rating_count.value | default: 0
+  -%}
+  <p class="rating" aria-label="{{ 'products.reviews.rating_label' | t: rating: value, max: scale_max, count: count }}">
+    <span class="rating__stars" style="--rating: {{ percent }}%;" aria-hidden="true">★★★★★</span>
+    <span class="rating__count" aria-hidden="true">{{ value }}{% if count > 0 %} ({{ count }}){% endif %}</span>
+  </p>
+{%- endif -%}
+
+{% stylesheet %}
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--text-sm);
+  }
+  .rating__stars {
+    position: relative;
+    letter-spacing: 0.1em;
+    color: var(--color-border);
+  }
+  .rating__stars::before {
+    content: '★★★★★';
+    position: absolute;
+    inset: 0;
+    width: var(--rating);
+    overflow: hidden;
+    color: var(--color-accent);
+  }
+  .rating__count {
+    color: var(--color-muted);
+  }
+{% endstylesheet %}

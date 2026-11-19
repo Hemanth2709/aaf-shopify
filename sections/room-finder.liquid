@@ -1,0 +1,360 @@
+{%- liquid
+  assign rooms = section.blocks | where: 'type', 'room'
+  assign enquiry_base = section.settings.enquiry_url | default: settings.enquiry_url
+-%}
+
+<div class="finder color-scheme {{ section.settings.color_scheme }} full-width section-spacing" data-finder>
+  <div class="page-width finder__grid">
+    <div class="finder__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="heading heading--lg">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+      <ol class="finder__progress" role="list" aria-hidden="true">
+        <li data-finder-dot="1" class="is-current"></li>
+        <li data-finder-dot="2"></li>
+        <li data-finder-dot="3"></li>
+      </ol>
+    </div>
+
+    <div class="finder__panel">
+      <fieldset class="finder__step is-active" data-finder-step="1">
+        <legend class="heading heading--sm">{{ 'sections.room_finder.q_room' | t }}</legend>
+        <div class="finder__rooms">
+          {%- for block in rooms -%}
+            {%- assign room_id = section.id | append: '-room-' | append: forloop.index -%}
+            <div class="choice" {{ block.shopify_attributes }}>
+              <input
+                type="radio"
+                id="{{ room_id }}"
+                name="{{ section.id }}-room"
+                value="{{ block.settings.title | escape }}"
+                data-collection="{{ block.settings.collection.url | default: routes.all_products_collection_url }}"
+                data-category="{{ block.settings.enquiry_category | default: block.settings.title | escape }}"
+              >
+              <label for="{{ room_id }}" class="choice__card">
+                <span class="choice__media media ratio-landscape">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '(min-width: 990px) 18vw, 45vw', alt: '' }}
+                  {%- else -%}
+                    {%- capture placeholder_type -%}collection-{{ forloop.index | modulo: 6 | plus: 1 }}{%- endcapture -%}
+                    {% render 'placeholder', type: placeholder_type %}
+                  {%- endif -%}
+                </span>
+                <span class="choice__title">{{ block.settings.title | escape }}</span>
+              </label>
+            </div>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+
+      <fieldset class="finder__step" data-finder-step="2">
+        <legend class="heading heading--sm">{{ 'sections.room_finder.q_timing' | t }}</legend>
+        <div class="finder__options">
+          <div class="choice">
+            <input type="radio" id="{{ section.id }}-t-now" name="{{ section.id }}-timing" value="ready_stock">
+            <label for="{{ section.id }}-t-now" class="choice__card choice__card--text finder__option">
+              <span class="choice__title">{{ 'sections.room_finder.timing_now' | t }}</span>
+              <span class="small muted">{{ 'sections.room_finder.timing_now_text' | t }}</span>
+            </label>
+          </div>
+          <div class="choice">
+            <input type="radio" id="{{ section.id }}-t-custom" name="{{ section.id }}-timing" value="custom">
+            <label for="{{ section.id }}-t-custom" class="choice__card choice__card--text finder__option">
+              <span class="choice__title">{{ 'sections.room_finder.timing_custom' | t }}</span>
+              <span class="small muted">{{ 'sections.room_finder.timing_custom_text' | t }}</span>
+            </label>
+          </div>
+          <div class="choice">
+            <input type="radio" id="{{ section.id }}-t-help" name="{{ section.id }}-timing" value="consult">
+            <label for="{{ section.id }}-t-help" class="choice__card choice__card--text finder__option">
+              <span class="choice__title">{{ 'sections.room_finder.timing_help' | t }}</span>
+              <span class="small muted">{{ 'sections.room_finder.timing_help_text' | t }}</span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="finder__step" data-finder-step="3">
+        <legend class="heading heading--sm">{{ 'sections.room_finder.q_size' | t }}</legend>
+        <div class="choice-grid choice-grid--pills">
+          {%- assign sizes = 'compact,medium,spacious,unsure' | split: ',' -%}
+          {%- for size in sizes -%}
+            {%- capture size_key -%}sections.room_finder.size_{{ size }}{%- endcapture -%}
+            <div class="choice">
+              <input type="radio" id="{{ section.id }}-s-{{ size }}" name="{{ section.id }}-size" value="{{ size_key | t }}">
+              <label for="{{ section.id }}-s-{{ size }}" class="choice__pill">{{ size_key | t }}</label>
+            </div>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+
+      <div class="finder__result" data-finder-result hidden tabindex="-1">
+        <p class="eyebrow">{{ 'sections.room_finder.result_eyebrow' | t }}</p>
+        <p class="heading heading--md" data-finder-result-title></p>
+        <p class="muted" data-finder-result-text></p>
+        <div class="button-row">
+          <a class="button" href="#" data-finder-primary></a>
+          <button type="button" class="button button--text" data-finder-restart>{{ 'sections.room_finder.restart' | t }}</button>
+        </div>
+      </div>
+
+      <div class="finder__nav" data-finder-nav>
+        <button type="button" class="button button--secondary" data-finder-back hidden>{% render 'icon', name: 'arrow-left' %}{{ 'enquiry.back' | t }}</button>
+        <p class="finder__error small" role="alert" data-finder-error hidden>{{ 'sections.room_finder.choose' | t }}</p>
+        <button type="button" class="button" data-finder-next>{{ 'enquiry.next' | t }}{% render 'icon', name: 'arrow' %}</button>
+      </div>
+    </div>
+  </div>
+
+  <template data-finder-copy>
+    <span data-key="ready_title">{{ 'sections.room_finder.result_ready_title' | t: room: '[room]' }}</span>
+    <span data-key="ready_text">{{ 'sections.room_finder.result_ready_text' | t }}</span>
+    <span data-key="ready_cta">{{ 'sections.room_finder.result_ready_cta' | t }}</span>
+    <span data-key="custom_title">{{ 'sections.room_finder.result_custom_title' | t: room: '[room]' }}</span>
+    <span data-key="custom_text">{{ 'sections.room_finder.result_custom_text' | t }}</span>
+    <span data-key="custom_cta">{{ 'sections.room_finder.result_custom_cta' | t }}</span>
+    <span data-key="consult_title">{{ 'sections.room_finder.result_consult_title' | t }}</span>
+    <span data-key="consult_text">{{ 'sections.room_finder.result_consult_text' | t }}</span>
+    <span data-key="consult_cta">{{ 'sections.room_finder.result_consult_cta' | t }}</span>
+  </template>
+  <span hidden data-finder-enquiry="{{ enquiry_base }}" data-finder-consult="{{ settings.consultation_url | default: enquiry_base }}"></span>
+</div>
+
+{% stylesheet %}
+  .finder__grid {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .finder__intro {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+  }
+  .finder__progress {
+    display: flex;
+    gap: 0.4rem;
+    margin: var(--space-xs) 0 0;
+  }
+  .finder__progress li {
+    width: 2.5rem;
+    height: 2px;
+    background-color: var(--color-border);
+    transition: background-color var(--motion-duration) var(--ease);
+  }
+  .finder__progress li.is-current,
+  .finder__progress li.is-done {
+    background-color: var(--color-foreground);
+  }
+  .finder__panel {
+    display: grid;
+    gap: var(--space-md);
+    min-width: 0;
+  }
+  .finder__step {
+    display: grid;
+    gap: var(--space-md);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .finder__step legend {
+    margin-bottom: var(--space-sm);
+    padding: 0;
+  }
+  [data-finder].is-ready .finder__step:not(.is-active) {
+    display: none;
+  }
+  .finder__rooms {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+  .finder__options {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .finder__option {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem;
+  }
+  .finder__option .choice__title {
+    padding: 0;
+  }
+  .finder__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+  .finder__nav[hidden],
+  .finder__nav [hidden] {
+    display: none;
+  }
+  .finder__nav [data-finder-next] {
+    margin-left: auto;
+  }
+  .finder__error {
+    color: var(--color-error);
+  }
+  .finder__result {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg) var(--space-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+  }
+  @media (min-width: 750px) {
+    .finder__rooms {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .finder__options {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 990px) {
+    .finder__grid {
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: var(--space-2xl);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const init = (scope) => {
+      scope.querySelectorAll('[data-finder]').forEach((root) => {
+        if (root.dataset.bound) return;
+        root.dataset.bound = 'true';
+        root.classList.add('is-ready');
+        const steps = Array.from(root.querySelectorAll('[data-finder-step]'));
+        const result = root.querySelector('[data-finder-result]');
+        const nav = root.querySelector('[data-finder-nav]');
+        const back = root.querySelector('[data-finder-back]');
+        const next = root.querySelector('[data-finder-next]');
+        const error = root.querySelector('[data-finder-error]');
+        const meta = root.querySelector('[data-finder-enquiry]');
+        const copy = {};
+        root.querySelector('template[data-finder-copy]').content.querySelectorAll('[data-key]').forEach((el) => (copy[el.dataset.key] = el.textContent.trim()));
+        let current = 1;
+
+        const show = (n) => {
+          current = n;
+          steps.forEach((s) => s.classList.toggle('is-active', Number(s.dataset.finderStep) === n));
+          root.querySelectorAll('[data-finder-dot]').forEach((d) => {
+            const i = Number(d.dataset.finderDot);
+            d.classList.toggle('is-current', i === n);
+            d.classList.toggle('is-done', i < n);
+          });
+          back.hidden = n === 1;
+          error.hidden = true;
+        };
+        const checked = (n) => steps[n - 1].querySelector('input:checked');
+
+        const finish = () => {
+          const room = checked(1);
+          const timing = checked(2).value;
+          const size = checked(3);
+          const join = (base) => (base.includes('?') ? '&' : '?');
+          const roomName = room.value;
+          let href;
+          let key;
+          if (timing === 'ready_stock') {
+            key = 'ready';
+            href = room.dataset.collection;
+          } else if (timing === 'custom') {
+            key = 'custom';
+            const base = meta.dataset.finderEnquiry || '/';
+            href = base + join(base) + 'category=' + encodeURIComponent(room.dataset.category) + '&room=' + encodeURIComponent(roomName + (size ? ', ' + size.value : ''));
+          } else {
+            key = 'consult';
+            href = meta.dataset.finderConsult || '/';
+          }
+          result.querySelector('[data-finder-result-title]').textContent = (copy[key + '_title'] || '').replace('[room]', roomName.toLowerCase());
+          result.querySelector('[data-finder-result-text]').textContent = copy[key + '_text'] || '';
+          const primary = result.querySelector('[data-finder-primary]');
+          primary.textContent = copy[key + '_cta'] || '';
+          primary.href = href;
+          steps.forEach((s) => s.classList.remove('is-active'));
+          nav.hidden = true;
+          result.hidden = false;
+          result.focus();
+          if (window.AAF) window.AAF.track('room_finder_complete', { room: roomName, journey: timing, space: size ? size.value : '' });
+        };
+
+        next.addEventListener('click', () => {
+          if (!checked(current)) {
+            error.hidden = false;
+            return;
+          }
+          if (current < steps.length) show(current + 1);
+          else finish();
+        });
+        back.addEventListener('click', () => show(Math.max(1, current - 1)));
+        root.querySelector('[data-finder-restart]').addEventListener('click', () => {
+          root.querySelectorAll('input').forEach((i) => (i.checked = false));
+          result.hidden = true;
+          nav.hidden = false;
+          show(1);
+        });
+        root.addEventListener('change', () => (error.hidden = true));
+        show(1);
+      });
+    };
+    init(document);
+    document.addEventListener('shopify:section:load', (event) => init(event.target));
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.room_finder",
+  "class": "section-room-finder",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" }
+      ],
+      "default": "scheme-sand"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Room finder" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Find what <em>your room</em> needs" },
+    { "type": "text", "id": "text", "label": "t:labels.text", "default": "Three quick questions and we will point you to pieces ready to deliver, or to a made-to-measure design." },
+    { "type": "url", "id": "enquiry_url", "label": "t:labels.enquiry_url", "info": "t:info.enquiry_url" }
+  ],
+  "blocks": [
+    {
+      "type": "room",
+      "name": "t:general.room",
+      "settings": [
+        { "type": "text", "id": "title", "label": "t:labels.title", "default": "Living room" },
+        { "type": "image_picker", "id": "image", "label": "t:labels.image" },
+        { "type": "collection", "id": "collection", "label": "t:labels.collection", "info": "t:info.room_collection" },
+        { "type": "text", "id": "enquiry_category", "label": "t:labels.enquiry_category", "info": "t:info.category_match" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.room_finder",
+      "blocks": [
+        { "type": "room", "settings": { "title": "Living room", "enquiry_category": "Sofas" } },
+        { "type": "room", "settings": { "title": "Dining room", "enquiry_category": "Dining tables" } },
+        { "type": "room", "settings": { "title": "Bedroom", "enquiry_category": "Beds" } },
+        { "type": "room", "settings": { "title": "Storage and media", "enquiry_category": "Wardrobes and storage" } },
+        { "type": "room", "settings": { "title": "Study", "enquiry_category": "Chairs" } },
+        { "type": "room", "settings": { "title": "Outdoor", "enquiry_category": "Other" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

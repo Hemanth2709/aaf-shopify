@@ -1,0 +1,106 @@
+{%- if predictive_search.performed -%}
+  {%- assign resources = predictive_search.resources -%}
+  <div class="predictive" data-predictive-results>
+    {%- if resources.products.size > 0 -%}
+      <div class="predictive__group">
+        <p class="eyebrow">{{ 'search.products' | t }}</p>
+        <ul class="predictive__products" role="list">
+          {%- for item in resources.products limit: 6 -%}
+            <li>
+              <a class="predictive__product" href="{{ item.url }}">
+                <span class="media ratio-portrait">
+                  {%- if item.featured_media -%}
+                    {{ item.featured_media | image_url: width: 300 | image_tag: loading: 'lazy', widths: '150, 300', sizes: '120px', alt: '' }}
+                  {%- else -%}
+                    {% render 'placeholder', type: 'product-1' %}
+                  {%- endif -%}
+                </span>
+                <span class="predictive__title">{{ item.title | escape }}</span>
+                {% render 'price', product: item %}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if resources.collections.size > 0 or resources.pages.size > 0 -%}
+      <div class="predictive__group">
+        <p class="eyebrow">{{ 'search.suggestions' | t }}</p>
+        <ul class="predictive__links" role="list">
+          {%- for item in resources.collections limit: 4 -%}
+            <li><a href="{{ item.url }}">{{ item.title | escape }}</a></li>
+          {%- endfor -%}
+          {%- for item in resources.pages limit: 3 -%}
+            <li><a href="{{ item.url }}">{{ item.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if resources.products.size == 0 and resources.collections.size == 0 and resources.pages.size == 0 -%}
+      <p class="predictive__empty">{{ 'search.no_results_html' | t: terms: predictive_search.terms }}</p>
+    {%- endif -%}
+
+    <a class="link-arrow predictive__all" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last">
+      {{- 'search.view_all' | t: terms: predictive_search.terms -}}
+      {% render 'icon', name: 'arrow' %}
+    </a>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .predictive {
+    display: grid;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+  .predictive__group {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .predictive__products {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm);
+    margin: 0;
+  }
+  .predictive__product {
+    display: grid;
+    gap: 0.4rem;
+    text-decoration: none;
+  }
+  .predictive__title {
+    font-family: var(--font-heading--family);
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+  .predictive__product .price {
+    font-size: var(--text-sm);
+  }
+  .predictive__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .predictive__links a {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  @media (min-width: 990px) {
+    .predictive__products {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.predictive_search",
+  "settings": []
+}
+{% endschema %}

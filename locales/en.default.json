@@ -11,7 +11,8 @@
     "comment_form_email": "Email",
     "comment_form_name": "Name",
     "comment_form_submit": "Post",
-    "comment_form_title": "Add a comment"
+    "comment_form_title": "Add a comment",
+    "comment_posted": "Thank you. Your comment will appear once approved."
   },
   "cart": {
     "checkout": "Checkout",
@@ -66,7 +67,8 @@
     },
     "all_products": "All furniture",
     "browse_all": "Browse all collections",
-    "empty_text": "Try removing a filter, or tell us what you are looking for and we can make it."
+    "empty_text": "Try removing a filter, or tell us what you are looking for and we can make it.",
+    "journey_all": "All pieces"
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
@@ -85,7 +87,11 @@
     "placeholder": "Search articles, pages, or products",
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
-    "results_for_html": "{{ count }} results found for {{ terms }}"
+    "results_for_html": "{{ count }} results found for {{ terms }}",
+    "pages_and_articles": "Pages and articles",
+    "products": "Products",
+    "suggestions": "Suggestions",
+    "view_all": "View all results for \"{{ terms }}\""
   },
   "general": {
     "accessibility": {
@@ -179,12 +185,30 @@
     },
     "assist": {
       "customise": "Need a different size or finish? Customise this piece",
-      "whatsapp": "Ask about this piece on WhatsApp"
+      "whatsapp": "Ask about this piece on WhatsApp",
+      "measurement_guide": "How to measure your space",
+      "request_quote": "Request a quote for this piece"
     },
     "delivery": {
       "lead_time": "Lead time",
       "title": "Delivery",
       "warranty": "Warranty"
+    },
+    "quick_view": {
+      "close": "Close quick view",
+      "full_details": "View full details",
+      "label": "Quick view",
+      "open": "Quick view: {{ product }}"
+    },
+    "reviews": {
+      "rating_label": "Rated {{ rating }} out of {{ max }} from {{ count }} reviews"
+    },
+    "wishlist": {
+      "device_note": "Your wishlist is saved in this browser on this device.",
+      "empty": "Your wishlist is empty",
+      "empty_text": "Tap the heart on any piece to save it here.",
+      "title": "Wishlist",
+      "toggle": "Save {{ product }} to wishlist"
     }
   },
   "sections": {
@@ -219,6 +243,37 @@
     },
     "faq": {
       "ask": "Ask us on WhatsApp"
+    },
+    "measurement_guide": {
+      "recommendation": "Recommendation",
+      "space": "Space"
+    },
+    "room_finder": {
+      "choose": "Please choose an option to continue.",
+      "q_room": "Which room are you furnishing?",
+      "q_size": "How much space do you have?",
+      "q_timing": "When do you need it?",
+      "restart": "Start again",
+      "result_consult_cta": "Book a consultation",
+      "result_consult_text": "A designer can help you plan the room, compare ready-stock pieces and custom options, and check sizes.",
+      "result_consult_title": "Let us plan it with you",
+      "result_custom_cta": "Start your custom design",
+      "result_custom_text": "Tell us the size, materials and finish. We have pre-filled your room so you can start right away.",
+      "result_custom_title": "A piece made for your [room]",
+      "result_eyebrow": "Our suggestion",
+      "result_ready_cta": "Shop the collection",
+      "result_ready_text": "These pieces are in stock with prices and availability shown, ready to order today.",
+      "result_ready_title": "Ready-stock pieces for your [room]",
+      "size_compact": "Compact",
+      "size_medium": "Medium",
+      "size_spacious": "Spacious",
+      "size_unsure": "Not sure",
+      "timing_custom": "Made for my space",
+      "timing_custom_text": "Custom size, materials and finish",
+      "timing_help": "Help me decide",
+      "timing_help_text": "Talk it through with a designer",
+      "timing_now": "As soon as possible",
+      "timing_now_text": "Ready-stock pieces I can order now"
     }
   },
   "contact": {
@@ -373,5 +428,20 @@
     "float_label": "Chat with us",
     "product_message": "Hello, I am interested in {{ product }}: {{ url }}",
     "short": "WhatsApp"
+  },
+  "consultation": {
+    "confirm_note": "This is a request. We confirm the time with you by phone or WhatsApp.",
+    "date": "Preferred date",
+    "email_type": "Design consultation request",
+    "mode": "How would you like to meet?",
+    "notes": "Tell us about your project",
+    "notes_placeholder": "Rooms, sizes, style, budget, or pieces you have in mind.",
+    "submit": "Request consultation",
+    "success_text": "We will contact you to confirm the date and time.",
+    "success_title": "Your consultation request is with us",
+    "time": "Preferred time",
+    "time_afternoon": "Afternoon (12 to 4 pm)",
+    "time_evening": "Evening (4 to 7 pm)",
+    "time_morning": "Morning (10 am to 12 pm)"
   }
 }

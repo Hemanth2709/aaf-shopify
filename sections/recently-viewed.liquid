@@ -1,0 +1,59 @@
+<div class="recent color-scheme {{ section.settings.color_scheme }} full-width section-spacing" data-recently-viewed data-current="{{ product.handle }}" data-limit="{{ section.settings.limit }}" hidden>
+  <div class="page-width">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, align: 'split' %}
+    <ul class="scroller scroller--desktop-grid recent__list" role="list" style="--columns-desktop: {{ section.settings.limit }}; --scroller-item: 72%;" data-recent-grid></ul>
+  </div>
+</div>
+
+{% stylesheet %}
+  .recent__list {
+    margin: 0;
+  }
+  @media (max-width: 989px) {
+    .recent__list {
+      margin-right: calc(var(--page-margin) * -1);
+      padding-right: var(--page-margin);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const init = (scope) => {
+      scope.querySelectorAll('[data-recently-viewed]').forEach(async (section) => {
+        if (!window.AAF || !window.AAF.recent) return;
+        const current = section.dataset.current;
+        const handles = window.AAF.recent.get(current).slice(0, Number(section.dataset.limit) || 4);
+        if (current) window.AAF.recent.add(current);
+        if (handles.length === 0) return;
+        const count = await window.AAF.renderCards(handles, section.querySelector('[data-recent-grid]'));
+        section.hidden = count === 0;
+      });
+    };
+    init(document);
+    document.addEventListener('shopify:section:load', (event) => init(event.target));
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.recently_viewed",
+  "class": "section-recently-viewed",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" }
+      ],
+      "default": "scheme-ivory"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Recently viewed" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Still <em>thinking</em> about these?" },
+    { "type": "range", "id": "limit", "min": 2, "max": 6, "step": 1, "label": "t:labels.product_count", "default": 4 }
+  ],
+  "presets": [{ "name": "t:general.recently_viewed" }]
+}
+{% endschema %}

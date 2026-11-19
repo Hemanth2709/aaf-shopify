@@ -1,0 +1,62 @@
+<div class="wishlist-page full-width section-spacing--tight" data-wishlist-page>
+  <div class="page-width">
+    <header class="collections-page__header">
+      <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      <h1 class="heading heading--xl collections-page__title">{{ section.settings.heading }}</h1>
+      {%- if section.settings.text != blank -%}
+        <p class="lead">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </header>
+    <ul class="collection-grid" role="list" style="--columns-desktop: 4; --columns-mobile: 2;" data-wishlist-grid aria-live="polite"></ul>
+    <div class="wishlist-page__empty" data-wishlist-empty>
+      <p class="heading heading--sm">{{ 'products.wishlist.empty' | t }}</p>
+      <p class="muted">{{ 'products.wishlist.empty_text' | t }}</p>
+      <div class="button-row">
+        <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.shop_ready_stock' | t }}</a>
+      </div>
+    </div>
+    <p class="small muted wishlist-page__note">{{ 'products.wishlist.device_note' | t }}</p>
+  </div>
+</div>
+
+{% stylesheet %}
+  .wishlist-page__empty {
+    display: grid;
+    gap: var(--space-sm);
+    justify-items: start;
+    padding-block: var(--space-lg);
+  }
+  .wishlist-page__note {
+    margin-top: var(--space-xl);
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const page = document.querySelector('[data-wishlist-page]');
+    if (!page || !window.AAF || !window.AAF.wishlist) return;
+    const grid = page.querySelector('[data-wishlist-grid]');
+    const empty = page.querySelector('[data-wishlist-empty]');
+    const render = () => window.AAF.renderCards(window.AAF.wishlist.get(), grid, empty);
+    render();
+    document.addEventListener('aaf:wishlist', (event) => {
+      grid.querySelectorAll('[data-wishlist-toggle]').forEach((button) => {
+        if (!event.detail.list.includes(button.dataset.handle)) button.closest('li').remove();
+      });
+      empty.hidden = event.detail.list.length > 0;
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.wishlist",
+  "class": "section-wishlist",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Saved" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Your <em>wishlist</em>" },
+    { "type": "text", "id": "text", "label": "t:labels.text", "default": "Pieces you have saved. Share the list with us on WhatsApp or ask for a quotation." }
+  ],
+  "presets": [{ "name": "t:general.wishlist" }]
+}
+{% endschema %}

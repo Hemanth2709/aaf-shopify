@@ -1,83 +1,89 @@
-{% comment %}
-  This section is used in the list-collections template to render a list of
-  collections.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
-{% endcomment %}
-
-<h1>{{ 'collections.title' | t }}</h1>
-
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
-
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
+<div class="collections-page full-width section-spacing--tight">
+  <div class="page-width">
+    <header class="collections-page__header">
+      <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+      <h1 class="heading heading--xl collections-page__title">{{ 'collections.title' | t }}</h1>
+    </header>
+    {%- paginate collections by 24 -%}
+      <ul class="collections-page__grid" role="list">
+        {%- for item in collections -%}
+          <li data-reveal style="--reveal-delay: {{ forloop.index0 | modulo: 4 | times: 0.06 }}s">
+            <a class="collections-page__card" href="{{ item.url }}">
+              <div class="media ratio-portrait media--zoom">
+                {%- if item.featured_image -%}
+                  {{ item.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 990px) 25vw, 50vw', alt: item.title }}
+                {%- else -%}
+                  {%- capture placeholder_type -%}collection-{{ forloop.index | modulo: 6 | plus: 1 }}{%- endcapture -%}
+                  {% render 'placeholder', type: placeholder_type %}
+                {%- endif -%}
+              </div>
+              <div class="category-tile__label">
+                <span class="category-tile__title">{{ item.title | escape }}</span>
+                <span class="category-tile__count">{{ 'collections.product_count' | t: count: item.products_count }}</span>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endpaginate -%}
+  </div>
 </div>
 
 {% stylesheet %}
-  .collections {
+  .collections-page__header {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
   }
-  .collections--compact {
-    --collection-card-size: 160px;
+  .collections-page__title {
+    font-size: var(--heading-lg);
   }
-  .collections--full {
-    --collection-card-size: 280px;
+  .collections-page__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg) var(--space-sm);
+    margin: 0;
   }
-  .collection-card {
+  .collections-page__card {
+    display: grid;
+    gap: 0.9rem;
+    text-decoration: none;
+  }
+  .collections-page__card .category-tile__label {
     display: flex;
-    flex-direction: column;
-    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .collections-page__card .category-tile__title {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+  }
+  .collections-page__card .category-tile__count {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+  @media (min-width: 990px) {
+    .collections-page__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-xl) var(--space-md);
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.collections_grid",
+  "name": "t:general.collections",
+  "class": "section-collections",
   "settings": [
     {
-      "type": "select",
-      "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
-      "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
-      ],
-      "default": "collections--full"
-    },
-    {
-      "type": "range",
-      "id": "grid_gap",
-      "label": "t:labels.grid_gap",
-      "min": 0,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 10
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:labels.eyebrow",
+      "default": "Shop by room"
     }
-  ],
-  "presets": [{ "name": "t:general.collections_grid" }]
+  ]
 }
 {% endschema %}

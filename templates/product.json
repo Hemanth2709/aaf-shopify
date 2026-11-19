@@ -11,7 +11,9 @@
           }
         }
       },
-      "block_order": ["delivery"],
+      "block_order": [
+        "delivery"
+      ],
       "settings": {
         "show_vendor": false,
         "show_dynamic_checkout": true,
@@ -41,12 +43,41 @@
     "assurance": {
       "type": "trust-bar",
       "blocks": {
-        "a1": { "type": "item", "settings": { "icon": "truck", "title": "Delivery and installation" } },
-        "a2": { "type": "item", "settings": { "icon": "shield", "title": "Quality assurance" } },
-        "a3": { "type": "item", "settings": { "icon": "chat", "title": "Design support" } },
-        "a4": { "type": "item", "settings": { "icon": "ruler", "title": "Made-to-measure available" } }
+        "a1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery and installation"
+          }
+        },
+        "a2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Quality assurance"
+          }
+        },
+        "a3": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Design support"
+          }
+        },
+        "a4": {
+          "type": "item",
+          "settings": {
+            "icon": "ruler",
+            "title": "Made-to-measure available"
+          }
+        }
       },
-      "block_order": ["a1", "a2", "a3", "a4"],
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
       "settings": {
         "color_scheme": "scheme-ivory",
         "style": "bar",
@@ -59,7 +90,27 @@
         "heading": "Need help <em>choosing</em>?",
         "text": "Send us your room size or a photo of the space and we will help you pick the right size, finish and fabric."
       }
+    },
+    "reviews": {
+      "type": "apps",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {
+        "color_scheme": "scheme-ivory"
+      }
     }
   },
-  "order": ["main", "complementary", "recommendations", "assurance", "consultation"]
+  "order": [
+    "main",
+    "reviews",
+    "complementary",
+    "recommendations",
+    "recent",
+    "assurance",
+    "consultation"
+  ]
 }

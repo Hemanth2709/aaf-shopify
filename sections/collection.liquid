@@ -80,6 +80,29 @@
       {%- endif -%}
     </div>
 
+    {%- assign journey_filter = collection.filters | where: 'param_name', 'filter.p.m.custom.fulfilment_type' | first -%}
+    {%- if journey_filter -%}
+      <div class="page-width">
+        <ul class="collection-journeys" role="list" aria-label="{{ journey_filter.label | escape }}">
+          <li>
+            <a class="collection-journey{% if journey_filter.active_values.size == 0 %} is-active{% endif %}" href="{{ journey_filter.url_to_remove }}" data-filter-link {% if journey_filter.active_values.size == 0 %}aria-current="true"{% endif %}>{{ 'collections.journey_all' | t }}</a>
+          </li>
+          {%- for value in journey_filter.values -%}
+            {%- if value.active -%}
+              {%- assign journey_url = value.url_to_remove -%}
+            {%- else -%}
+              {%- assign journey_url = value.url_to_add -%}
+            {%- endif -%}
+            <li>
+              <a class="collection-journey{% if value.active %} is-active{% endif %}" href="{{ journey_url }}" data-filter-link {% if value.active %}aria-current="true"{% endif %}>
+                {{- value.label | escape }} <span class="muted">{{ value.count }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
     {%- if active_count > 0 -%}
       <div class="page-width">
         <ul class="collection-active" role="list" aria-label="{{ 'collections.filters.active' | t }}">
@@ -432,6 +455,31 @@
     font-size: var(--text-sm);
     background-color: transparent;
   }
+  .collection-journeys {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0 0 0.9rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .collection-journey {
+    display: inline-flex;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .collection-journey.is-active {
+    border-color: var(--color-charcoal);
+    background-color: var(--color-charcoal);
+    color: var(--color-ivory);
+  }
+  .collection-journey.is-active .muted {
+    color: rgb(247 243 236 / 0.7);
+  }
   .collection-active {
     display: flex;
     flex-wrap: wrap;
@@ -462,13 +510,6 @@
   .collection-page.is-loading .collection-results {
     opacity: 0.4;
   }
-  .collection-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--columns-mobile, 2), minmax(0, 1fr));
-    gap: var(--space-lg) var(--space-sm);
-    margin: 0;
-    padding: 0;
-  }
   .collection-promo__link {
     display: grid;
     height: 100%;
@@ -493,34 +534,6 @@
     justify-items: center;
     padding-block: var(--space-xl);
     text-align: center;
-  }
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-top: var(--space-xl);
-  }
-  .pagination ul {
-    display: flex;
-    gap: 0.25rem;
-    margin: 0;
-    padding: 0;
-  }
-  .pagination a,
-  .pagination span {
-    display: inline-grid;
-    place-items: center;
-    min-width: 2.75rem;
-    height: 2.75rem;
-    font-size: var(--text-sm);
-    text-decoration: none;
-  }
-  .pagination [aria-current='page'] {
-    border-bottom: 1px solid currentcolor;
-  }
-  .pagination__arrow .icon {
-    width: 1.1rem;
   }
   .filter-drawer {
     width: min(26rem, 100vw);
@@ -678,15 +691,8 @@
     .collection-toolbar__sort select {
       max-width: none;
     }
-    .collection-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-xl) var(--space-md);
-    }
   }
   @media (min-width: 990px) {
-    .collection-grid {
-      grid-template-columns: repeat(var(--columns-desktop, 3), minmax(0, 1fr));
-    }
     .collection-hero--image {
       min-height: 32rem;
     }

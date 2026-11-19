@@ -234,6 +234,12 @@
       },
       {
         "type": "url",
+        "id": "measurement_guide_url",
+        "label": "t:labels.measurement_guide",
+        "info": "t:info.measurement_guide"
+      },
+      {
+        "type": "url",
         "id": "enquiry_url",
         "label": "t:labels.enquiry_url",
         "info": "t:info.enquiry_url"

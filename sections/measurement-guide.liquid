@@ -1,0 +1,196 @@
+{%- liquid
+  assign steps = section.blocks | where: 'type', 'step'
+  assign clearances = section.blocks | where: 'type', 'clearance'
+-%}
+
+<div class="guide color-scheme {{ section.settings.color_scheme }} full-width section-spacing">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text,
+      tag: section.settings.heading_tag,
+      align: 'split'
+    %}
+
+    {%- if steps.size > 0 -%}
+      <ol class="guide__steps" role="list">
+        {%- for block in steps -%}
+          <li class="guide__step" {{ block.shopify_attributes }} data-reveal style="--reveal-delay: {{ forloop.index0 | times: 0.06 }}s">
+            <div class="media ratio-landscape">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 990px) 25vw, 90vw', alt: block.settings.image.alt }}
+              {%- else -%}
+                {% render 'placeholder', type: 'image', label: 'Measuring diagram, 900 x 600' %}
+              {%- endif -%}
+            </div>
+            <span class="process__number" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+            <h3 class="heading heading--sm">{{ block.settings.title | escape }}</h3>
+            <div class="rte small muted">{{ block.settings.text }}</div>
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+
+    {%- if clearances.size > 0 -%}
+      <div class="guide__table-wrap">
+        <h3 class="heading heading--sm">{{ section.settings.table_heading | escape }}</h3>
+        <table class="guide__table">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'sections.measurement_guide.space' | t }}</th>
+              <th scope="col">{{ 'sections.measurement_guide.recommendation' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for block in clearances -%}
+              <tr {{ block.shopify_attributes }}>
+                <th scope="row">{{ block.settings.label | escape }}</th>
+                <td>{{ block.settings.value | escape }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="button-row guide__cta">
+        <a class="button" href="{{ section.settings.button_link | default: settings.enquiry_url | default: '#' }}">{{ section.settings.button_label | escape }}</a>
+        {%- if settings.whatsapp_number != blank -%}
+          <a class="link-arrow" href="{% render 'whatsapp-url', message: section.settings.whatsapp_message %}" target="_blank" rel="noopener" data-track="contact" data-track-params='{"method":"whatsapp","location":"measurement_guide"}'>{{ 'whatsapp.chat_with_us' | t }}{% render 'icon', name: 'arrow' %}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .guide__steps {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+  }
+  .guide__step {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+  }
+  .guide__step .media {
+    margin-bottom: 0.4rem;
+  }
+  .guide__table-wrap {
+    display: grid;
+    gap: var(--space-sm);
+    margin-top: var(--space-xl);
+    max-width: 48rem;
+  }
+  .guide__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+  .guide__table th,
+  .guide__table td {
+    padding: 0.85rem 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .guide__table thead th {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .guide__table tbody th {
+    font-weight: 500;
+  }
+  .guide__cta {
+    margin-top: var(--space-xl);
+  }
+  @media (min-width: 750px) {
+    .guide__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 990px) {
+    .guide__steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.measurement_guide",
+  "class": "section-measurement-guide",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "options": [
+        { "value": "scheme-ivory", "label": "t:options.scheme.ivory" },
+        { "value": "scheme-cream", "label": "t:options.scheme.cream" },
+        { "value": "scheme-sand", "label": "t:options.scheme.sand" }
+      ],
+      "default": "scheme-ivory"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "t:labels.heading_tag",
+      "options": [
+        { "value": "h1", "label": "t:options.heading_tag.h1" },
+        { "value": "h2", "label": "t:options.heading_tag.h2" }
+      ],
+      "default": "h2"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Measurement guide" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Measure once, <em>fit perfectly</em>" },
+    { "type": "text", "id": "text", "label": "t:labels.text", "default": "A few measurements help you choose the right size and make sure your piece arrives through every door." },
+    { "type": "text", "id": "table_heading", "label": "t:labels.table_heading", "default": "Recommended clearances" },
+    { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Need a custom size? Start your design" },
+    { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
+    { "type": "text", "id": "whatsapp_message", "label": "t:labels.whatsapp_message", "default": "Hello, I need help measuring my space for a piece of furniture." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "t:general.step",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:labels.image" },
+        { "type": "text", "id": "title", "label": "t:labels.title", "default": "Measure the space" },
+        { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Measure the width and depth of the area, noting skirting boards, radiators and sockets.</p>" }
+      ]
+    },
+    {
+      "type": "clearance",
+      "name": "t:general.clearance",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:labels.title", "default": "Walkway around furniture" },
+        { "type": "text", "id": "value", "label": "t:labels.text", "default": "Leave at least 75 to 90 cm" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.measurement_guide",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step", "settings": { "title": "Check the route in", "text": "<p>Measure the width and height of every door, corridor, stairwell and lift the piece must pass through.</p>" } },
+        { "type": "step", "settings": { "title": "Compare with the product", "text": "<p>Use the dimensions on each product page. The diagonal depth matters for sofas and wardrobes.</p>" } },
+        { "type": "step", "settings": { "title": "Mark it out", "text": "<p>Outline the footprint on the floor with tape or newspaper to see how it feels in the room.</p>" } },
+        { "type": "clearance" },
+        { "type": "clearance", "settings": { "label": "Coffee table to sofa", "value": "35 to 45 cm" } },
+        { "type": "clearance", "settings": { "label": "Behind dining chairs", "value": "At least 90 cm to pull out and walk past" } },
+        { "type": "clearance", "settings": { "label": "Around a bed", "value": "At least 60 cm on each accessible side" } },
+        { "type": "clearance", "settings": { "label": "In front of a wardrobe", "value": "Door swing plus about 60 cm" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

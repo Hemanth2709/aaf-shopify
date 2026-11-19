@@ -1,0 +1,17 @@
+{%- comment -%}
+  Rendered on demand through the Section Rendering API
+  (/products/<handle>?section_id=product-card-render) to build wishlist and
+  recently viewed grids from stored handles. Not meant to be added in the editor.
+{%- endcomment -%}
+{%- if product -%}
+  <div data-card-render>
+    {% render 'product-card', product: product, sizes: '(min-width: 990px) 25vw, 50vw', list_name: 'Saved' %}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:general.product_card_render",
+  "settings": []
+}
+{% endschema %}

@@ -8,5 +8,9 @@
  * ------------------------------------------------------------
  */
 {
-  "current": {}
+  "current": {
+    "enquiry_url": "/pages/custom-enquiry",
+    "consultation_url": "/pages/consultation",
+    "measurement_guide_url": "/pages/measurement-guide"
+  }
 }

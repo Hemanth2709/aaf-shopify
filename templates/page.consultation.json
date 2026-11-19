@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "main": {
+      "type": "consultation-form",
+      "blocks": {
+        "m1": {
+          "type": "mode",
+          "settings": {
+            "icon": "pin",
+            "title": "Showroom visit",
+            "text": "Placeholder: confirm showroom location and hours."
+          }
+        },
+        "m2": {
+          "type": "mode",
+          "settings": {
+            "icon": "home",
+            "title": "Home visit",
+            "text": "Placeholder: confirm cities and any visit fee."
+          }
+        },
+        "m3": {
+          "type": "mode",
+          "settings": {
+            "icon": "chat",
+            "title": "Video call",
+            "text": "Walk us through your space from your phone."
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What happens in a consultation?",
+            "answer": "<p>We talk through your room, measurements, style and budget, and suggest ready-stock pieces or a custom design.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is there a charge?",
+            "answer": "<p>Placeholder: confirm whether consultations or home visits are free.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "What should I prepare?",
+            "answer": "<p>Room measurements, a few photos of the space and any inspiration images.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-cream"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

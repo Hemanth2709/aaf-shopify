@@ -314,6 +314,7 @@ async function page(name, sections, opts = {}) {
   engine.options.globals = tplCtx;
   const vars = await engine.parseAndRender(fs.readFileSync(path.join(THEME, 'snippets/css-variables.liquid'), 'utf8'), tplCtx);
   const wa = await engine.parseAndRender("{% render 'whatsapp-float' %}{% render 'theme-scripts' %}", tplCtx);
+  const analytics = await engine.parseAndRender("{% render 'analytics-init' %}", tplCtx);
   // collect css from all theme files (Shopify bundles all stylesheet tags)
   let allCss = '';
   for (const dir of ['sections', 'snippets', 'blocks']) {
@@ -334,7 +335,7 @@ async function page(name, sections, opts = {}) {
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
 ${vars}<link rel="stylesheet" href="file://${THEME}/assets/critical.css"><style>${allCss}</style>
-<script>window.AAFConfig={currency:'INR',pageType:'${pageType}',cartType:'drawer',dataLayer:true,motion:true,routes:{root:'/',cart:'/cart',cartAdd:'/cart/add',cartChange:'/cart/change'}};document.documentElement.classList.add('js-motion');</script>
+${analytics}
 </head><body class="template-${pageType}${opts.landing ? ' layout-landing' : ''}"><a class="skip-link" href="#main-content">Skip</a>${headerHtml}<main id="main-content">${body}</main>${footerHtml}${drawer}${wa}<script>${allJs}</script></body></html>`;
   const missing = [...new Set((html.match(/\[missing:[^\]]+\]/g) || []))];
   fs.writeFileSync(path.join(OUT, name + '.html'), html);

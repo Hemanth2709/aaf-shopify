@@ -95,6 +95,30 @@
     </div>
   </a>
 
+  <div class="product-card__actions">
+    <button
+      type="button"
+      class="product-card__action"
+      data-wishlist-toggle
+      data-handle="{{ product.handle }}"
+      data-title="{{ product.title | escape }}"
+      aria-pressed="false"
+      aria-label="{{ 'products.wishlist.toggle' | t: product: product.title | escape }}"
+    >
+      {% render 'icon', name: 'heart' %}
+    </button>
+    {%- if quick_add -%}
+      <button
+        type="button"
+        class="product-card__action product-card__action--quick"
+        data-quick-view="{{ product.url }}"
+        aria-label="{{ 'products.quick_view.open' | t: product: product.title | escape }}"
+      >
+        {% render 'icon', name: 'eye' %}
+      </button>
+    {%- endif -%}
+  </div>
+
   <div class="product-card__info">
     {%- if product.type != blank -%}
       <p class="product-card__type eyebrow">{{ product.type | escape }}</p>
@@ -115,6 +139,9 @@
     {%- endif -%}
     <div class="product-card__bottom">
       {% render 'price', product: product %}
+      {%- if product.metafields.reviews.rating.value != blank -%}
+        {% render 'rating', product: product %}
+      {%- endif -%}
       {%- if low_stock -%}
         <span class="product-card__stock"><span class="stock-dot stock-dot--low"></span>{{ 'products.availability.low_stock_short' | t: count: variant.inventory_quantity }}</span>
       {%- endif -%}
@@ -168,6 +195,55 @@
     }
     .product-card__link:hover .product-card__image {
       transform: scale(1.03);
+    }
+  }
+  .product-card__actions {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .product-card__action {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: rgb(247 243 236 / 0.92);
+    color: var(--color-charcoal);
+    cursor: pointer;
+    transition:
+      opacity var(--motion-duration) var(--ease),
+      transform var(--motion-duration) var(--ease),
+      color var(--motion-duration) var(--ease);
+  }
+  .product-card__action .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .product-card__action:hover {
+    color: var(--color-accent);
+  }
+  .product-card__action.is-active .icon {
+    fill: currentcolor;
+    color: var(--color-accent);
+  }
+  .product-card__action--quick {
+    display: none;
+  }
+  @media (hover: hover) and (min-width: 990px) {
+    .product-card__action--quick {
+      display: inline-grid;
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    .product-card:hover .product-card__action--quick,
+    .product-card__action--quick:focus-visible {
+      opacity: 1;
+      transform: none;
     }
   }
   .product-card__badges {

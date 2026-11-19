@@ -203,7 +203,12 @@
               <span class="eyebrow">{{ 'enquiry.step_label' | t: step: 3, total: total_steps }}</span>
               <span class="heading heading--md">{{ 'enquiry.steps.question_3' | t }}</span>
             </legend>
-            <p class="muted small">{{ 'enquiry.fields.dimensions_help' | t }}</p>
+            <p class="muted small">
+              {{ 'enquiry.fields.dimensions_help' | t }}
+              {%- if settings.measurement_guide_url != blank %}
+                <a href="{{ settings.measurement_guide_url }}" target="_blank" rel="noopener">{{ 'products.assist.measurement_guide' | t }}</a>
+              {%- endif -%}
+            </p>
             <div class="unit-toggle" role="radiogroup" aria-label="{{ 'enquiry.fields.units' | t }}">
               <input type="radio" id="{{ section.id }}-unit-cm" name="contact[Units]" value="cm" {% if section.settings.default_unit == 'cm' %}checked{% endif %} data-unit>
               <label for="{{ section.id }}-unit-cm">{{ 'enquiry.fields.unit_cm' | t }}</label>
@@ -1109,6 +1114,11 @@
           return value === category || category.includes(value) || value.includes(category);
         });
         if (match) match.checked = true;
+      }
+      const room = params.get('room');
+      if (room) {
+        const roomField = form.querySelector('[name="contact[Room]"]');
+        if (roomField && !roomField.value) roomField.value = room;
       }
       if (product) {
         const notes = form.querySelector('[name="contact[Design notes]"]');

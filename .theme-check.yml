@@ -1,1 +1,10 @@
 extends: theme-check:recommended
+
+# Shared component classes (choice cards, form rows, product card actions, etc.)
+# are defined once in a component's {% stylesheet %} and reused by other
+# sections. Shopify compiles every {% stylesheet %} tag in the theme into one
+# global compiled_assets/styles.css that loads on every page (verified on the
+# store preview: section styles are present on unrelated templates), so these
+# classes are always available. The check assumes per-page scoping.
+ValidScopedCSSClass:
+  enabled: false

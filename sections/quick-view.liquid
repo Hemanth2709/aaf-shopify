@@ -1,0 +1,90 @@
+{%- comment -%}
+  Rendered on demand into the quick view dialog via
+  /products/<handle>?section_id=quick-view (and &option_values=… for variant
+  changes). Not meant to be added in the theme editor.
+{%- endcomment -%}
+{%- if product -%}
+  {%- liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign fulfilment = product.metafields.custom.fulfilment_type.value | default: '' | downcase
+    assign is_made_to_order = false
+    if fulfilment contains 'order' or product.tags contains 'made-to-order'
+      assign is_made_to_order = true
+    endif
+    assign qv_id = 'qv-' | append: product.id
+  -%}
+  <div class="quick-view" data-quick-view-content data-url="{{ product.url }}" data-product-id="{{ product.id }}">
+    <div class="quick-view__media">
+      <ul class="quick-view__track" role="list">
+        {%- for media in product.media limit: 6 -%}
+          {%- if media.media_type == 'image' -%}
+            <li class="media" style="aspect-ratio: {{ media.aspect_ratio | default: 0.8 }};">
+              {%- assign qv_alt = media.alt | default: product.title | escape -%}
+              {{ media | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '(min-width: 750px) 45vw, 90vw', loading: 'lazy', alt: qv_alt }}
+            </li>
+          {%- endif -%}
+        {%- else -%}
+          <li class="media ratio-portrait">{% render 'placeholder', type: 'product-2' %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="quick-view__info">
+      <div class="product-info__badges">
+        {%- if is_made_to_order -%}
+          <span class="badge badge--accent">{{ 'products.badges.made_to_order' | t }}</span>
+        {%- else -%}
+          <span class="badge badge--dark">{{ 'products.badges.ready_stock' | t }}</span>
+        {%- endif -%}
+      </div>
+      <h2 class="heading heading--md" id="{{ qv_id }}-title">{{ product.title | escape }}</h2>
+      {% render 'price', product: product, variant: current_variant, style: 'large' %}
+      {% render 'rating', product: product %}
+      <p class="quick-view__stock">
+        {%- if current_variant.available -%}
+          <span class="stock-dot"></span>
+          {%- if is_made_to_order -%}
+            {{ 'products.availability.made_to_order' | t }}
+          {%- else -%}
+            {{ 'products.availability.in_stock' | t }}
+          {%- endif -%}
+        {%- else -%}
+          <span class="stock-dot stock-dot--out"></span>{{ 'products.availability.sold_out' | t }}
+        {%- endif -%}
+      </p>
+
+      {%- form 'product', product, class: 'quick-view__form', data-quick-view-form: '' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {% render 'variant-picker', product: product, section_id: qv_id %}
+        <div class="product-form__buy">
+          {%- assign qv_qty = qv_id | append: '-qty' -%}
+          {% render 'quantity-selector', id: qv_qty %}
+          <button
+            type="submit"
+            class="button"
+            data-item='{"item_id":{{ product.id | json }},"item_variant":{{ current_variant.title | json | escape }},"item_name":{{ product.title | json | escape }},"item_category":{{ product.type | json | escape }},"price":{{ current_variant.price | divided_by: 100.0 | json }}}'
+            {% unless current_variant.available %}
+              disabled
+            {% endunless %}
+          >
+            {%- if current_variant.available -%}
+              {{- 'products.form.add_to_cart' | t -}}
+            {%- else -%}
+              {{- 'products.availability.sold_out' | t -}}
+            {%- endif -%}
+          </button>
+        </div>
+        <p class="product-form__status" role="alert" data-quick-view-status hidden></p>
+      {%- endform -%}
+
+      <a class="link-arrow" href="{{ product.url }}">{{ 'products.quick_view.full_details' | t }}{% render 'icon', name: 'arrow' %}</a>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:general.quick_view",
+  "settings": []
+}
+{% endschema %}

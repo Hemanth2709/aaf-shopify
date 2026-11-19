@@ -1,0 +1,197 @@
+{% doc %}
+  Renders the global quick view dialog and its behaviour. Product cards open
+  it through [data-quick-view="<product url>"]; content comes from
+  sections/quick-view.liquid via the Section Rendering API, so prices,
+  variants and stock are always live Shopify data.
+
+  @example
+  {% render 'quick-view-dialog' %}
+{% enddoc %}
+
+<dialog id="quick-view" class="quick-view-dialog" aria-label="{{ 'products.quick_view.label' | t }}" scroll-lock>
+  <button type="button" class="icon-button quick-view-dialog__close" data-quick-view-close>
+    {% render 'icon', name: 'close' %}
+    <span class="visually-hidden">{{ 'products.quick_view.close' | t }}</span>
+  </button>
+  <div class="quick-view-dialog__body" data-quick-view-body aria-live="polite"></div>
+</dialog>
+
+{% stylesheet %}
+  .quick-view-dialog {
+    width: min(64rem, calc(100vw - 2rem));
+    max-height: calc(100svh - 2rem);
+    padding: 0;
+    border: 0;
+    overflow: auto;
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+  }
+  .quick-view-dialog[open] {
+    animation: qv-in 0.35s var(--ease-out);
+  }
+  @keyframes qv-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  .quick-view-dialog::backdrop {
+    background: rgb(34 32 30 / 0.5);
+  }
+  .quick-view-dialog__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;
+    background-color: rgb(247 243 236 / 0.9);
+    border-radius: 50%;
+  }
+  .quick-view-dialog__body.is-loading {
+    min-height: 24rem;
+    opacity: 0.5;
+  }
+  .quick-view {
+    display: grid;
+  }
+  .quick-view__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    margin: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+  .quick-view__track > li {
+    scroll-snap-align: start;
+  }
+  .quick-view__info {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+    padding: var(--space-lg) var(--space-md);
+  }
+  .quick-view__stock {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+  }
+  .quick-view__form {
+    display: grid;
+    gap: var(--space-md);
+    margin-block: var(--space-xs);
+  }
+  .quick-view .product-form__buy {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.6rem;
+  }
+  .quick-view .product-form__status {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
+    font-size: var(--text-sm);
+  }
+  @media (min-width: 750px) {
+    .quick-view {
+      grid-template-columns: 1.1fr 1fr;
+    }
+    .quick-view__info {
+      padding: var(--space-xl) var(--space-lg);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const dialog = document.getElementById('quick-view');
+    if (!dialog) return;
+    const body = dialog.querySelector('[data-quick-view-body]');
+    let opener = null;
+
+    const load = async (url) => {
+      body.classList.add('is-loading');
+      try {
+        const response = await fetch(url);
+        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+        const content = doc.querySelector('[data-quick-view-content]');
+        if (!content) throw new Error('missing');
+        body.innerHTML = '';
+        body.appendChild(content);
+        const title = body.querySelector('h2');
+        if (title) dialog.setAttribute('aria-labelledby', title.id);
+        return content;
+      } finally {
+        body.classList.remove('is-loading');
+      }
+    };
+
+    const withSection = (url, extra) => url + (url.includes('?') ? '&' : '?') + 'section_id=quick-view' + (extra || '');
+
+    document.addEventListener('click', async (event) => {
+      const trigger = event.target.closest('[data-quick-view]');
+      if (trigger) {
+        event.preventDefault();
+        opener = trigger;
+        body.innerHTML = '';
+        dialog.showModal();
+        try {
+          const content = await load(withSection(trigger.dataset.quickView));
+          if (window.AAF) window.AAF.track('quick_view', { item_id: content.dataset.productId });
+        } catch (error) {
+          window.location.href = trigger.dataset.quickView;
+        }
+        return;
+      }
+      if (event.target === dialog || event.target.closest('[data-quick-view-close]')) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+      if (opener) opener.focus();
+    });
+
+    dialog.addEventListener('change', async (event) => {
+      if (!event.target.matches('[data-option-value-id]')) return;
+      const content = body.querySelector('[data-quick-view-content]');
+      const ids = Array.from(body.querySelectorAll('[data-option-value-id]:checked')).map((i) => i.dataset.optionValueId);
+      const changedId = event.target.id;
+      try {
+        await load(withSection(content.dataset.url, '&option_values=' + ids.join(',')));
+        const again = document.getElementById(changedId);
+        if (again) again.focus();
+      } catch (error) {}
+    });
+
+    dialog.addEventListener('submit', async (event) => {
+      const form = event.target.closest('[data-quick-view-form]');
+      if (!form || !window.AAF || !window.AAF.cart) return;
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      const status = form.querySelector('[data-quick-view-status]');
+      button.classList.add('is-loading');
+      status.hidden = true;
+      try {
+        const formData = new FormData(form);
+        await window.AAF.cart.add(formData);
+        let item = {};
+        try {
+          item = JSON.parse(button.dataset.item || '{}');
+        } catch (error) {}
+        const quantity = Number(formData.get('quantity') || 1);
+        window.AAF.track('add_to_cart', {
+          ecommerce: { currency: window.AAFConfig.currency, value: (item.price || 0) * quantity, items: [Object.assign({ quantity }, item)] },
+          source: 'quick_view',
+        });
+        dialog.close();
+        if (window.AAF.cart.hasDrawer()) window.AAF.cart.open(opener);
+        else window.location.href = window.AAFConfig.routes.cart;
+      } catch (error) {
+        status.textContent = error.message;
+        status.hidden = false;
+      } finally {
+        button.classList.remove('is-loading');
+      }
+    });
+  })();
+{% endjavascript %}
