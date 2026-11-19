@@ -6,10 +6,11 @@ Premium furniture storefront on Shopify (Liquid theme, Skeleton base). Last upda
 
 | Area | Status |
 |---|---|
-| P0 storefront (design system, header, homepage, collections, product, cart, custom landing, guided enquiry) | Built, validated, harness-tested. Not yet seen on the live store |
+| P0 storefront (design system, header, homepage, collections, product, cart, custom landing, guided enquiry) | Built, validated, tested on the live dev preview |
 | P1 commercial (supporting pages, mobile, WhatsApp, metafields, SEO, tracking hooks, campaign templates) | Built. Tracking IDs and business copy pending |
-| Live store preview | **Blocked**: Shopify CLI login not approved yet |
-| Git push | **Blocked**: GitHub returned 403 for this repository |
+| Live store preview | Done on a development theme (live 'Horizon' theme untouched). Not published |
+| Git push | Done |
+| Enquiry email delivery | Needs one manual test submission (hCaptcha blocks automation) |
 
 ## Implementation log
 
@@ -20,6 +21,7 @@ Premium furniture storefront on Shopify (Liquid theme, Skeleton base). Last upda
 5. Custom furniture: landing template and a 9-step guided enquiry posting to Shopify's contact form, with progress, validation, draft saving, review, reference number, URL / UTM capture, loading / error / success states.
 6. P1: contact, FAQ (FAQPage schema), about, craftsmanship, materials, two PPC landing templates and a campaign collection template on a minimal `landing` layout; Organization / WebSite / Breadcrumb / Product / Article JSON-LD; analytics helper and a custom pixel file.
 7. QA: theme check, toolkit validator, JS syntax, offline render harness with Playwright. Seven bugs found and fixed (see docs/TESTING.md).
+8. Live preview on the store via `shopify theme dev`: all templates render; four more bugs found only on Shopify and fixed (parser error on every page, analytics load order, CAPTCHA button state, placeholder art).
 
 ## Files
 
@@ -33,8 +35,7 @@ Premium furniture storefront on Shopify (Liquid theme, Skeleton base). Last upda
 
 | Needed | From | Blocks |
 |---|---|---|
-| Approve a Shopify CLI login (device code) | Store owner | Live preview, real-page QA, enquiry email test |
-| GitHub access for the Claude app on this repo | Repo owner | Pushing the branch |
+| One manual test enquiry from a real browser | Store owner | Confirming the email arrives with all fields |
 | Products with prices, variants, inventory, images and metafields | Business | Testing the ready-stock journey end to end |
 | Logo, hero, category, editorial, material and product photography | Business | Replacing labelled placeholders |
 | WhatsApp number, phone, email, showroom address, consultation link | Business | Contact buttons (hidden until set) |
@@ -46,7 +47,7 @@ Premium furniture storefront on Shopify (Liquid theme, Skeleton base). Last upda
 
 ## Next steps
 
-1. Approve the CLI login → run `shopify theme dev`, review every page on desktop and mobile, submit a test enquiry, and confirm the email arrives.
+1. Submit one test enquiry on the preview link and confirm the email arrives with all fields.
 2. Add 3–5 real products with metafields → test variants, add to cart, drawer, checkout.
 3. Configure tracking IDs → verify events (checklist in TRACKING.md).
 4. `shopify theme push --unpublished`, review in the theme editor, publish only on approval.

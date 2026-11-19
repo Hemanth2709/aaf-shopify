@@ -362,7 +362,8 @@
       "question_7": "Tell us about the project",
       "question_8": "How can we reach you?",
       "question_9": "Review your brief"
-    }
+    },
+    "verify": "If a verification window appeared, complete it to send your enquiry. Your answers are saved."
   },
   "announcement": {
     "book_consultation": "Book a consultation"

@@ -12,7 +12,28 @@
 {% enddoc %}
 
 <div class="placeholder placeholder--{{ tone | default: 'light' }}" role="img" aria-label="{{ 'general.placeholder.aria' | t }}">
-  {{ type | default: 'image' | placeholder_svg_tag: 'placeholder__svg' }}
+  {%- liquid
+    assign kind = type | default: 'image'
+    assign digit = kind | split: '-' | last | plus: 0
+    assign drawing = digit | modulo: 4
+    if kind == 'image'
+      assign drawing = 4
+    endif
+  -%}
+  <svg class="placeholder__svg" viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet">
+    {%- case drawing -%}
+      {%- when 0 -%}
+        <path d="M60 300h280"/><path d="M95 230v-48a14 14 0 0 1 14-14h182a14 14 0 0 1 14 14v48"/><path d="M80 240a16 16 0 0 1 32 0v22h176v-22a16 16 0 0 1 32 0v40H80z"/><path d="M112 262v-28h176v28"/><path d="M200 234v28"/><path d="M96 280v20M304 280v20"/>
+      {%- when 1 -%}
+        <path d="M70 300h260"/><path d="M110 200h180"/><path d="M120 200v100M280 200v100"/><path d="M200 140v60"/><path d="M175 140h50l-8-38h-34z"/><path d="M60 220v-60M60 220h30v80M90 220v-60" /><path d="M340 220v-60M340 220h-30v80M310 220v-60"/>
+      {%- when 2 -%}
+        <path d="M80 300h240"/><path d="M130 300v-40M270 300v-40"/><path d="M115 260h170a10 10 0 0 0 10-10v-50a40 40 0 0 0-40-40h-110a40 40 0 0 0-40 40v50a10 10 0 0 0 10 10"/><path d="M140 225h120"/><path d="M118 200c0-16 10-26 26-26M282 200c0-16-10-26-26-26"/>
+      {%- when 3 -%}
+        <path d="M60 300h280"/><path d="M90 300v-12h220v12"/><path d="M90 288V200h220v88"/><path d="M200 200v88M90 244h220"/><path d="M180 222h40M180 266h40"/><path d="M260 200v-20M248 180h24l-6-50h-12z"/><path d="M120 200v-34h30v34"/>
+      {%- else -%}
+        <path d="M70 330 330 70M70 290 290 70M70 250 250 70M110 330 330 110M150 330 330 150M70 210 210 70M190 330 330 190"/>
+    {%- endcase -%}
+  </svg>
   {%- if label != blank -%}
     <span class="placeholder__label">{{ 'general.placeholder.label' | t: label: label }}</span>
   {%- endif -%}
@@ -39,10 +60,13 @@
   }
   .placeholder__svg {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: currentcolor;
+    inset: 12%;
+    width: 76%;
+    height: 76%;
+    color: rgb(90 62 43 / 0.32);
+  }
+  .placeholder--dark .placeholder__svg {
+    color: rgb(247 243 236 / 0.16);
   }
   .placeholder__label {
     position: absolute;
